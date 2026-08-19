@@ -1,0 +1,49 @@
+# Environment / secrets
+.env
+*.env
+!.env.example
+**/secrets/
+**/*secret*
+**/*.key
+**/*.pem
+**/*.crt
+
+# Docker volumes / persisted data (bind-mounted or named-volume backing dirs)
+**/volumes/
+**/data/
+**/logs/
+**/certs/
+**/config/generated/
+
+# Upstream wazuh-docker is a pinned, disposable clone (see scripts/wazuh-bootstrap.sh).
+# Only our own overlay (wazuh/compose.override.yml) and scripts are tracked.
+wazuh/wazuh-docker/
+
+# MISP compose persisted state
+misp/misp-docker/*.env
+misp/misp-docker/ssl/
+misp/misp-docker/gnupg/
+
+# Claude Code local session settings
+.claude/
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.vscode/
+.idea/
+
+# Python (helper scripts)
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Node (if any tooling used)
+node_modules/
+
+# Misc local artifacts
+*.log
+*.tmp
