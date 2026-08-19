@@ -1,0 +1,36 @@
+# Our overlay on top of the pinned upstream single-node compose file.
+#
+# Deliberately minimal: upstream is vendored unmodified, and everything we
+# change lives here so the diff from a stock Wazuh deployment stays obvious.
+#
+# Two changes only:
+#   1. every published port is bound to 127.0.0.1 (upstream binds 0.0.0.0),
+#      and the dashboard moves off privileged port 443 to 8443
+#   2. credentials come from the gitignored .env instead of being hardcoded
+#
+# The `!override` tag replaces the upstream list outright. Without it Compose
+# would CONCATENATE the two `ports` lists and keep the 0.0.0.0 bindings as well
+# as ours. Requires Compose >= 2.24.
+
+services:
+  wazuh.manager:
+    ports: !override
+      - "127.0.0.1:1514:1514"     # agent event channel
+      - "127.0.0.1:1515:1515"     # agent enrollment
+      - "127.0.0.1:514:514/udp"   # syslog ingest
+      - "127.0.0.1:55000:55000"   # manager REST API
+    environment:
+      INDEXER_PASSWORD: ${INDEXER_PASSWORD:?set in .env — run scripts/wazuh-bootstrap.sh}
+      API_PASSWORD: ${API_PASSWORD:?set in .env — run scripts/wazuh-bootstrap.sh}
+
+  wazuh.indexer:
+    ports: !override
+      - "127.0.0.1:9200:9200"
+
+  wazuh.dashboard:
+    ports: !override
+      - "127.0.0.1:8443:5601"
+    environment:
+      INDEXER_PASSWORD: ${INDEXER_PASSWORD:?set in .env — run scripts/wazuh-bootstrap.sh}
+      DASHBOARD_PASSWORD: ${DASHBOARD_PASSWORD:?set in .env — run scripts/wazuh-bootstrap.sh}
+      API_PASSWORD: ${API_PASSWORD:?set in .env — run scripts/wazuh-bootstrap.sh}

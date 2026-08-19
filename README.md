@@ -17,7 +17,7 @@ workflow — all reproducible on a single machine with nothing but Docker.
 | Phase | Scope | Status |
 |------:|-------|--------|
 | 0 | Environment check, repo scaffolding | Done |
-| 1 | Deploy Wazuh single-node (manager, indexer, dashboard) | In progress |
+| 1 | Deploy Wazuh single-node (manager, indexer, dashboard) | Done |
 | 2 | Feed real data into Wazuh via an agent | Not started |
 | 3 | Deploy MISP | Not started |
 | 4 | Populate MISP from a public threat feed | Not started |
