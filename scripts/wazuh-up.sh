@@ -13,6 +13,10 @@ source "$(dirname "${BASH_SOURCE[0]}")/_common.sh"
 # shellcheck source=/dev/null
 set -a; source "$ENV_FILE"; set +a
 
+# The agent's ossec.conf is bind-mounted too, so it needs the same SELinux
+# treatment as the manager and indexer config.
+relabel_path "$REPO_ROOT/agents/config"
+
 log "Starting stack (project: $COMPOSE_PROJECT)"
 compose up -d
 

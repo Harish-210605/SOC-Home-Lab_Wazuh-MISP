@@ -1,0 +1,35 @@
+# Monitored endpoints — the things Wazuh actually watches.
+#
+# Layered into the same Compose project as the stack, so the agent reaches the
+# manager over the project's internal network and never needs a published port.
+#
+# ${LAB_ROOT} is exported by scripts/_common.sh. It has to be absolute: Compose
+# resolves relative paths against the directory of the FIRST -f file, which is
+# upstream's single-node/, not this directory.
+
+services:
+  wazuh.agent.endpoint01:
+    image: wazuh/wazuh-agent:4.14.7
+    hostname: endpoint01
+    restart: always
+    depends_on:
+      - wazuh.manager
+    environment:
+      # Note the name: this image reads WAZUH_MANAGER_SERVER, not the
+      # WAZUH_MANAGER that the agent packages use.
+      WAZUH_MANAGER_SERVER: wazuh.manager
+      WAZUH_MANAGER_PORT: 1514
+      WAZUH_REGISTRATION_PORT: 1515
+      WAZUH_AGENT_NAME: endpoint01
+      WAZUH_AGENT_GROUP: default
+    volumes:
+      # Copied into /var/ossec by the image's init, which then substitutes the
+      # CHANGE_* placeholders from the environment above. Our file keeps those
+      # placeholders intact so enrollment stays env-driven.
+      - ${LAB_ROOT}/agents/config/ossec.conf:/wazuh-config-mount/etc/ossec.conf:ro
+      # Staging ground for file-integrity scenarios. A named volume so the
+      # directory exists and survives restarts.
+      - endpoint01_lab:/var/lab
+
+volumes:
+  endpoint01_lab:

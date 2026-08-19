@@ -40,10 +40,19 @@ docker_run() {
 # ./config/... mounts keep working from here.
 compose() {
   [[ -f "$ENV_FILE" ]] || die "$ENV_FILE is missing. Run scripts/wazuh-bootstrap.sh first."
+  # LAB_ROOT lets the agent overlay use absolute bind-mount paths. Compose
+  # resolves relative paths against the first -f file's directory (upstream's
+  # single-node/), so an agent file written with ./ paths would look for them
+  # in the wrong tree.
+  # Exported on its own line rather than as a `VAR=x func` prefix: for shell
+  # functions bash does not reliably pass prefix assignments through to the
+  # commands the function runs.
+  export LAB_ROOT="$REPO_ROOT"
   docker_run docker compose \
     -p "$COMPOSE_PROJECT" \
     -f "$WAZUH_DIR/docker-compose.yml" \
     -f "$REPO_ROOT/wazuh/compose.override.yml" \
+    -f "$REPO_ROOT/agents/compose.agents.yml" \
     --env-file "$ENV_FILE" \
     "$@"
 }
@@ -56,10 +65,22 @@ compose() {
 # container_file_t fixes it. This cannot be expressed as a :z flag in our
 # override, because Compose CONCATENATES service `volumes` lists across files
 # rather than replacing them, so re-declaring the mounts would duplicate them.
+selinux_active() {
+  command -v getenforce >/dev/null 2>&1 || return 1
+  [[ "$(getenforce)" == "Disabled" ]] && return 1
+  command -v chcon >/dev/null 2>&1 || { warn "chcon not found; skipping SELinux relabel"; return 1; }
+  return 0
+}
+
+# Relabel an arbitrary bind-mount source so containers can read it.
+relabel_path() {
+  selinux_active || return 0
+  [[ -e "$1" ]] || return 0
+  chcon -Rt container_file_t "$1" || warn "could not relabel $1"
+}
+
 relabel_config() {
-  command -v getenforce >/dev/null 2>&1 || return 0
-  [[ "$(getenforce)" == "Disabled" ]] && return 0
-  command -v chcon >/dev/null 2>&1 || { warn "chcon not found; skipping SELinux relabel"; return 0; }
+  selinux_active || return 0
 
   log "Relabelling config tree for SELinux (container_file_t)"
   # The certificate directory is skipped on purpose. The generator chowns it to

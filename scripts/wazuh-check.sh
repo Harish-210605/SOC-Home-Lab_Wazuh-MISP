@@ -18,7 +18,7 @@ printf '\n\033[1mWazuh deployment checks\033[0m\n\n'
 
 # --- services ---------------------------------------------------------------
 running="$(docker_run docker compose -p "$COMPOSE_PROJECT" ps --status running --services 2>/dev/null || true)"
-for svc in wazuh.manager wazuh.indexer wazuh.dashboard; do
+for svc in wazuh.manager wazuh.indexer wazuh.dashboard wazuh.agent.endpoint01; do
   if grep -qx "$svc" <<<"$running"; then ok "$svc is running"; else no "$svc is NOT running"; fi
 done
 
@@ -54,6 +54,32 @@ if curl -sk -u "wazuh-wui:$API_PASSWORD" -X POST \
   ok "manager API issues a JWT for wazuh-wui"
 else
   no "manager API did not return a token"
+fi
+
+# --- agent ------------------------------------------------------------------
+agents="$(docker_run docker exec wazuh-wazuh.manager-1 /var/ossec/bin/agent_control -l 2>/dev/null || true)"
+if grep -q 'Name: endpoint01' <<<"$agents"; then
+  ok "endpoint01 is registered with the manager"
+else
+  no "endpoint01 is not registered"
+fi
+if grep -E 'Name: endpoint01' <<<"$agents" | grep -q 'Active'; then
+  ok "endpoint01 reports Active"
+else
+  no "endpoint01 is registered but not Active ($(grep -o 'Name: endpoint01.*' <<<"$agents"))"
+fi
+
+# Data actually reaching storage is the point of the whole phase: an agent can
+# be Active while nothing is indexed if Filebeat or the indexer is unhappy.
+count="$(curl -sk -u "admin:$INDEXER_PASSWORD" \
+  'https://127.0.0.1:9200/wazuh-alerts-*/_search' \
+  -H 'Content-Type: application/json' \
+  -d '{"size":0,"query":{"term":{"agent.name":"endpoint01"}}}' 2>/dev/null \
+  | sed -n 's/.*"hits":{"total":{"value":\([0-9]*\).*/\1/p')"
+if [[ -n "$count" && "$count" -gt 0 ]]; then
+  ok "endpoint01 alerts are indexed ($count)"
+else
+  no "no indexed alerts from endpoint01"
 fi
 
 # --- dashboard --------------------------------------------------------------

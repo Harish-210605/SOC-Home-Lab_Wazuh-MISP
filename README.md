@@ -18,7 +18,7 @@ workflow — all reproducible on a single machine with nothing but Docker.
 |------:|-------|--------|
 | 0 | Environment check, repo scaffolding | Done |
 | 1 | Deploy Wazuh single-node (manager, indexer, dashboard) | Done |
-| 2 | Feed real data into Wazuh via an agent | Not started |
+| 2 | Feed real data into Wazuh via an agent | Done |
 | 3 | Deploy MISP | Not started |
 | 4 | Populate MISP from a public threat feed | Not started |
 | 5 | Integrate Wazuh with MISP for alert enrichment | Not started |
@@ -29,6 +29,7 @@ workflow — all reproducible on a single machine with nothing but Docker.
 ## Documentation
 
 - [`docs/setup-wazuh.md`](docs/setup-wazuh.md) — deploying and hardening the Wazuh stack
+- [`docs/setup-agent.md`](docs/setup-agent.md) — the monitored endpoint, and proving events flow
 
 ## Ground rules
 

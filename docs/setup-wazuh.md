@@ -78,7 +78,7 @@ All three scripts are idempotent.
 | `wazuh-up.sh` | Start the stack, block until the indexer reports green |
 | `wazuh-down.sh` | Stop (`--purge` also deletes volumes) |
 | `wazuh-logs.sh` | Tail logs, optionally for one service |
-| `wazuh-check.sh` | 13 assertions covering health, credentials and exposure |
+| `wazuh-check.sh` | Assertions covering health, credentials, agent state and exposure |
 
 ## Ports
 
@@ -117,10 +117,10 @@ that too.
 
 ## Verification
 
-`scripts/wazuh-check.sh` should report **13 passed, 0 failed**. It covers all three
-services running, cluster health green, the old defaults rejected, each removed demo
-account rejected, a JWT from the manager API, the dashboard responding, loopback-only
-binding, and no secrets in git.
+`scripts/wazuh-check.sh` should report **17 passed, 0 failed** (13 of them belong to this
+phase; the rest cover the Phase 2 agent). It checks every service running, cluster health
+green, the old defaults rejected, each removed demo account rejected, a JWT from the
+manager API, the dashboard responding, loopback-only binding, and no secrets in git.
 
 Two useful manual checks:
 
@@ -176,4 +176,5 @@ change with `securityadmin.sh`.
 
 ## Next
 
-Phase 2: register an agent so real events flow into the manager.
+Phase 2 registers an agent so real events flow into the manager —
+see [`setup-agent.md`](setup-agent.md).
