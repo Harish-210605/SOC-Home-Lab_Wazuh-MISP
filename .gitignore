@@ -19,10 +19,9 @@
 # Only our own overlay (wazuh/compose.override.yml) and scripts are tracked.
 wazuh/wazuh-docker/
 
-# MISP compose persisted state
-misp/misp-docker/*.env
-misp/misp-docker/ssl/
-misp/misp-docker/gnupg/
+# Upstream misp-docker is a pinned, disposable clone (see scripts/misp-bootstrap.sh).
+# Only our own overlay (misp/compose.override.yml) and scripts are tracked.
+misp/misp-docker/
 
 # Claude Code local session settings
 .claude/

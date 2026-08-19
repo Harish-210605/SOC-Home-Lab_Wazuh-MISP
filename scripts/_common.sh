@@ -1,18 +1,36 @@
 #!/usr/bin/env bash
-# Shared setup for the Wazuh helper scripts. Sourced, not executed.
+# Shared setup for the lab helper scripts. Sourced, not executed.
 
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+# --- Wazuh ---
 WAZUH_TAG="v4.14.7"
 WAZUH_UPSTREAM="https://github.com/wazuh/wazuh-docker.git"
 WAZUH_DIR="$REPO_ROOT/wazuh/wazuh-docker/single-node"
 COMPOSE_PROJECT="wazuh"
 ENV_FILE="$REPO_ROOT/.env"
 
+# --- MISP ---
+# misp-docker publishes no release tags, so the clone is pinned to a commit and
+# the images are pinned separately via *_RUNNING_TAG in misp/.env.
+MISP_UPSTREAM="https://github.com/MISP/misp-docker.git"
+MISP_COMMIT="223b675c4480730832f928e113b6f2e5260b450d"
+MISP_DIR="$REPO_ROOT/misp/misp-docker"
+MISP_PROJECT="misp"
+MISP_ENV="$REPO_ROOT/misp/.env"
+
 log()  { printf '\033[1;34m==>\033[0m %s\n' "$*"; }
 warn() { printf '\033[1;33m warn:\033[0m %s\n' "$*" >&2; }
 die()  { printf '\033[1;31merror:\033[0m %s\n' "$*" >&2; exit 1; }
+
+# 24 random alphanumerics plus a fixed ".Aa1" tail. The tail guarantees the
+# upper/lower/digit/symbol mix that both the Wazuh API and MISP enforce, and
+# every character is safe to carry through YAML, .env and the shell.
+gen_pw() {
+  printf '%s.Aa1' "$(LC_ALL=C tr -dc 'A-Za-z0-9' </dev/urandom | head -c 24)"
+}
 
 # Run a command with docker group credentials.
 #
@@ -77,6 +95,21 @@ relabel_path() {
   selinux_active || return 0
   [[ -e "$1" ]] || return 0
   chcon -Rt container_file_t "$1" || warn "could not relabel $1"
+}
+
+# docker compose for the MISP stack.
+#
+# A separate Compose project from Wazuh: independent lifecycles, and MISP is
+# heavy enough to want stopping on its own. Phase 5 adds a shared network so
+# the Wazuh manager can reach the MISP API.
+misp_compose() {
+  [[ -f "$MISP_ENV" ]] || die "$MISP_ENV is missing. Run scripts/misp-bootstrap.sh first."
+  docker_run docker compose \
+    -p "$MISP_PROJECT" \
+    -f "$MISP_DIR/docker-compose.yml" \
+    -f "$REPO_ROOT/misp/compose.override.yml" \
+    --env-file "$MISP_ENV" \
+    "$@"
 }
 
 relabel_config() {

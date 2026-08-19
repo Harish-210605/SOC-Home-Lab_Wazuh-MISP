@@ -24,13 +24,7 @@ else
 fi
 
 # --- 2. credentials ---------------------------------------------------------
-# 24 random alphanumerics plus a fixed ".Aa1" tail. The tail guarantees the
-# upper/lower/digit/symbol mix the Wazuh API enforces on its password, and
-# every character is safe to carry through YAML, .env and the shell.
-gen_pw() {
-  printf '%s.Aa1' "$(LC_ALL=C tr -dc 'A-Za-z0-9' </dev/urandom | head -c 24)"
-}
-
+# gen_pw lives in _common.sh; MISP's bootstrap uses it too.
 if [[ -f "$ENV_FILE" ]]; then
   log ".env already exists (leaving credentials untouched)"
 else

@@ -1,0 +1,25 @@
+# Our overlay on top of the pinned upstream misp-docker compose file.
+#
+# Upstream is vendored unmodified; everything this lab changes is here or in
+# the gitignored misp/.env.
+#
+# Only one structural change is needed — binding the published ports to
+# loopback. Upstream publishes on 0.0.0.0. Credentials, image tags and resource
+# tuning are all plain environment variables, so they live in misp/.env.
+#
+# The `!override` tag replaces the upstream list outright; without it Compose
+# CONCATENATES the two `ports` lists and the 0.0.0.0 bindings survive alongside
+# ours. Requires Compose >= 2.24.
+#
+# MISP keeps host ports 80/443 rather than being remapped, deliberately. The
+# misp-core healthcheck runs `curl ${BASE_URL}/users/heartbeat` from *inside*
+# the container, where only 80/443 exist. Remapping to, say, 8444 would force
+# BASE_URL to a port the container cannot reach, and the healthcheck would fail
+# forever — taking every service that waits on it down with it. Wazuh's
+# dashboard was moved to 8443 in Phase 1, so 443 is free here.
+
+services:
+  misp-core:
+    ports: !override
+      - "127.0.0.1:80:80"
+      - "127.0.0.1:443:443"
