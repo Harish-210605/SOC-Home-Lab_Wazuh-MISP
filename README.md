@@ -20,7 +20,7 @@ workflow — all reproducible on a single machine with nothing but Docker.
 | 1 | Deploy Wazuh single-node (manager, indexer, dashboard) | Done |
 | 2 | Feed real data into Wazuh via an agent | Done |
 | 3 | Deploy MISP | Done |
-| 4 | Populate MISP from a public threat feed | Not started |
+| 4 | Populate MISP from a public threat feed | Done |
 | 5 | Integrate Wazuh with MISP for alert enrichment | Not started |
 | 6 | Custom detection rules mapped to MITRE ATT&CK | Not started |
 | 7 | Simulated end-to-end incident report | Not started |
@@ -31,6 +31,8 @@ workflow — all reproducible on a single machine with nothing but Docker.
 - [`docs/setup-wazuh.md`](docs/setup-wazuh.md) — deploying and hardening the Wazuh stack
 - [`docs/setup-agent.md`](docs/setup-agent.md) — the monitored endpoint, and proving events flow
 - [`docs/setup-misp.md`](docs/setup-misp.md) — deploying and hardening MISP
+- [`docs/threat-intel-feeds.md`](docs/threat-intel-feeds.md) — loading threat intel into MISP, and proving it is searchable
+- [`docs/project-notes.md`](docs/project-notes.md) — running build notes: the decisions, the traps, and why each phase went the way it did
 
 ## Ground rules
 

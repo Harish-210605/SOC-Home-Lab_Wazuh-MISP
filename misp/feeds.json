@@ -1,0 +1,47 @@
+[
+  {
+    "name": "abuse.ch Feodo Tracker — Botnet C2 IPs",
+    "provider": "abuse.ch",
+    "url": "https://feodotracker.abuse.ch/downloads/ipblocklist.csv",
+    "source_format": "csv",
+    "_note": "Command-and-control IPs for Emotet/QakBot/Dridex families. Tiny and currently dormant upstream (last refreshed 2026-03-04), but the entries are real and stable, which makes them dependable fixtures for enrichment tests. Column 2 is dst_ip.",
+    "settings": {
+      "csv": { "value": "2", "delimiter": "," },
+      "common": { "excluderegex": "" }
+    }
+  },
+  {
+    "name": "abuse.ch ThreatFox — Recent IOCs",
+    "provider": "abuse.ch",
+    "url": "https://threatfox.abuse.ch/export/csv/recent/",
+    "source_format": "csv",
+    "_note": "The workhorse feed: refreshed continuously and the only curated source here that carries all four IOC classes at once (domains, ip:port, URLs, md5/sha1/sha256). Column 3 is ioc_value.",
+    "settings": {
+      "csv": { "value": "3", "delimiter": "," },
+      "common": { "excluderegex": "" }
+    }
+  },
+  {
+    "name": "abuse.ch URLhaus — Recent Malware URLs",
+    "provider": "abuse.ch",
+    "url": "https://urlhaus.abuse.ch/downloads/csv_recent/",
+    "source_format": "csv",
+    "_note": "Live malware-distribution URLs from the trailing 30 days. Correlation is disabled on purpose: this is the largest feed here (~17k rows) and MISP's correlation engine is quadratic in attribute count, which would bloat the DB on a laptop. restSearch — the lookup Wazuh actually uses for enrichment — is unaffected. Column 3 is the URL.",
+    "settings": {
+      "csv": { "value": "3", "delimiter": "," },
+      "common": { "excluderegex": "" },
+      "disable_correlation": "1"
+    }
+  },
+  {
+    "name": "abuse.ch MalwareBazaar — Recent Sample Hashes",
+    "provider": "abuse.ch",
+    "url": "https://bazaar.abuse.ch/export/txt/md5/recent/",
+    "source_format": "csv",
+    "_note": "MD5 hashes of recently submitted malware samples. Single-column plain text, so no column index is given; the exclude regex drops the '#' banner lines. This is the feed that makes file-hash enrichment possible against Wazuh's file-integrity events.",
+    "settings": {
+      "csv": { "value": "", "delimiter": "," },
+      "common": { "excluderegex": "/^#.*/i" }
+    }
+  }
+]
