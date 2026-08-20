@@ -415,3 +415,187 @@ correlation rule firing on repeated hits from the same host.
 Groundwork is already in place: rule 5710 arrives carrying MITRE **T1110.001** (Password
 Guessing), and the simulated auth log gives a safe, repeatable way to drive brute-force
 scenarios without needing a real sshd.
+---
+
+## Phase 6 — Writing custom detections
+
+**The point of the phase, in one line.** Phases 1–5 built a SIEM that collects, detects
+with stock rules, and enriches with threat intel. This phase adds *our own* detection
+logic — five rules that catch things the stock ruleset cannot, each mapped to MITRE
+ATT&CK so coverage is measurable rather than asserted.
+
+### The decision that shaped the whole phase
+
+The obvious move is to write a brute-force rule and a file-integrity rule. **Both would
+have been worthless**, because Wazuh already ships them (5712/5763 for brute force,
+550/553/554 for FIM). Re-implementing a stock rule adds rule count and zero detection
+value.
+
+So I set a constraint: every rule must add something stock does not have. Working
+through it, the missing thing was consistently **context**:
+
+- stock detects a brute force, but not one that then **succeeded**
+- stock reports a file changed, but scores `/etc/shadow` the same as a scratch file
+- stock has no concept of the far end of a connection being **known-malicious**
+
+Every rule therefore *builds on* the stock ones via `<if_sid>` / `<if_matched_sid>`
+rather than replacing them. A nice property falls out: a Wazuh upgrade that improves
+rule 5712 improves our D1 for free.
+
+*If asked "why only five rules?"* — because five that each add something beat fifteen
+that mostly restate the ruleset. Rule count is not coverage.
+
+### The five, and why each earns its place
+
+| Rule | Level | Detects | ATT&CK |
+|---|---|---|---|
+| D1 / 100200 | 14 | successful SSH login from a source that was just brute-forcing | T1110.001, T1078 |
+| D2 / 100210 | 12 | sudoers / cron / authorized_keys / passwd modified | T1098.004, T1053.003, T1136 |
+| D3 / 100220 | 12 | new executable in a system binary directory | T1036.005, T1543 |
+| D4 / 100231 | 13 | outbound connection to infrastructure MISP knows | T1071.001, T1571 |
+| D5 / 100240 | 13 | authentication attack from a threat-intel-listed host | T1110.001 |
+
+**D1 is the one to talk about.** A brute force alone is noise — the internet knocks on
+every SSH port all day, and 5712 fires on it constantly. A brute force *followed by a
+successful login from the same source* is a credential compromise in progress. Nothing
+stock joins those two facts. Level 14 sits above the brute force (10) and far above a
+successful login (3), because neither half is interesting alone — the conjunction is the
+entire signal.
+
+**D2's path list is deliberately short.** Every path added costs an analyst an alert, so
+the bar is "a change here is suspicious by default", not "this file is important".
+
+**D3 is scoped to file-*added*, not file-changed**, because package updates legitimately
+rewrite `/usr/bin` all the time. Alerting on that would train the analyst to ignore the
+rule — the most expensive failure mode a detection has.
+
+**D4 is split into two rules** (observe at level 3, judge at level 13). Not stylistic:
+`integratord` only receives *alerts*, and the stock firewall rule is level 0, so without
+a quiet alerting rule the outbound connections would be invisible to enrichment
+entirely.
+
+*Small design point worth mentioning:* D4 and D5 match on the triggering rule's
+**groups**, not its ID. Group membership is stable across Wazuh upgrades; stock rule IDs
+are not guaranteed to be.
+
+### Four Wazuh behaviours that had to be found by testing
+
+This is the real story of the phase. Every one of these fails **silently or
+misleadingly** — which is exactly why they are worth telling.
+
+**1. `<field name="dstip">` takes down the entire rules file.** `srcip`/`dstip`/
+`srcport`/`dstport`/`protocol`/`action`/`srcuser`/`dstuser` are *static* fields with
+dedicated rule elements; `<field>` only addresses *dynamic* decoded ones. Using it on a
+static field doesn't get ignored — analysisd rejects the **whole file**, which silently
+took the Phase 5 MISP rules offline too. One bad line, every rule gone.
+
+**2. `<dstip>` accepts exactly one address or CIDR.** Comma lists fail. Pipe lists fail.
+And the dangerous one: `!172.16.0.0/12` **parses fine and then never matches anything**.
+Positive forms match correctly, so the address is being read — the negation is broken.
+I verified it against both a CIDR and an exact address.
+
+That forced an inverted design: three single-CIDR *level-0* rules placed ahead of the
+real one, relying on Wazuh's first-match-wins evaluation to suppress internal traffic.
+Verbose, but built only from primitives I had actually verified rather than documented
+ones that don't work.
+
+**3. CDB lists are inert until compiled — and say so only as a WARNING.** The documented
+answer to "not in this set of networks" is `not_address_match_key`. I tried it. A list
+is useless until compiled to `.cdb`, and nothing in this deployment compiled it: not a
+restart, and not the manager API, which returned *"CDB list file uploaded successfully"*
+and produced no `.cdb`. (The API also can't write a read-only bind mount — that attempt
+gave a bare "Wazuh Internal Error".) The result:
+
+```
+WARNING: List 'etc/lists/internal-networks' could not be loaded.
+         Rule '100230' will be ignored.
+```
+
+Ruleset loads, everything looks healthy, one rule quietly does not exist. I removed the
+dead config rather than leave it, and the check script now **fails on any "will be
+ignored" line**.
+
+**4. FIM path matching uses `file`, not `syscheck.path`.** The alert JSON nests the path
+at `syscheck.path`, so that's the obvious field — and it matches nothing, with no error.
+The rule loads, is evaluated, never fires. Wazuh's own ruleset is no help because **no
+stock rule does path-based FIM matching at all**. I settled it by firing both candidates
+at one probe file and seeing which produced an alert.
+
+*The theme worth stating:* three of these four produce **no error at all**. The rule
+loads, looks correct in the file, and simply never fires. That is the characteristic
+failure mode of detection engineering — a detection that doesn't exist looks exactly
+like a detection that hasn't triggered yet. It is the entire argument for testing every
+rule against live input rather than reviewing it and moving on.
+
+### A bug in my own test harness, worth including
+
+The check script reported every live detection as failing. The rules were fine —
+**`wazuh-logtest` writes its analysis to stderr**, and my helper discarded stderr. Piping
+stdout alone yields nothing, which looks *exactly* like "no rule matched".
+
+That's a nasty class of bug: a broken test that produces plausible failures rather than
+an obvious crash. I only caught it because the failures contradicted results I'd already
+verified by hand.
+
+I also hit the "check that never forgets" problem again — the Phase 5 rule-loading check
+kept failing on `ossec.log` entries from mistakes I'd made and fixed earlier in the same
+session, because `ossec.log` lives on a named volume and outlives container recreates.
+Scoped it to the current analysisd run, same as I'd already done for integratord.
+
+### Safety, and how the attacks are simulated
+
+- **Authentication and firewall activity**: log lines that Wazuh's **stock** decoders
+  parse (`sshd`, and `kernel`/iptables). No custom decoder, so the decode → rule → alert
+  path under test is the production one.
+- **File-integrity activity is real** — files genuinely created and modified in the
+  agent container, observed by syscheck in realtime.
+
+Nothing contacts a malicious host and nothing runs hostile code. The "implant" in D3 is
+an inert text file — what's being tested is the detection, and the detection can't tell
+the difference. The known-bad IP is pulled live from MISP and only ever written into a
+log line. Benign controls use RFC 5737 documentation ranges, which are routable-looking
+and guaranteed never to be in a real feed.
+
+### Result
+
+```
+27 passed, 0 failed     (detections)
+110 checks green across all six phases
+```
+
+All six rules fired, captured in `docs/detections/phase6-alerts.json`, and indexed.
+The negative controls matter as much: internal destinations suppressed, and a clean
+successful login with no preceding brute force does **not** raise D1.
+
+### The gap I chose to leave open
+
+**No process-execution detection.** "Suspicious child process" and "reverse shell
+spawned" need `auditd` or Sysmon, and the agent container has neither. Writing a rule
+against telemetry the lab doesn't collect would produce a rule that can never fire —
+worse than an acknowledged gap, because it *looks* like coverage. Also no tuning against
+a real baseline (these thresholds are reasoned, not measured) and no active response
+(auto-blocking on an untuned detection is how you take your own network down).
+
+### Handover to Phase 7
+
+D1 and D5 together already tell one coherent story — a brute force from a host threat
+intel already lists, which then succeeds. That is the incident to write up.
+
+### Postscript: a side effect worth understanding
+
+Adding D5 broke Phase 5's demo, and the reason is a genuinely useful thing to know.
+
+Wazuh raises **one** rule per event, and a more specific sibling supersedes a general
+one. Failed logins from a known-bad IP used to match 100101 ("MISP: known-bad ip seen").
+Once D5 existed — "authentication attack from a threat-intel-listed host" — the same
+scenario matched **D5 instead**, because D5 is the more precise statement of what
+happened. The enrichment was identical; the classification got sharper, which is the
+entire reason D5 exists.
+
+But it meant everything asserting on rule ID `100101` had to be widened to the
+threat-intel rule *family*.
+
+*The lesson worth stating:* pinning a test to a specific rule ID makes it brittle
+against your own future rules. Matching on rule **groups** (`rule.groups:threat_intel`)
+is the durable way to ask "did enrichment fire?" — and it's how the dashboard query in
+this lab is now written.

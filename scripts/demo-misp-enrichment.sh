@@ -33,37 +33,10 @@ done
 # Pull a live known-bad IP straight out of MISP rather than hardcoding one, so
 # the demo keeps working as feeds rotate. Feodo is preferred because it is
 # dormant upstream and therefore stable; ThreatFox is the fallback.
-# wazuh-logcollector opens each <localfile> once when it starts and does not
-# retry a path that was missing at that moment: it logs "Could not open file"
-# and then never reads it, even once the file appears. On a fresh lab the
-# simulated log has never been written, so the first demo run would silently
-# produce nothing. Make sure the file exists AND that logcollector actually has
-# it open, restarting the agent's daemons if not.
-ensure_log_source() {
-  docker_run docker exec "$AGENT" sh -c \
-    "mkdir -p \$(dirname $LOGFILE) && touch $LOGFILE"
-
-  if docker_run docker exec "$AGENT" sh -c \
-      'pid=$(ps -ef | awk "/[w]azuh-logcollector/{print \$2; exit}"); \
-       [ -n "$pid" ] && ls -l /proc/$pid/fd 2>/dev/null | grep -q "simulated/auth.log"' \
-      2>/dev/null; then
-    return 0
-  fi
-
-  log "logcollector is not tailing $LOGFILE yet — restarting agent daemons"
-  docker_run docker exec "$AGENT" /var/ossec/bin/wazuh-control restart >/dev/null 2>&1 || true
-  for _ in $(seq 1 20); do
-    if docker_run docker exec "$AGENT" sh -c \
-        'ps -ef | grep -q "[w]azuh-logcollector"' 2>/dev/null; then
-      sleep 3; return 0
-    fi
-    sleep 2
-  done
-  warn "agent logcollector did not come back up cleanly"
-}
-
 log "Ensuring the simulated log source is being collected"
-ensure_log_source
+# Shared with scripts/demo-detections.sh — see ensure_agent_log_source() in
+# _common.sh for why checking the config is not enough.
+ensure_agent_log_source "$LOGFILE"
 
 log "Selecting a known-bad IP from MISP"
 BAD_IP="$(curl -sk -H "Authorization: $ADMIN_KEY" -H 'Accept: application/json' \
@@ -117,7 +90,7 @@ log "Waiting for enrichment to complete (up to 90s)"
 found=0
 for _ in $(seq 1 30); do
   n="$(docker_run docker exec "$MANAGER" sh -c \
-    "tail -n +$((before + 1)) /var/ossec/logs/alerts/alerts.json 2>/dev/null | grep -c '\"id\":\"100101\"' || true")"
+    "tail -n +$((before + 1)) /var/ossec/logs/alerts/alerts.json 2>/dev/null | grep -cE '\"id\":\"(100101|100102|100240)\"' || true")"
   if [[ "${n:-0}" -ge 1 ]]; then found=1; break; fi
   sleep 3
 done
@@ -136,7 +109,14 @@ docker_run docker exec "$MANAGER" sh -c \
 import sys, json
 
 BOLD, GREEN, RESET = "\033[1m", "\033[1;32m", "\033[0m"
-WANTED = ("100101", "100102", "100103")
+# The whole threat-intel alert family, not just 100101.
+#
+# Wazuh raises ONE rule per event, and a more specific sibling supersedes a
+# general one. Once Phase 6 added D5 (100240, "auth attack from a threat-intel
+# host"), this scenario — failed logins from a known-bad IP — started matching
+# THAT instead of the generic 100101. The enrichment is identical; the
+# classification got sharper, which is the point of writing D5 at all.
+WANTED = ("100101", "100102", "100103", "100231", "100240")
 
 seen = 0
 for line in sys.stdin:
@@ -169,7 +149,7 @@ printf '\n'
 log "Control check: the benign IP must NOT have produced a threat-intel alert"
 bad_control="$(docker_run docker exec "$MANAGER" sh -c \
   "tail -n +$((before + 1)) /var/ossec/logs/alerts/alerts.json" \
-  | grep -c "$BENIGN_IP.*100101" || true)"
+  | grep -cE "$BENIGN_IP.*(100101|100102|100240)" || true)"
 if [[ "${bad_control:-0}" -eq 0 ]]; then
   printf '  \033[1;32mPASS\033[0m  %s triggered rule 5710 but no MISP alert\n' "$BENIGN_IP"
 else
@@ -177,4 +157,4 @@ else
   exit 1
 fi
 
-printf '\nView in the dashboard: https://127.0.0.1:8443  (Threat Hunting -> filter rule.id:100101)\n'
+printf '\nView in the dashboard: https://127.0.0.1:8443  (Threat Hunting -> filter rule.groups:threat_intel)\n'

@@ -121,6 +121,42 @@ ensure_shared_network() {
     || die "could not create the $SHARED_NET network"
 }
 
+# Make sure the agent is actually collecting a simulated log file.
+#
+# wazuh-logcollector opens each <localfile> once when it starts and does NOT
+# retry a path that was missing at that moment: it logs "Could not open file"
+# and then never reads it, even after the file appears. On a fresh lab the
+# simulated logs have never been written, so the first demo run would silently
+# produce nothing at all.
+#
+# Checking the config is not enough — "it is configured to read the file" and
+# "it is reading the file" are different claims. This asserts the second by
+# looking for the open file descriptor, and restarts the agent daemons if not.
+AGENT_CONTAINER="wazuh-wazuh.agent.endpoint01-1"
+
+ensure_agent_log_source() {
+  local logfile="$1"
+  docker_run docker exec "$AGENT_CONTAINER" sh -c \
+    "mkdir -p \$(dirname $logfile) && touch $logfile"
+
+  if docker_run docker exec "$AGENT_CONTAINER" sh -c \
+      "pid=\$(ps -ef | awk '/[w]azuh-logcollector/{print \$2; exit}'); \
+       [ -n \"\$pid\" ] && ls -l /proc/\$pid/fd 2>/dev/null | grep -q \"$(basename "$logfile")\"" \
+      2>/dev/null; then
+    return 0
+  fi
+
+  log "logcollector is not tailing $logfile yet — restarting agent daemons"
+  docker_run docker exec "$AGENT_CONTAINER" /var/ossec/bin/wazuh-control restart >/dev/null 2>&1 || true
+  for _ in $(seq 1 20); do
+    if docker_run docker exec "$AGENT_CONTAINER" sh -c 'ps -ef | grep -q "[w]azuh-logcollector"' 2>/dev/null; then
+      sleep 3; return 0
+    fi
+    sleep 2
+  done
+  warn "agent logcollector did not come back up cleanly"
+}
+
 # docker compose for the MISP stack.
 #
 # A separate Compose project from Wazuh: independent lifecycles, and MISP is

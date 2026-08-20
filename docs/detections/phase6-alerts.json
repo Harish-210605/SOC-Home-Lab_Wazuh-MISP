@@ -1,0 +1,537 @@
+[
+  {
+    "timestamp": "2026-08-20T15:57:37.592+0000",
+    "rule": {
+      "level": 12,
+      "description": "Security-critical file created or modified: /etc/sudoers.d/soclab-demo",
+      "id": "100210",
+      "mitre": {
+        "id": [
+          "T1098.004",
+          "T1053.003",
+          "T1136"
+        ],
+        "tactic": [
+          "Persistence",
+          "Execution",
+          "Privilege Escalation"
+        ],
+        "technique": [
+          "SSH Authorized Keys",
+          "Cron",
+          "Create Account"
+        ]
+      },
+      "firedtimes": 3,
+      "mail": true,
+      "groups": [
+        "soclab",
+        "custom_detections",
+        "syscheck",
+        "attack",
+        "soclab_d2"
+      ]
+    },
+    "agent": {
+      "id": "004",
+      "name": "endpoint01",
+      "ip": "172.19.0.4"
+    },
+    "manager": {
+      "name": "wazuh.manager"
+    },
+    "id": "1787241457.2194229",
+    "full_log": "File '/etc/sudoers.d/soclab-demo' added\nMode: realtime\n",
+    "syscheck": {
+      "path": "/etc/sudoers.d/soclab-demo",
+      "mode": "realtime",
+      "size_after": "36",
+      "perm_after": "rw-r--r--",
+      "uid_after": "0",
+      "gid_after": "0",
+      "md5_after": "55379a46396d2f9588efffe5b8168080",
+      "sha1_after": "e32154a97407cc1c2df4892424ca55726d52bce0",
+      "sha256_after": "2596edcbed0396a2f663f86e8230b07f1f08a3e948b9253a243e4de4f9dd5553",
+      "uname_after": "root",
+      "gname_after": "root",
+      "mtime_after": "2026-08-20T15:57:37",
+      "inode_after": 910106,
+      "event": "added"
+    },
+    "decoder": {
+      "name": "syscheck_new_entry"
+    },
+    "location": "syscheck"
+  },
+  {
+    "timestamp": "2026-08-20T15:57:37.597+0000",
+    "rule": {
+      "level": 12,
+      "description": "Security-critical file created or modified: /etc/cron.d/soclab-demo",
+      "id": "100210",
+      "mitre": {
+        "id": [
+          "T1098.004",
+          "T1053.003",
+          "T1136"
+        ],
+        "tactic": [
+          "Persistence",
+          "Execution",
+          "Privilege Escalation"
+        ],
+        "technique": [
+          "SSH Authorized Keys",
+          "Cron",
+          "Create Account"
+        ]
+      },
+      "firedtimes": 4,
+      "mail": true,
+      "groups": [
+        "soclab",
+        "custom_detections",
+        "syscheck",
+        "attack",
+        "soclab_d2"
+      ]
+    },
+    "agent": {
+      "id": "004",
+      "name": "endpoint01",
+      "ip": "172.19.0.4"
+    },
+    "manager": {
+      "name": "wazuh.manager"
+    },
+    "id": "1787241457.2194828",
+    "full_log": "File '/etc/cron.d/soclab-demo' added\nMode: realtime\n",
+    "syscheck": {
+      "path": "/etc/cron.d/soclab-demo",
+      "mode": "realtime",
+      "size_after": "33",
+      "perm_after": "rw-r--r--",
+      "uid_after": "0",
+      "gid_after": "0",
+      "md5_after": "9a4cf88cbec39b177b87ff1ab0a8e0a6",
+      "sha1_after": "9e4666a75d76673849c52c6ac5f78e5c92946565",
+      "sha256_after": "b6638f8f0ed9e3e0d8a2199725794d45453cde10823f71966099952100dde9b7",
+      "uname_after": "root",
+      "gname_after": "root",
+      "mtime_after": "2026-08-20T15:57:37",
+      "inode_after": 910107,
+      "event": "added"
+    },
+    "decoder": {
+      "name": "syscheck_new_entry"
+    },
+    "location": "syscheck"
+  },
+  {
+    "timestamp": "2026-08-20T15:57:37.698+0000",
+    "rule": {
+      "level": 12,
+      "description": "New executable dropped into a system binary directory: /usr/bin/soclab-demo-implant",
+      "id": "100220",
+      "mitre": {
+        "id": [
+          "T1036.005",
+          "T1543"
+        ],
+        "tactic": [
+          "Defense Evasion",
+          "Persistence",
+          "Privilege Escalation"
+        ],
+        "technique": [
+          "Match Legitimate Name or Location",
+          "Create or Modify System Process"
+        ]
+      },
+      "firedtimes": 1,
+      "mail": true,
+      "groups": [
+        "soclab",
+        "custom_detections",
+        "syscheck",
+        "attack",
+        "soclab_d3"
+      ]
+    },
+    "agent": {
+      "id": "004",
+      "name": "endpoint01",
+      "ip": "172.19.0.4"
+    },
+    "manager": {
+      "name": "wazuh.manager"
+    },
+    "id": "1787241457.2195421",
+    "full_log": "File '/usr/bin/soclab-demo-implant' added\nMode: realtime\n",
+    "syscheck": {
+      "path": "/usr/bin/soclab-demo-implant",
+      "mode": "realtime",
+      "size_after": "55",
+      "perm_after": "rwxr-xr-x",
+      "uid_after": "0",
+      "gid_after": "0",
+      "md5_after": "159721ef0b89610f4ab14c556f8031f0",
+      "sha1_after": "88bb6ca067f41dd362949a531f9b1a95c10acdf1",
+      "sha256_after": "fd5d0def34dd5f20453af262228a479fac78f3712c11c17b117224c471e4b533",
+      "uname_after": "root",
+      "gname_after": "root",
+      "mtime_after": "2026-08-20T15:57:37",
+      "inode_after": 910109,
+      "event": "added"
+    },
+    "decoder": {
+      "name": "syscheck_new_entry"
+    },
+    "location": "syscheck"
+  },
+  {
+    "timestamp": "2026-08-20T15:57:37.952+0000",
+    "rule": {
+      "level": 3,
+      "description": "Outbound connection from 172.20.0.5 to external host 162.243.103.246:443",
+      "id": "100230",
+      "firedtimes": 1,
+      "mail": false,
+      "groups": [
+        "soclab",
+        "custom_detections",
+        "firewall",
+        "soclab_d4"
+      ]
+    },
+    "agent": {
+      "id": "004",
+      "name": "endpoint01",
+      "ip": "172.19.0.4"
+    },
+    "manager": {
+      "name": "wazuh.manager"
+    },
+    "id": "1787241457.2196035",
+    "full_log": "Aug 20 21:27:37 endpoint01 kernel: OUTBOUND-ACCEPT IN= OUT=eth0 SRC=172.20.0.5 DST=162.243.103.246 LEN=60 TOS=0x00 PREC=0x00 TTL=64 ID=4001 DF PROTO=TCP SPT=44321 DPT=443 WINDOW=64240 RES=0x00 SYN URGP=0",
+    "predecoder": {
+      "program_name": "kernel",
+      "timestamp": "Aug 20 21:27:37",
+      "hostname": "endpoint01"
+    },
+    "decoder": {
+      "parent": "kernel",
+      "name": "kernel"
+    },
+    "data": {
+      "protocol": "TCP",
+      "action": "OUTBOUND-ACCEPT",
+      "srcip": "172.20.0.5",
+      "srcport": "44321",
+      "dstip": "162.243.103.246",
+      "dstport": "443"
+    },
+    "location": "/var/log/simulated/firewall.log"
+  },
+  {
+    "timestamp": "2026-08-20T15:57:37.952+0000",
+    "rule": {
+      "level": 14,
+      "description": "Successful SSH login from 198.51.100.77, which was brute-forcing moments ago \u2014 probable credential compromise",
+      "id": "100200",
+      "mitre": {
+        "id": [
+          "T1110.001",
+          "T1078"
+        ],
+        "tactic": [
+          "Credential Access",
+          "Defense Evasion",
+          "Persistence",
+          "Privilege Escalation",
+          "Initial Access"
+        ],
+        "technique": [
+          "Password Guessing",
+          "Valid Accounts"
+        ]
+      },
+      "frequency": 2,
+      "firedtimes": 1,
+      "mail": true,
+      "groups": [
+        "soclab",
+        "custom_detections",
+        "authentication_success",
+        "attack",
+        "soclab_d1"
+      ]
+    },
+    "agent": {
+      "id": "004",
+      "name": "endpoint01",
+      "ip": "172.19.0.4"
+    },
+    "manager": {
+      "name": "wazuh.manager"
+    },
+    "id": "1787241457.2196561",
+    "full_log": "Aug 20 21:27:37 endpoint01 sshd[6100]: Accepted password for backupsvc from 198.51.100.77 port 44100 ssh2",
+    "predecoder": {
+      "program_name": "sshd",
+      "timestamp": "Aug 20 21:27:37",
+      "hostname": "endpoint01"
+    },
+    "decoder": {
+      "parent": "sshd",
+      "name": "sshd"
+    },
+    "data": {
+      "srcip": "198.51.100.77",
+      "srcport": "44100",
+      "dstuser": "backupsvc"
+    },
+    "location": "/var/log/simulated/auth.log"
+  },
+  {
+    "timestamp": "2026-08-20T15:57:41.008+0000",
+    "rule": {
+      "level": 13,
+      "description": "Outbound connection to known-malicious infrastructure from endpoint01: 162.243.103.246 \u2014 MISP ip-dst",
+      "id": "100231",
+      "mitre": {
+        "id": [
+          "T1071.001",
+          "T1571"
+        ],
+        "tactic": [
+          "Command and Control"
+        ],
+        "technique": [
+          "Web Protocols",
+          "Non-Standard Port"
+        ]
+      },
+      "firedtimes": 1,
+      "mail": true,
+      "groups": [
+        "soclab",
+        "custom_detections",
+        "threat_intel",
+        "attack",
+        "soclab_d4"
+      ]
+    },
+    "agent": {
+      "id": "004",
+      "name": "endpoint01",
+      "ip": "172.19.0.4"
+    },
+    "manager": {
+      "name": "wazuh.manager"
+    },
+    "id": "1787241461.2198806",
+    "full_log": "{\"integration\": \"misp\", \"misp\": {\"source\": \"wazuh-custom-misp\", \"observable\": \"162.243.103.246\", \"observable_kind\": \"ip\", \"attribute_type\": \"ip-dst\", \"attribute_value\": \"162.243.103.246\", \"category\": \"Network activity\", \"to_ids\": \"True\", \"event_id\": \"1\", \"comment\": \"\", \"source_rule_id\": \"100230\", \"source_rule_description\": \"Outbound connection from 172.20.0.5 to external host 162.243.103.246:443\", \"source_rule_groups\": \"soclab,custom_detections,firewall,soclab_d4\", \"agent_name\": \"endpoint01\"}}",
+    "decoder": {
+      "name": "json"
+    },
+    "data": {
+      "integration": "misp",
+      "misp": {
+        "source": "wazuh-custom-misp",
+        "observable": "162.243.103.246",
+        "observable_kind": "ip",
+        "attribute_type": "ip-dst",
+        "attribute_value": "162.243.103.246",
+        "category": "Network activity",
+        "to_ids": "True",
+        "event_id": "1",
+        "source_rule_id": "100230",
+        "source_rule_description": "Outbound connection from 172.20.0.5 to external host 162.243.103.246:443",
+        "source_rule_groups": "soclab,custom_detections,firewall,soclab_d4",
+        "agent_name": "endpoint01"
+      }
+    },
+    "location": "custom-misp"
+  },
+  {
+    "timestamp": "2026-08-20T15:57:41.507+0000",
+    "rule": {
+      "level": 13,
+      "description": "Authentication attack from threat-intel-listed host 162.243.103.246 against endpoint01",
+      "id": "100240",
+      "mitre": {
+        "id": [
+          "T1110.001"
+        ],
+        "tactic": [
+          "Credential Access"
+        ],
+        "technique": [
+          "Password Guessing"
+        ]
+      },
+      "firedtimes": 1,
+      "mail": true,
+      "groups": [
+        "soclab",
+        "custom_detections",
+        "threat_intel",
+        "authentication_failures",
+        "attack",
+        "soclab_d5"
+      ]
+    },
+    "agent": {
+      "id": "004",
+      "name": "endpoint01",
+      "ip": "172.19.0.4"
+    },
+    "manager": {
+      "name": "wazuh.manager"
+    },
+    "id": "1787241461.2200057",
+    "full_log": "{\"integration\": \"misp\", \"misp\": {\"source\": \"wazuh-custom-misp\", \"observable\": \"162.243.103.246\", \"observable_kind\": \"ip\", \"attribute_type\": \"ip-dst\", \"attribute_value\": \"162.243.103.246\", \"category\": \"Network activity\", \"to_ids\": \"True\", \"event_id\": \"1\", \"comment\": \"\", \"source_rule_id\": \"5710\", \"source_rule_description\": \"sshd: Attempt to login using a non-existent user\", \"source_rule_groups\": \"syslog,sshd,authentication_failed,invalid_login\", \"agent_name\": \"endpoint01\"}}",
+    "decoder": {
+      "name": "json"
+    },
+    "data": {
+      "integration": "misp",
+      "misp": {
+        "source": "wazuh-custom-misp",
+        "observable": "162.243.103.246",
+        "observable_kind": "ip",
+        "attribute_type": "ip-dst",
+        "attribute_value": "162.243.103.246",
+        "category": "Network activity",
+        "to_ids": "True",
+        "event_id": "1",
+        "source_rule_id": "5710",
+        "source_rule_description": "sshd: Attempt to login using a non-existent user",
+        "source_rule_groups": "syslog,sshd,authentication_failed,invalid_login",
+        "agent_name": "endpoint01"
+      }
+    },
+    "location": "custom-misp"
+  },
+  {
+    "timestamp": "2026-08-20T15:57:41.868+0000",
+    "rule": {
+      "level": 13,
+      "description": "Authentication attack from threat-intel-listed host 162.243.103.246 against endpoint01",
+      "id": "100240",
+      "mitre": {
+        "id": [
+          "T1110.001"
+        ],
+        "tactic": [
+          "Credential Access"
+        ],
+        "technique": [
+          "Password Guessing"
+        ]
+      },
+      "firedtimes": 2,
+      "mail": true,
+      "groups": [
+        "soclab",
+        "custom_detections",
+        "threat_intel",
+        "authentication_failures",
+        "attack",
+        "soclab_d5"
+      ]
+    },
+    "agent": {
+      "id": "004",
+      "name": "endpoint01",
+      "ip": "172.19.0.4"
+    },
+    "manager": {
+      "name": "wazuh.manager"
+    },
+    "id": "1787241461.2201272",
+    "full_log": "{\"integration\": \"misp\", \"misp\": {\"source\": \"wazuh-custom-misp\", \"observable\": \"162.243.103.246\", \"observable_kind\": \"ip\", \"attribute_type\": \"ip-dst\", \"attribute_value\": \"162.243.103.246\", \"category\": \"Network activity\", \"to_ids\": \"True\", \"event_id\": \"1\", \"comment\": \"\", \"source_rule_id\": \"5710\", \"source_rule_description\": \"sshd: Attempt to login using a non-existent user\", \"source_rule_groups\": \"syslog,sshd,authentication_failed,invalid_login\", \"agent_name\": \"endpoint01\"}}",
+    "decoder": {
+      "name": "json"
+    },
+    "data": {
+      "integration": "misp",
+      "misp": {
+        "source": "wazuh-custom-misp",
+        "observable": "162.243.103.246",
+        "observable_kind": "ip",
+        "attribute_type": "ip-dst",
+        "attribute_value": "162.243.103.246",
+        "category": "Network activity",
+        "to_ids": "True",
+        "event_id": "1",
+        "source_rule_id": "5710",
+        "source_rule_description": "sshd: Attempt to login using a non-existent user",
+        "source_rule_groups": "syslog,sshd,authentication_failed,invalid_login",
+        "agent_name": "endpoint01"
+      }
+    },
+    "location": "custom-misp"
+  },
+  {
+    "timestamp": "2026-08-20T15:57:42.226+0000",
+    "rule": {
+      "level": 13,
+      "description": "Authentication attack from threat-intel-listed host 162.243.103.246 against endpoint01",
+      "id": "100240",
+      "mitre": {
+        "id": [
+          "T1110.001"
+        ],
+        "tactic": [
+          "Credential Access"
+        ],
+        "technique": [
+          "Password Guessing"
+        ]
+      },
+      "firedtimes": 3,
+      "mail": true,
+      "groups": [
+        "soclab",
+        "custom_detections",
+        "threat_intel",
+        "authentication_failures",
+        "attack",
+        "soclab_d5"
+      ]
+    },
+    "agent": {
+      "id": "004",
+      "name": "endpoint01",
+      "ip": "172.19.0.4"
+    },
+    "manager": {
+      "name": "wazuh.manager"
+    },
+    "id": "1787241462.2202487",
+    "full_log": "{\"integration\": \"misp\", \"misp\": {\"source\": \"wazuh-custom-misp\", \"observable\": \"162.243.103.246\", \"observable_kind\": \"ip\", \"attribute_type\": \"ip-dst\", \"attribute_value\": \"162.243.103.246\", \"category\": \"Network activity\", \"to_ids\": \"True\", \"event_id\": \"1\", \"comment\": \"\", \"source_rule_id\": \"5710\", \"source_rule_description\": \"sshd: Attempt to login using a non-existent user\", \"source_rule_groups\": \"syslog,sshd,authentication_failed,invalid_login\", \"agent_name\": \"endpoint01\"}}",
+    "decoder": {
+      "name": "json"
+    },
+    "data": {
+      "integration": "misp",
+      "misp": {
+        "source": "wazuh-custom-misp",
+        "observable": "162.243.103.246",
+        "observable_kind": "ip",
+        "attribute_type": "ip-dst",
+        "attribute_value": "162.243.103.246",
+        "category": "Network activity",
+        "to_ids": "True",
+        "event_id": "1",
+        "source_rule_id": "5710",
+        "source_rule_description": "sshd: Attempt to login using a non-existent user",
+        "source_rule_groups": "syslog,sshd,authentication_failed,invalid_login",
+        "agent_name": "endpoint01"
+      }
+    },
+    "location": "custom-misp"
+  }
+]

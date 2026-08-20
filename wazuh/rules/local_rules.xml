@@ -69,3 +69,248 @@
   </rule>
 
 </group>
+
+<!--
+  ============================================================================
+  Phase 6 — custom detections, 100200-100299
+  ============================================================================
+
+  Each rule here exists because the stock ruleset does NOT already cover it.
+  That constraint shaped the whole set: Wazuh already ships brute-force
+  detection (5712/5763) and file-integrity alerts (550/553/554), so
+  re-implementing those would add rule-count and no detection value. What the
+  stock ruleset lacks is CONTEXT:
+
+    - it detects a brute force, but not a brute force that then SUCCEEDED
+    - it reports a file changed, but scores /etc/shadow the same as a scratch
+      file, because it has no notion of which paths matter
+    - it has no concept of the destination being known-malicious
+
+  So these rules build ON the stock ones with <if_sid>/<if_matched_sid> rather
+  than replacing them. A Wazuh upgrade that improves 5712 improves these too.
+
+  Every rule carries a <mitre> block. That is not decoration: it is what lets an
+  analyst pivot from an alert to the technique, and what makes coverage
+  measurable against ATT&CK rather than asserted.
+-->
+<group name="soclab,custom_detections,">
+
+  <!--
+    D1 — Brute force that SUCCEEDED.
+
+    The single highest-value detection in this set. A brute force on its own is
+    noise: the internet knocks on every SSH port constantly, and stock rule 5712
+    fires on it all day. A brute force followed by a successful login FROM THE
+    SAME SOURCE is a credential compromise in progress, and nothing in the stock
+    ruleset joins those two facts.
+
+    Level 14, above the brute force itself (10) and far above a successful login
+    (3), because neither of those parts is interesting alone — the conjunction
+    is the whole signal.
+
+    T1110.001 for the guessing, T1078 because what the attacker now holds is a
+    valid account, which is the thing that actually persists.
+  -->
+  <rule id="100200" level="14" timeframe="600">
+    <if_sid>5715</if_sid>
+    <if_matched_sid>5712</if_matched_sid>
+    <same_source_ip />
+    <description>Successful SSH login from $(srcip), which was brute-forcing moments ago — probable credential compromise</description>
+    <mitre>
+      <id>T1110.001</id>
+      <id>T1078</id>
+    </mitre>
+    <group>authentication_success,attack,soclab_d1,</group>
+  </rule>
+
+  <!--
+    D2 — Modification of a credential store or persistence location.
+
+    Stock 550/553/554 report that a file changed, at a fixed severity, with no
+    idea which file it was. A checksum change on /etc/shadow and one on a
+    scratch file in /var/lab are the same alert. This rule re-scores the small
+    set of paths where a change is nearly always either an attacker establishing
+    persistence or an attacker taking credentials.
+
+    The path list is deliberately short. Every path added here costs an analyst
+    an alert, so the bar is "a change here is suspicious by default", not "this
+    file is important".
+
+    T1098.004 covers authorized_keys (SSH key persistence); T1053.003 covers
+    cron; T1136 covers account creation via passwd/shadow edits.
+  -->
+  <rule id="100210" level="12">
+    <if_sid>550,553,554</if_sid>
+    <!-- The field is `file`, NOT `syscheck.path`.
+         The alert JSON nests the path at syscheck.path, so that is the obvious
+         name to match on — and it silently matches nothing. analysisd reports no
+         error: the rule loads, is evaluated, and never fires, so the only symptom
+         is a detection that quietly does not exist. Wazuh's own ruleset is no
+         help here, because no stock rule does path-based FIM matching at all.
+         Confirmed empirically by firing both candidates at one probe file. -->
+    <field name="file" type="pcre2">/etc/(passwd|shadow|gshadow|sudoers)|/etc/sudoers\.d/|/\.ssh/authorized_keys|/etc/cron|/var/spool/cron</field>
+    <!-- No $(agent.name) in any description here: $(...) expansion reaches only
+         DECODED fields, so it renders as an empty string. The alert JSON already
+         carries the agent at top level, so naming the host in the text is
+         redundant anyway — but the empty gap looks like a bug to whoever reads
+         the alert, which is worse than omitting it. -->
+    <description>Security-critical file created or modified: $(file)</description>
+    <mitre>
+      <id>T1098.004</id>
+      <id>T1053.003</id>
+      <id>T1136</id>
+    </mitre>
+    <group>syscheck,attack,soclab_d2,</group>
+  </rule>
+
+  <!--
+    D3 — New executable appearing in a system binary directory.
+
+    Distinct from D2 on purpose. D2 is about MODIFYING something that already
+    exists; this is about something NEW appearing where only the package manager
+    should be writing. On a container that installs nothing at runtime, a new
+    file in /usr/bin is close to definitionally unexpected.
+
+    Scoped to rule 554 (file ADDED) rather than 550 (changed), because a package
+    update legitimately changes files in these directories all the time, and
+    alerting on that would train the analyst to ignore the rule.
+
+    T1036.005 — a binary placed in a trusted system location is the classic way
+    to make malware look legitimate.
+  -->
+  <rule id="100220" level="12">
+    <if_sid>554</if_sid>
+    <field name="file" type="pcre2">^/(usr/)?(local/)?s?bin/</field>
+    <description>New executable dropped into a system binary directory: $(file)</description>
+    <mitre>
+      <id>T1036.005</id>
+      <id>T1543</id>
+    </mitre>
+    <group>syscheck,attack,soclab_d3,</group>
+  </rule>
+
+  <!--
+    D4a — Outbound connection observed (feeder rule, intentionally quiet).
+
+    Level 3: this is an OBSERVATION, not a finding. Its job is to exist so that
+    the MISP integration sees the event at all — integratord only receives
+    alerts, and stock firewall rule 4100 is level 0, which never alerts. Without
+    this rule, outbound connections would be invisible to enrichment.
+
+    Splitting "observe" from "judge" is deliberate. The alternative — one rule
+    that both notices the connection and decides it is bad — would either be too
+    noisy (every outbound connection is an alert) or unable to enrich at all.
+  -->
+  <!-- Internal chatter: matched first, scored 0, and therefore never alerted.
+
+       This inverted shape is not stylistic. Expressing "destination is NOT
+       internal" directly turned out to be impossible with the primitives that
+       actually work in this version, and each alternative failed differently:
+
+         * <field name="dstip"> is rejected outright — srcip/dstip/srcport/
+           dstport/protocol/action/srcuser/dstuser are STATIC fields with their
+           own rule elements, and <field> addresses only dynamic ones. It does
+           not merely fail: analysisd logs "Field 'dstip' is static" and refuses
+           to load THE ENTIRE FILE, silently taking every other rule with it.
+
+         * <dstip>!CIDR</dstip> parses but never matches anything. Verified with
+           both !172.16.0.0/12 and an exact !172.20.0.5 against an unrelated
+           destination. Positive values and positive CIDRs match correctly, so
+           the address is being read; the negation is what is broken.
+
+         * A CDB list with not_address_match_key is the documented answer, but a
+           list is inert until compiled to .cdb, and nothing in this deployment
+           compiles it — not an analysisd restart, and not the API upload, which
+           reports success and produces no .cdb. analysisd then warns "List ...
+           could not be loaded. Rule '100230' will be ignored" and carries on.
+
+         * Even a positive LIST is rejected: <dstip> accepts exactly one address
+           or one CIDR. Comma-separated and pipe-separated lists both fail with
+           "Invalid ip address", which — like the static-field case — takes the
+           whole file down rather than skipping the rule.
+
+       What does work is one single-CIDR rule per range, scored 0, ordered ahead
+       of 100230, relying on Wazuh's first-match-wins evaluation: an internal
+       destination matches one of these and stops, so 100230 below only ever sees
+       genuinely external traffic. Verbose, but built only from primitives that
+       were verified to work rather than from documented ones that do not. -->
+  <rule id="100227" level="0">
+    <if_sid>4100</if_sid>
+    <dstip>10.0.0.0/8</dstip>
+    <description>Internal connection (10/8) — not outbound, ignored</description>
+    <group>firewall,soclab_d4,</group>
+  </rule>
+
+  <rule id="100228" level="0">
+    <if_sid>4100</if_sid>
+    <dstip>172.16.0.0/12</dstip>
+    <description>Internal connection (172.16/12, Docker bridges) — not outbound, ignored</description>
+    <group>firewall,soclab_d4,</group>
+  </rule>
+
+  <rule id="100229" level="0">
+    <if_sid>4100</if_sid>
+    <dstip>192.168.0.0/16</dstip>
+    <description>Internal connection (192.168/16) — not outbound, ignored</description>
+    <group>firewall,soclab_d4,</group>
+  </rule>
+
+  <rule id="100230" level="3">
+    <if_sid>4100</if_sid>
+    <description>Outbound connection from $(srcip) to external host $(dstip):$(dstport)</description>
+    <group>firewall,soclab_d4,</group>
+  </rule>
+
+  <!--
+    D4b — Outbound connection to a destination MISP knows.
+
+    The judgement half of D4. Fires on the MISP lookup result (parent 100100)
+    when the lookup was triggered by a firewall event, which is what makes this
+    "we called out to known-malicious infrastructure" rather than the generic
+    "we saw a known-bad IP somewhere" that rule 100101 already covers.
+
+    Matching on the triggering rule's GROUPS rather than its ID is deliberate:
+    group membership is stable across Wazuh upgrades, stock rule IDs are not
+    guaranteed to be.
+
+    T1071.001 — outbound C2 over an application-layer protocol. This is the
+    direction that matters: inbound scanning is background noise, but a host
+    reaching OUT to known C2 means the host is already compromised.
+  -->
+  <rule id="100231" level="13">
+    <if_sid>100100</if_sid>
+    <field name="misp.source_rule_groups" type="pcre2">firewall</field>
+    <field name="misp.observable_kind">^ip$</field>
+    <description>Outbound connection to known-malicious infrastructure from $(misp.agent_name): $(misp.observable) — MISP $(misp.attribute_type)</description>
+    <mitre>
+      <id>T1071.001</id>
+      <id>T1571</id>
+    </mitre>
+    <group>threat_intel,attack,soclab_d4,</group>
+  </rule>
+
+  <!--
+    D5 — Authentication attack from a source already known to threat intel.
+
+    Rule 5712 says "someone is brute-forcing". Rule 100101 says "we saw a
+    known-bad IP". This says both at once, which is a materially different
+    triage decision: an unknown source brute-forcing is routine internet noise,
+    while a source that a threat feed already lists as hostile infrastructure is
+    a targeted, attributable attempt worth acting on immediately.
+
+    Same groups-not-IDs reasoning as 100231.
+  -->
+  <rule id="100240" level="13">
+    <if_sid>100100</if_sid>
+    <field name="misp.source_rule_groups" type="pcre2">authentication_fail</field>
+    <field name="misp.observable_kind">^ip$</field>
+    <description>Authentication attack from threat-intel-listed host $(misp.observable) against $(misp.agent_name)</description>
+    <mitre>
+      <id>T1110.001</id>
+    </mitre>
+    <group>threat_intel,authentication_failures,attack,soclab_d5,</group>
+  </rule>
+
+
+
+</group>

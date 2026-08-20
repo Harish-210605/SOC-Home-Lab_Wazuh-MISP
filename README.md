@@ -22,7 +22,7 @@ workflow — all reproducible on a single machine with nothing but Docker.
 | 3 | Deploy MISP | Done |
 | 4 | Populate MISP from a public threat feed | Done |
 | 5 | Integrate Wazuh with MISP for alert enrichment | Done |
-| 6 | Custom detection rules mapped to MITRE ATT&CK | Not started |
+| 6 | Custom detection rules mapped to MITRE ATT&CK | Done |
 | 7 | Simulated end-to-end incident report | Not started |
 | 8 | Final documentation pass | Not started |
 
@@ -68,6 +68,26 @@ load-bearing detail is **step 4**: a MISP hit is written back into analysisd as 
 event rather than sent somewhere as a notification, so it is decoded, matched by rules,
 indexed and correlated exactly like any other alert.
 
+## Detections
+
+Five custom rules, each mapped to MITRE ATT&CK and each proven by a captured alert in
+[`docs/detections/phase6-alerts.json`](docs/detections/phase6-alerts.json). Every one
+builds on Wazuh's stock ruleset rather than replacing it — what stock lacks is context,
+not coverage.
+
+| Rule | Level | Detection | ATT&CK |
+|---|---|---|---|
+| 100200 | 14 | Successful SSH login from a source that was brute-forcing moments ago | T1110.001, T1078 |
+| 100210 | 12 | Security-critical file created or modified (sudoers, cron, authorized_keys, passwd) | T1098.004, T1053.003, T1136 |
+| 100220 | 12 | New executable dropped into a system binary directory | T1036.005, T1543 |
+| 100231 | 13 | Outbound connection to infrastructure MISP knows | T1071.001, T1571 |
+| 100240 | 13 | Authentication attack from a threat-intel-listed host | T1110.001 |
+
+```bash
+scripts/demo-detections.sh     # simulate all five, safely
+scripts/detections-check.sh    # 27 checks
+```
+
 ## Documentation
 
 - [`docs/setup-wazuh.md`](docs/setup-wazuh.md) — deploying and hardening the Wazuh stack
@@ -75,6 +95,7 @@ indexed and correlated exactly like any other alert.
 - [`docs/setup-misp.md`](docs/setup-misp.md) — deploying and hardening MISP
 - [`docs/threat-intel-feeds.md`](docs/threat-intel-feeds.md) — loading threat intel into MISP, and proving it is searchable
 - [`docs/integration-wazuh-misp.md`](docs/integration-wazuh-misp.md) — wiring the SIEM to the intel platform, and the traps in doing it
+- [`docs/detections.md`](docs/detections.md) — the five custom detections, their ATT&CK mapping, and four Wazuh behaviours that fail silently
 - [`docs/project-notes.md`](docs/project-notes.md) — running build notes: the decisions, the traps, and why each phase went the way it did
 
 ## Ground rules

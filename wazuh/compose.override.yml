@@ -60,6 +60,12 @@ services:
       - ${LAB_ROOT}/wazuh/integrations/custom-misp:/var/ossec/integrations/custom-misp:ro
       - ${LAB_ROOT}/wazuh/integrations/custom-misp.py:/var/ossec/integrations/custom-misp.py:ro
       - ${LAB_ROOT}/wazuh/rules/local_rules.xml:/var/ossec/etc/rules/local_rules.xml:ro
+      # NOTE: wazuh/lists/internal-networks is deliberately NOT mounted. A CDB
+      # list is useless to analysisd until it is compiled to .cdb, and only the
+      # manager API compiles it — which means writing the file, which a read-only
+      # bind mount forbids (the API returns a bare "Wazuh Internal Error").
+      # scripts/wazuh-up.sh pushes the list through the API instead; the repo
+      # copy stays the source of truth and the compiled copy lives in wazuh_etc.
 
   wazuh.indexer:
     ports: !override

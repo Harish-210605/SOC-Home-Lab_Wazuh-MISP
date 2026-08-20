@@ -292,6 +292,11 @@ def main(argv):
                 # straight back to what caused the lookup.
                 "source_rule_id": str(rule.get("id", "")),
                 "source_rule_description": (rule.get("description") or "")[:200],
+                # The triggering rule's groups, flattened to a comma string.
+                # This is what lets a detection rule ask "was this hit on an
+                # authentication event or a firewall event?" without hardcoding
+                # a list of stock rule IDs that a Wazuh upgrade could renumber.
+                "source_rule_groups": ",".join(rule.get("groups") or []),
                 # The agent is duplicated into the payload on purpose. Wazuh's
                 # $(field) expansion in a rule <description> only reaches
                 # DECODED fields, so $(agent.name) renders empty even though the

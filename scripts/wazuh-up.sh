@@ -77,6 +77,7 @@ relabel_path "$REPO_ROOT/agents/config"
 relabel_path "$REPO_ROOT/wazuh/config"
 relabel_path "$REPO_ROOT/wazuh/integrations"
 relabel_path "$REPO_ROOT/wazuh/rules"
+relabel_path "$REPO_ROOT/wazuh/lists"
 
 log "Starting stack (project: $COMPOSE_PROJECT)"
 compose up -d

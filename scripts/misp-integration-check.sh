@@ -121,12 +121,21 @@ for rid in 100100 100101 100102 100103; do
     || no "rule $rid is missing from local_rules.xml"
 done
 
-# Presence in the file is not the same as being loaded: a malformed rule makes
-# analysisd skip the whole file, and it says so only in ossec.log.
-if dex "$MANAGER" sh -c 'grep -qiE "error.*local_rules|local_rules.*error" /var/ossec/logs/ossec.log'; then
-  no "analysisd reported an error loading local_rules.xml"
-else
+# Presence in the file is not the same as being loaded: one malformed rule makes
+# analysisd reject the WHOLE file, and it says so only in ossec.log.
+#
+# Scoped to the current analysisd run for the same reason as the integratord
+# check below — ossec.log is on a named volume and outlives container recreates,
+# so an unscoped grep keeps failing on rule errors that were fixed hours ago.
+errs="$(dex "$MANAGER" sh -c '
+  log=/var/ossec/logs/ossec.log
+  start=$(grep -n "wazuh-analysisd: INFO: Started" "$log" | tail -1 | cut -d: -f1)
+  tail -n +"${start:-1}" "$log" | grep -ciE "error.*local_rules|local_rules.*error" || true
+' || true)"
+if [[ "${errs:-0}" -eq 0 ]]; then
   ok "analysisd loaded local_rules.xml without errors"
+else
+  no "analysisd reported $errs error(s) loading local_rules.xml this run"
 fi
 
 # --- the lookup, live -------------------------------------------------------
@@ -190,7 +199,7 @@ grep -q "10.11.12.13" <<<"$out" \
 set -a; source "$ENV_FILE"; set +a
 indexed="$(curl -sk -u "admin:$INDEXER_PASSWORD" \
   "https://127.0.0.1:9200/wazuh-alerts-*/_search" -H 'Content-Type: application/json' \
-  -d '{"size":0,"query":{"terms":{"rule.id":["100101","100102","100103"]}}}' 2>/dev/null \
+  -d '{"size":0,"query":{"terms":{"rule.id":["100101","100102","100103","100231","100240"]}}}' 2>/dev/null \
   | python3 -c 'import sys,json
 try: print(json.load(sys.stdin)["hits"]["total"]["value"])
 except Exception: print(0)')"
