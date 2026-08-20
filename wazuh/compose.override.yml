@@ -22,6 +22,44 @@ services:
     environment:
       INDEXER_PASSWORD: ${INDEXER_PASSWORD:?set in .env — run scripts/wazuh-bootstrap.sh}
       API_PASSWORD: ${API_PASSWORD:?set in .env — run scripts/wazuh-bootstrap.sh}
+    # --- Phase 5: threat-intel enrichment ----------------------------------
+    networks:
+      # `default` must be listed explicitly. Upstream declares no networks at
+      # all, so the moment this key appears the implicit default is replaced —
+      # omitting it would cut the manager off from the indexer and the agent.
+      - default
+      - soclab-intel
+    # `!override` for the same reason as `ports` above: Compose CONCATENATES
+    # service `volumes` across -f files, so simply adding our ossec.conf mount
+    # would leave upstream's in place too and collide on the same container
+    # path. Overriding means restating upstream's list; the entries below the
+    # marker are the only ones that are ours.
+    #
+    # Paths use ${LAB_ROOT} (exported by scripts/_common.sh) rather than ./,
+    # because Compose resolves relative paths against the FIRST -f file's
+    # directory, which is upstream's single-node/, not this one.
+    volumes: !override
+      - wazuh_api_configuration:/var/ossec/api/configuration
+      - wazuh_etc:/var/ossec/etc
+      - wazuh_logs:/var/ossec/logs
+      - wazuh_queue:/var/ossec/queue
+      - wazuh_var_multigroups:/var/ossec/var/multigroups
+      - wazuh_integrations:/var/ossec/integrations
+      - wazuh_active_response:/var/ossec/active-response/bin
+      - wazuh_agentless:/var/ossec/agentless
+      - wazuh_wodles:/var/ossec/wodles
+      - filebeat_etc:/etc/filebeat
+      - filebeat_var:/var/lib/filebeat
+      - ./config/wazuh_indexer_ssl_certs/root-ca-manager.pem:/etc/ssl/root-ca.pem
+      - ./config/wazuh_indexer_ssl_certs/wazuh.manager.pem:/etc/ssl/filebeat.pem
+      - ./config/wazuh_indexer_ssl_certs/wazuh.manager-key.pem:/etc/ssl/filebeat.key
+      # --- ours below this line ---
+      # The rendered config, not the tracked template: scripts/wazuh-up.sh
+      # substitutes the MISP API key into it so the key never enters git.
+      - ${LAB_ROOT}/wazuh/config/generated/wazuh_manager.conf:/wazuh-config-mount/etc/ossec.conf
+      - ${LAB_ROOT}/wazuh/integrations/custom-misp:/var/ossec/integrations/custom-misp:ro
+      - ${LAB_ROOT}/wazuh/integrations/custom-misp.py:/var/ossec/integrations/custom-misp.py:ro
+      - ${LAB_ROOT}/wazuh/rules/local_rules.xml:/var/ossec/etc/rules/local_rules.xml:ro
 
   wazuh.indexer:
     ports: !override
@@ -34,3 +72,9 @@ services:
       INDEXER_PASSWORD: ${INDEXER_PASSWORD:?set in .env — run scripts/wazuh-bootstrap.sh}
       DASHBOARD_PASSWORD: ${DASHBOARD_PASSWORD:?set in .env — run scripts/wazuh-bootstrap.sh}
       API_PASSWORD: ${API_PASSWORD:?set in .env — run scripts/wazuh-bootstrap.sh}
+networks:
+  # Created outside Compose by ensure_shared_network() in scripts/_common.sh,
+  # because two independent projects both need to attach to it and neither can
+  # be made to own its lifecycle without ordering one behind the other.
+  soclab-intel:
+    external: true

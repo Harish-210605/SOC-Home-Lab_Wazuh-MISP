@@ -97,6 +97,30 @@ relabel_path() {
   chcon -Rt container_file_t "$1" || warn "could not relabel $1"
 }
 
+# Shared network between the two Compose projects.
+#
+# Wazuh and MISP run as separate projects, each with its own default network, so
+# by default wazuh.manager has no route to the MISP API at all. Rather than
+# merging the stacks into one project (which would tie their lifecycles
+# together), a single user-defined bridge is created outside Compose and both
+# projects attach the one service that needs it: wazuh.manager and misp-core.
+#
+# Declared `external: true` in both overrides, which means Compose will not
+# create it — hence this helper, called by both up scripts before `compose up`.
+SHARED_NET="soclab-intel"
+
+ensure_shared_network() {
+  if docker_run docker network inspect "$SHARED_NET" >/dev/null 2>&1; then
+    return 0
+  fi
+  log "Creating shared network $SHARED_NET"
+  # internal: no gateway to the outside world is added for this bridge. The
+  # containers keep their own default networks for egress; this one exists only
+  # to carry manager -> MISP API traffic, so it has no business routing off-box.
+  docker_run docker network create --internal "$SHARED_NET" >/dev/null \
+    || die "could not create the $SHARED_NET network"
+}
+
 # docker compose for the MISP stack.
 #
 # A separate Compose project from Wazuh: independent lifecycles, and MISP is

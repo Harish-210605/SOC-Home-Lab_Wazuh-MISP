@@ -212,3 +212,206 @@ The blocker is already known: **the two stacks cannot reach each other.** They r
 separate Compose projects on separate Docker networks, so `wazuh.manager` has no route
 to the MISP API. A shared network comes first, then the integration, then proving an
 alert actually gets enriched.
+---
+
+## Phase 5 — Connecting Wazuh to MISP
+
+**The point of the phase, in one line.** Phases 1–4 built a SIEM that detects and a
+threat-intel platform that knows things. This phase makes the SIEM *ask* the intel
+platform, so an alert stops saying "endpoint01 had failed SSH logins from 162.243.103.246"
+and starts saying "…from a known Emotet command-and-control server".
+
+### The finding that changed the plan
+
+The plan said "use Wazuh's MISP integration module". **There isn't one.** The manager
+image ships integrations for VirusTotal, Maltiverse, Slack, PagerDuty and Shuffle, and
+a search for "misp" across the integrations, config and ruleset directories returns
+nothing at all.
+
+So this phase *wrote* an integration rather than enabling one. What Wazuh does give you
+is the framework — the `wazuh-integratord` daemon, a documented calling convention, and
+a queue socket to write results back into. The shipped `virustotal.py` was used as the
+reference for the socket protocol, which is the kind of thing you want to copy from a
+working example rather than infer.
+
+*Worth saying out loud:* checking whether the thing you planned to use actually exists,
+before designing around it, is cheap. Assuming it exists because the docs mention MISP
+somewhere is how you lose an afternoon.
+
+### The architecture, and the one detail that matters
+
+```
+endpoint01 → manager(analysisd) → integratord → custom-misp.py
+                    ↑                                  ↓
+                    └──── hit re-injected ──── MISP restSearch
+                    ↓
+             local_rules.xml → indexer → dashboard
+```
+
+The load-bearing decision is that a MISP hit is **written back into analysisd as a new
+event**, not emailed or posted somewhere. Because it re-enters the pipeline, the
+enriched result is decoded, matched by rules, indexed, correlated, and could trigger
+active response — all for free. An integration that merely notified would have to
+reimplement every one of those.
+
+*If asked "why not just have the integration send a Slack message?"* — because then the
+enrichment lives outside the SIEM. It can't be searched, correlated with other alerts,
+or used in a rule. Re-injection is what makes it part of the system rather than a
+side-channel.
+
+### The network problem, and three decisions inside it
+
+The two stacks were separate Compose projects, each on its own bridge, with no route
+between them. The fix is one shared bridge, `soclab-intel`. Three choices worth
+defending:
+
+1. **Kept the stacks as separate projects.** Merging them would make the network
+   trivial, at the cost of tying their lifecycles together. MISP is the heavy half and
+   should be stoppable on its own.
+2. **Made the bridge `--internal`** — no gateway off the host. It exists only to carry
+   manager→MISP traffic, so it should not be capable of becoming an egress path. Both
+   containers keep their normal default networks for outside access.
+3. **Listed `default` explicitly** on both services. This is the subtle one: upstream
+   declares no `networks:` key, so the moment an override adds one, the implicit default
+   is *replaced*, not extended. Forget it and the manager loses the indexer, or MISP
+   loses its own database — and the symptom looks like an unrelated outage. Both check
+   scripts now assert the default survived.
+
+### Keeping a secret out of a tracked config file
+
+Enabling the integration means putting an API key in the manager's `ossec.conf` — a file
+that now needs to be version-controlled (the vendored upstream tree is gitignored and
+disposable, so editing it there would vanish at the next bootstrap).
+
+The pattern used: the **tracked** file holds `MISP_API_KEY_PLACEHOLDER`, and
+`wazuh-up.sh` renders a real copy into `wazuh/config/generated/` (already gitignored) at
+mode 600, which is what actually gets mounted.
+
+The check script asserts all three parts — template still has the placeholder, rendered
+copy is gitignored and mode 600, and the placeholder did *not* survive into the running
+config. That last one matters: if it had, every lookup would return 403 and the lab
+would look perfectly healthy while enriching nothing.
+
+### Design choice: an explicit field table, not a recursive scrape
+
+The integration pulls observables from a named list of alert fields (`data.srcip`,
+`syscheck.sha256_after`, `data.dns.question.name`, …) rather than walking the alert JSON
+for anything IP-shaped.
+
+The recursive version is less code and much worse: it also collects the agent's own IP,
+the manager's hostname, and every hash of every file an alert happens to mention — each
+one a MISP round-trip that can only ever return a miss.
+
+Private, loopback, link-local and multicast IPs are filtered before any lookup. In this
+lab they would simply miss; in any deployment where MISP is remote, sending them means
+broadcasting your internal addressing to a third party. The check script tests that such
+an address is **never sent**, not merely that it doesn't match.
+
+### Rule design: the `to_ids` split
+
+Four rules in the 100100–100199 range (Wazuh reserves everything under 100000, so user
+rules there can never collide with an upgrade).
+
+| Rule | Level | Fires when |
+|---|---|---|
+| 100100 | 0 | any lookup result — parent only, never alerts |
+| 100101 | 12 | hit where MISP marks the indicator `to_ids=True` |
+| 100102 | 6 | hit on context-only intel (`to_ids=False`) |
+| 100103 | 14 | 4+ hits from the same agent in 5 minutes |
+
+**The `to_ids` split is the interesting bit.** MISP flags an attribute `to_ids` when it
+is reliable enough to alert on, versus context worth recording. Alerting identically on
+both would turn enrichment into a second noise stream — and an analyst who can't tell
+the two apart stops reading either. Level 12 vs level 6 encodes that distinction where
+it's actionable.
+
+### Three bugs, each instructive
+
+**1. `$(agent.name)` renders empty in a rule description.** Wazuh expands `$(field)` in
+descriptions only for *decoded* fields, so alerts read `known-bad ip seen on  —` despite
+being correctly attributed. Fix: have the integration carry the agent name in its own
+payload as `misp.agent_name`.
+
+The related trap: rule 100103 originally correlated on `<same_source_ip />`, which would
+**never have fired** — these events are injected by the integration and carry no `srcip`
+at all. It would have sat there looking correct forever. Now it correlates on
+`<same_field>misp.agent_name</same_field>`.
+
+**2. Bind-mounted scripts and the `wazuh` user.** `integratord` runs as uid 999
+(`wazuh`), but bind-mounted files keep their *host* ownership (uid 1000). So the owner
+and group bits apply to nobody relevant inside the container — only the **world** bits
+decide whether the file is readable. A mode-750 script failed with a bare
+`Permission denied`.
+
+What makes this nasty: testing by hand works fine, because `docker exec` runs as root.
+The lesson is that "it works when I run it manually" and "it works when the daemon runs
+it" are different claims when the daemon drops privileges.
+
+**3. A check that never forgets.** My own verification script failed on a stale
+`ossec.log` line from a bug I'd already fixed — the log lives in a named volume and
+outlives container recreates. Now scoped to the current integratord run. *A check that
+reports faults fixed hours ago is a check people learn to ignore.*
+
+### The defect this phase exposed
+
+Recreating the agent container broke it permanently: `Duplicate agent name: endpoint01`,
+retried forever, while the manager just showed it as disconnected.
+
+Cause: the agent doesn't persist `/var/ossec/etc`, so a recreate loses its `client.keys`
+and it must re-enroll — and `authd` refuses because the old registration still owns the
+name. This was latent since Phase 2; Phase 5's container recreate is simply what
+triggered it.
+
+Fixed with `<force>` in `<auth>`, letting an agent replace its own stale record.
+Verified by recreating the container and confirming zero duplicate-name errors and no
+accumulating registrations.
+
+*The part worth saying in an interview:* the timers are set to `0` here because in a lab
+a re-registration is always a deliberate recreate. **On a real network they should not
+be** — those timers are exactly what stops an attacker re-registering as an existing
+endpoint in order to blind it. Knowing why a lab setting is unsafe in production is more
+useful than the setting itself.
+
+### The debugging story worth telling
+
+The demo wrote ten valid log lines. The file contained them. Logcollector had logged
+`Analyzing file` for that exact path. No alert appeared.
+
+Cause: **`wazuh-logcollector` opens each monitored file once at startup, and never
+retries a path that was missing at that moment.** It logs `Could not open file` and then
+sits there. The file can appear a second later and be written to forever — it will not
+be read until logcollector restarts.
+
+Fixed with a named volume so the directory persists, plus a guard in the demo that
+checks logcollector actually holds the file open (via `/proc/<pid>/fd`) rather than
+trusting the config.
+
+*Generalisable point:* "the config says it's monitoring the file" and "it is reading the
+file" are different claims. The demo now verifies the second one.
+
+### Safety note worth stating explicitly
+
+The attack simulation **never contacts the malicious IP**. It writes syslog lines that
+Wazuh's stock `sshd` decoder parses — the same decoder, the same rules, the same alert
+path the real thing would take. Actually connecting to a live command-and-control server
+to test a detection would be indefensible, and the fact that the detection path is
+identical either way means there's nothing to gain from it.
+
+The benign control uses `203.0.113.45` — RFC 5737 TEST-NET-3, which is routable-looking,
+reserved for documentation, and guaranteed never to appear in a real threat feed.
+
+### Result
+
+```
+26 passed, 0 failed     (integration)
++ 17 wazuh, 15 misp, 25 feeds  =  83 checks green
+```
+
+12 enriched alerts indexed and visible in the dashboard, including the level 14
+correlation rule firing on repeated hits from the same host.
+
+### Handover to Phase 6
+
+Groundwork is already in place: rule 5710 arrives carrying MITRE **T1110.001** (Password
+Guessing), and the simulated auth log gives a safe, repeatable way to drive brute-force
+scenarios without needing a real sshd.

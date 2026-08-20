@@ -23,3 +23,18 @@ services:
     ports: !override
       - "127.0.0.1:80:80"
       - "127.0.0.1:443:443"
+
+    # Phase 5: join the shared bridge so the Wazuh manager can reach the MISP
+    # API. `default` is listed explicitly because upstream declares no networks
+    # at all — the moment this key appears the implicit default is replaced, and
+    # dropping it would cut misp-core off from its own database and Redis.
+    networks:
+      - default
+      - soclab-intel
+
+networks:
+  # Created outside Compose by ensure_shared_network() in scripts/_common.sh:
+  # two independent projects attach to it, so neither can own its lifecycle
+  # without forcing a start order between the stacks.
+  soclab-intel:
+    external: true

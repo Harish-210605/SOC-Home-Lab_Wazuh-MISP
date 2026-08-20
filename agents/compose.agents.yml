@@ -30,6 +30,14 @@ services:
       # Staging ground for file-integrity scenarios. A named volume so the
       # directory exists and survives restarts.
       - endpoint01_lab:/var/lab
+      # Attack-simulation logs (Phase 5). A named volume, not just a directory
+      # in the image, for a specific reason: wazuh-logcollector opens every
+      # <localfile> once at startup and does NOT retry a path that was missing
+      # then — it logs "Could not open file" and silently never reads it, even
+      # after the file appears. Persisting the directory means the log survives
+      # restarts and is present before logcollector starts.
+      - endpoint01_simlog:/var/log/simulated
 
 volumes:
   endpoint01_lab:
+  endpoint01_simlog:

@@ -1,0 +1,47 @@
+#!/bin/sh
+# Launcher for the custom MISP integration.
+#
+# This is Wazuh's own generic integrations wrapper (as shipped for slack,
+# virustotal, etc.), copied verbatim and unmodified below the licence header.
+# Its job is to locate the bundled interpreter at framework/python/bin/python3
+# and exec "<this script>.py" with the same arguments.
+#
+# Using Wazuh's interpreter rather than a system one is not incidental: the
+# bundled Python is the only one in the image with `requests` installed, and
+# there is no system python3 in the manager container at all.
+#
+# Copyright (C) 2015, Wazuh Inc. — GPLv2
+
+WPYTHON_BIN="framework/python/bin/python3"
+
+SCRIPT_PATH_NAME="$0"
+
+DIR_NAME="$(cd $(dirname ${SCRIPT_PATH_NAME}); pwd -P)"
+SCRIPT_NAME="$(basename ${SCRIPT_PATH_NAME})"
+
+case ${DIR_NAME} in
+    */active-response/bin | */wodles*)
+        if [ -z "${WAZUH_PATH}" ]; then
+            WAZUH_PATH="$(cd ${DIR_NAME}/../..; pwd)"
+        fi
+
+        PYTHON_SCRIPT="${DIR_NAME}/${SCRIPT_NAME}.py"
+    ;;
+    */bin)
+        if [ -z "${WAZUH_PATH}" ]; then
+            WAZUH_PATH="$(cd ${DIR_NAME}/..; pwd)"
+        fi
+
+        PYTHON_SCRIPT="${WAZUH_PATH}/framework/scripts/$(echo ${SCRIPT_NAME} | sed 's/\-/_/g').py"
+    ;;
+     */integrations)
+        if [ -z "${WAZUH_PATH}" ]; then
+            WAZUH_PATH="$(cd ${DIR_NAME}/..; pwd)"
+        fi
+
+        PYTHON_SCRIPT="${DIR_NAME}/${SCRIPT_NAME}.py"
+    ;;
+esac
+
+
+${WAZUH_PATH}/${WPYTHON_BIN} ${PYTHON_SCRIPT} "$@"

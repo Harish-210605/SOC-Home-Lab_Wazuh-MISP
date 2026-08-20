@@ -1,0 +1,71 @@
+<!--
+  Local rules for the SOC lab.
+
+  Mounted read-only at /var/ossec/etc/rules/local_rules.xml. The default
+  ossec.conf ruleset already loads etc/rules, so no extra <rule_dir> is needed.
+
+  100100-100199 is reserved here for threat-intel enrichment. Wazuh reserves
+  everything below 100000 for its own ruleset, and the 100000+ range is the
+  documented space for user rules — staying inside it means an upgrade that ships
+  new built-in rules can never collide with these.
+-->
+<group name="threat_intel,misp,">
+
+  <!--
+    Parent rule. Matches the JSON events custom-misp.py writes back into
+    analysisd, identified by the "integration": "misp" field it always sets.
+
+    Level 0 deliberately: this rule exists to be inherited from, not to alert.
+    Every real hit is classified by one of the children below, and a level 0
+    parent keeps an unclassified hit out of the alert stream rather than
+    producing a duplicate alongside its own child.
+  -->
+  <rule id="100100" level="0">
+    <decoded_as>json</decoded_as>
+    <field name="integration">^misp$</field>
+    <description>MISP threat-intel lookup result</description>
+  </rule>
+
+  <!--
+    A hit on an indicator MISP flags for detection (to_ids=True) — meaning the
+    indicator is considered reliable enough to alert on, not merely context.
+    This is the alert an analyst should actually work.
+  -->
+  <rule id="100101" level="12">
+    <if_sid>100100</if_sid>
+    <field name="misp.to_ids">^True$</field>
+    <description>MISP: known-bad $(misp.observable_kind) seen on $(misp.agent_name) — $(misp.attribute_type) matched threat intel [triggered by rule $(misp.source_rule_id)]</description>
+    <group>threat_intel,misp_alert,</group>
+  </rule>
+
+  <!--
+    A hit on an indicator MISP holds as context only (to_ids=False): worth
+    recording and correlating, not worth waking anyone for. Splitting on to_ids
+    rather than alerting identically on every hit is the difference between
+    enrichment an analyst trusts and a second stream of noise.
+  -->
+  <rule id="100102" level="6">
+    <if_sid>100100</if_sid>
+    <field name="misp.to_ids">^False$</field>
+    <description>MISP: $(misp.observable_kind) $(misp.observable) matched non-IDS threat intel on $(misp.agent_name)</description>
+    <group>threat_intel,misp_context,</group>
+  </rule>
+
+  <!--
+    Correlation: the same host hitting threat intel repeatedly in a short window
+    is a materially different situation from one hit, and is what an ongoing
+    compromise looks like rather than a one-off. same_source_ip groups by the
+    agent the hits came from.
+  -->
+  <rule id="100103" level="14" frequency="4" timeframe="300">
+    <if_matched_sid>100101</if_matched_sid>
+    <!-- Correlate on the agent, via the decoded field the integration adds.
+         NOT same_source_ip: these events are injected by the integration and
+         carry no srcip of their own, so an srcip-based correlation would sit
+         there never firing. -->
+    <same_field>misp.agent_name</same_field>
+    <description>MISP: repeated threat-intel matches from $(misp.agent_name) — possible active compromise</description>
+    <group>threat_intel,misp_alert,attack,</group>
+  </rule>
+
+</group>

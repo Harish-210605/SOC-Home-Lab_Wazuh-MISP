@@ -21,10 +21,52 @@ workflow — all reproducible on a single machine with nothing but Docker.
 | 2 | Feed real data into Wazuh via an agent | Done |
 | 3 | Deploy MISP | Done |
 | 4 | Populate MISP from a public threat feed | Done |
-| 5 | Integrate Wazuh with MISP for alert enrichment | Not started |
+| 5 | Integrate Wazuh with MISP for alert enrichment | Done |
 | 6 | Custom detection rules mapped to MITRE ATT&CK | Not started |
 | 7 | Simulated end-to-end incident report | Not started |
 | 8 | Final documentation pass | Not started |
+
+## Architecture
+
+```mermaid
+flowchart TB
+    subgraph endpoint["endpoint01 — monitored endpoint"]
+        LOGS["auth logs / FIM events"]
+    end
+
+    subgraph wazuh["Wazuh stack — Compose project: wazuh"]
+        MGR["wazuh.manager<br/>analysisd"]
+        INT["wazuh-integratord<br/>custom-misp.py"]
+        IDX[("wazuh.indexer")]
+        DASH["wazuh.dashboard<br/>127.0.0.1:8443"]
+    end
+
+    subgraph misp["MISP stack — Compose project: misp"]
+        CORE["misp-core<br/>127.0.0.1:443"]
+        DB[("MariaDB<br/>26,290 IOCs")]
+    end
+
+    FEEDS["abuse.ch feeds<br/>ThreatFox · URLhaus<br/>MalwareBazaar · Feodo"] -.->|"scripts/misp-feeds.sh"| CORE
+    CORE --- DB
+
+    LOGS -->|"1514/tcp"| MGR
+    MGR -->|"1 rule match"| INT
+    INT -->|"2 restSearch over<br/>soclab-intel bridge"| CORE
+    CORE -->|"3 hit / miss"| INT
+    INT -->|"4 hit re-injected<br/>into analysisd"| MGR
+    MGR -->|"5 rules 100101 / 100103"| IDX
+    IDX --> DASH
+
+    classDef w fill:#1f6feb22,stroke:#1f6feb
+    classDef m fill:#8957e522,stroke:#8957e5
+    class MGR,INT,IDX,DASH w
+    class CORE,DB m
+```
+
+Wazuh collects and detects; MISP holds the threat intel; the integration joins them. The
+load-bearing detail is **step 4**: a MISP hit is written back into analysisd as a new
+event rather than sent somewhere as a notification, so it is decoded, matched by rules,
+indexed and correlated exactly like any other alert.
 
 ## Documentation
 
@@ -32,6 +74,7 @@ workflow — all reproducible on a single machine with nothing but Docker.
 - [`docs/setup-agent.md`](docs/setup-agent.md) — the monitored endpoint, and proving events flow
 - [`docs/setup-misp.md`](docs/setup-misp.md) — deploying and hardening MISP
 - [`docs/threat-intel-feeds.md`](docs/threat-intel-feeds.md) — loading threat intel into MISP, and proving it is searchable
+- [`docs/integration-wazuh-misp.md`](docs/integration-wazuh-misp.md) — wiring the SIEM to the intel platform, and the traps in doing it
 - [`docs/project-notes.md`](docs/project-notes.md) — running build notes: the decisions, the traps, and why each phase went the way it did
 
 ## Ground rules

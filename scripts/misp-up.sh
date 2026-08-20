@@ -5,6 +5,11 @@ source "$(dirname "${BASH_SOURCE[0]}")/_common.sh"
 
 [[ -d "$MISP_DIR" ]] || die "misp/misp-docker is missing. Run scripts/misp-bootstrap.sh first."
 
+# The shared bridge is declared `external: true` in misp/compose.override.yml,
+# so Compose will not create it. Either stack may be started first, so both
+# ensure it exists.
+ensure_shared_network
+
 log "Starting MISP (project: $MISP_PROJECT)"
 misp_compose up -d
 
