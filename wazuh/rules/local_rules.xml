@@ -50,24 +50,6 @@
     <description>MISP: $(misp.observable_kind) $(misp.observable) matched non-IDS threat intel on $(misp.agent_name)</description>
     <group>threat_intel,misp_context,</group>
   </rule>
-
-  <!--
-    Correlation: the same host hitting threat intel repeatedly in a short window
-    is a materially different situation from one hit, and is what an ongoing
-    compromise looks like rather than a one-off. same_source_ip groups by the
-    agent the hits came from.
-  -->
-  <rule id="100103" level="14" frequency="4" timeframe="300">
-    <if_matched_sid>100101</if_matched_sid>
-    <!-- Correlate on the agent, via the decoded field the integration adds.
-         NOT same_source_ip: these events are injected by the integration and
-         carry no srcip of their own, so an srcip-based correlation would sit
-         there never firing. -->
-    <same_field>misp.agent_name</same_field>
-    <description>MISP: repeated threat-intel matches from $(misp.agent_name) — possible active compromise</description>
-    <group>threat_intel,misp_alert,attack,</group>
-  </rule>
-
 </group>
 
 <!--
@@ -286,7 +268,7 @@
       <id>T1071.001</id>
       <id>T1571</id>
     </mitre>
-    <group>threat_intel,attack,soclab_d4,</group>
+    <group>threat_intel,misp_alert,attack,soclab_d4,</group>
   </rule>
 
   <!--
@@ -308,9 +290,65 @@
     <mitre>
       <id>T1110.001</id>
     </mitre>
-    <group>threat_intel,authentication_failures,attack,soclab_d5,</group>
+    <group>threat_intel,misp_alert,authentication_failures,attack,soclab_d5,</group>
   </rule>
 
 
+
+</group>
+
+<!--
+  ============================================================================
+  Cross-signal correlation — deliberately LAST in this file
+  ============================================================================
+
+  Rule order is load-bearing here, and finding that out cost most of Phase 7.
+
+  <if_matched_sid> and <if_matched_group> are resolved when the file is PARSED,
+  against the rules seen SO FAR. This rule used to sit near the top, next to the
+  enrichment rules it correlates, and pointed forward at rules defined hundreds
+  of lines below it. analysisd resolves that reference to nothing and drops the
+  rule:
+
+      WARNING: (7620): Signature ID '100240' was not found.
+               Invalid 'if_matched_sid'. Rule '100103' will be ignored.
+
+  A WARNING, at manager startup, in a log nobody reads twice — and then a rule
+  that is absent from the running ruleset while still being present, and
+  correct-looking, in the file. Same failure shape as the uncompiled CDB list in
+  Phase 6: the ruleset loads, the file reviews clean, the detection does not
+  exist. Correlation rules therefore go at the BOTTOM, after everything they
+  count.
+-->
+<group name="threat_intel,misp,">
+
+  <!--
+    Repeated threat-intel matches from one agent, across DIFFERENT signals.
+
+    One intel hit is an observation. Four inside five minutes — a brute force
+    from a listed host, then that host's implant beaconing to listed C2 — is the
+    shape of a host that is already owned, and it is the single alert that names
+    the incident rather than one of its stages. Level 14, above every individual
+    detection it summarises.
+
+    Counting the misp_alert GROUP rather than a specific rule id is what keeps
+    this alive. Its original form counted rule 100101, and Phase 6 silently
+    killed it: D5 (100240) is a more specific sibling, so every failed login from
+    a listed host began matching D5 INSTEAD of 100101 and the counter this rule
+    watches stopped advancing. A group that every intel detection joins survives
+    the next sibling somebody writes.
+  -->
+  <rule id="100103" level="14" frequency="4" timeframe="300">
+    <if_matched_group>misp_alert</if_matched_group>
+    <!-- Correlate on the agent, via the decoded field the integration adds.
+         NOT same_source_ip: these events are injected by the integration and
+         carry no srcip of their own, so an srcip-based correlation would sit
+         there never firing. -->
+    <same_field>misp.agent_name</same_field>
+    <description>MISP: repeated threat-intel matches from $(misp.agent_name) — possible active compromise</description>
+    <!-- Deliberately NOT in misp_alert: this rule counts that group, and a rule
+         that belongs to the group it counts would feed its own counter. -->
+    <group>threat_intel,misp_correlation,attack,</group>
+  </rule>
 
 </group>

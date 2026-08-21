@@ -8,9 +8,8 @@ Built as a portfolio project to demonstrate SIEM deployment, detection engineeri
 mapped to MITRE ATT&CK, threat intel integration, and an end-to-end incident response
 workflow — all reproducible on a single machine with nothing but Docker.
 
-> **Status:** work in progress. This README is a placeholder; the full write-up
-> (architecture diagram, detection rule table, example alerts, incident report) lands
-> once the lab is complete.
+> **Status:** work in progress — Phase 8 (final documentation pass) remains. Quick-start
+> instructions and example alert excerpts land with it.
 
 ## Build log
 
@@ -23,7 +22,7 @@ workflow — all reproducible on a single machine with nothing but Docker.
 | 4 | Populate MISP from a public threat feed | Done |
 | 5 | Integrate Wazuh with MISP for alert enrichment | Done |
 | 6 | Custom detection rules mapped to MITRE ATT&CK | Done |
-| 7 | Simulated end-to-end incident report | Not started |
+| 7 | Simulated end-to-end incident report | Done |
 | 8 | Final documentation pass | Not started |
 
 ## Architecture
@@ -88,6 +87,23 @@ scripts/demo-detections.sh     # simulate all five, safely
 scripts/detections-check.sh    # 27 checks
 ```
 
+## Incident report
+
+[**INC-2026-001 — SSH credential compromise of `endpoint01`**](docs/incident-report-example.md)
+walks one simulated intrusion end to end: a host MISP already lists as botnet C2
+brute-forces the endpoint, gets in, establishes three persistence mechanisms, drops an
+implant and beacons back to infrastructure from the same feed. Every alert quoted is real
+and captured in [`docs/incidents/incident-001-alerts.json`](docs/incidents/incident-001-alerts.json).
+
+The report covers the timeline, the MISP enrichment findings, the response an analyst
+would run, and — because the exercise found them — **two detections that were silently not
+working** until an intrusion was replayed across all of them at once.
+
+```bash
+scripts/demo-incident.sh       # replay the intrusion, ~2 min
+scripts/incident-check.sh      # 47 checks, report against evidence
+```
+
 ## Documentation
 
 - [`docs/setup-wazuh.md`](docs/setup-wazuh.md) — deploying and hardening the Wazuh stack
@@ -96,6 +112,7 @@ scripts/detections-check.sh    # 27 checks
 - [`docs/threat-intel-feeds.md`](docs/threat-intel-feeds.md) — loading threat intel into MISP, and proving it is searchable
 - [`docs/integration-wazuh-misp.md`](docs/integration-wazuh-misp.md) — wiring the SIEM to the intel platform, and the traps in doing it
 - [`docs/detections.md`](docs/detections.md) — the five custom detections, their ATT&CK mapping, and four Wazuh behaviours that fail silently
+- [`docs/incident-report-example.md`](docs/incident-report-example.md) — INC-2026-001: one simulated intrusion, detection to remediation
 - [`docs/project-notes.md`](docs/project-notes.md) — running build notes: the decisions, the traps, and why each phase went the way it did
 
 ## Ground rules

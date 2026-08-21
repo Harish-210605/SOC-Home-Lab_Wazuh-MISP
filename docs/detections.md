@@ -102,10 +102,11 @@ each detection fires against live input, and — equally important — that the 
 cases stay quiet: internal destinations are suppressed, and a clean successful login
 with no preceding brute force does *not* raise D1.
 
-## Four Wazuh behaviours that had to be found by testing
+## Six Wazuh behaviours that had to be found by testing
 
 Each of these fails **silently or misleadingly**, which is what makes them worth
-recording.
+recording. Items 5 and 6 were found in Phase 7, by replaying a whole intrusion across
+every rule at once — neither was reachable by testing the detections one at a time.
 
 ### 1. `<field name="dstip">` takes down the entire file
 
@@ -178,6 +179,50 @@ Wazuh's own ruleset is no help in discovering this — **no stock rule does path
 matching at all**. It was settled by firing both candidates at a single probe file and
 seeing which one produced an alert.
 
+### 5. Correlation rules must be defined *after* the rules they count
+
+`<if_matched_sid>` and `<if_matched_group>` are resolved **when the file is parsed**,
+against the rules seen *so far*. A correlation rule placed above the rules it references
+resolves to nothing and is dropped:
+
+```
+WARNING: (7620): Signature ID '100240' was not found.
+         Invalid 'if_matched_sid'. Rule '100103' will be ignored.
+```
+
+Rule 100103 (*"repeated threat-intel matches — possible active compromise"*) sat near the
+top of `local_rules.xml`, grouped with the enrichment rules it belongs with, and pointed at
+rules defined hundreds of lines below. It was absent from the running ruleset while looking
+entirely correct in the file — a `WARNING` emitted once at manager startup being the only
+sign.
+
+Correlation rules now live at the **bottom** of the file, and
+`scripts/incident-check.sh` asserts that ordering so it cannot regress.
+
+*Two related constraints found alongside it:* a level-0 parent rule cannot be counted
+(`if_matched_sid` on rule 100100 never advances), and a correlation rule must not be a
+member of the group it counts, or it feeds its own counter.
+
+### 6. A rule can match a path the agent never reports
+
+Rule D2 matches `~/.ssh/authorized_keys` as a persistence location. No syscheck directory
+in the agent configuration covered a home directory, so the agent **never sent an event for
+that path** — the rule loaded, read correctly, listed `authorized_keys` in its
+documentation, and that branch could not fire.
+
+This is the same failure in a different place: the rule was fine, the *telemetry* was
+missing. Fixed in the agent config, and now guarded by a check:
+
+```xml
+<directories realtime="yes" check_all="yes">/root/.ssh,/home</directories>
+```
+
+*The theme, restated:* of these six, **five produce no error at all**. The rule loads,
+looks correct, and never fires. A detection that does not exist is indistinguishable from
+a detection that has not triggered yet — which is the entire argument for testing every
+rule against live input, and for replaying a full intrusion rather than only firing rules
+one by one.
+
 ## A side effect worth understanding: rule specificity
 
 Adding D5 changed the behaviour of Phase 5's demo, and the reason is worth knowing.
@@ -215,6 +260,6 @@ query in this lab is now written.
 
 ## Next
 
-Phase 7: an end-to-end incident report walking one of these detections — most likely
-D1 plus D5, which together tell a single coherent story — from first alert through MISP
-enrichment to response and remediation.
+Phase 7 replays all of these as **one intrusion** rather than five separate tests:
+[INC-2026-001](incident-report-example.md) walks a single attacker from brute force through
+persistence and C2, and is where behaviours 5 and 6 above were found.

@@ -599,3 +599,169 @@ threat-intel rule *family*.
 against your own future rules. Matching on rule **groups** (`rule.groups:threat_intel`)
 is the durable way to ask "did enrichment fire?" — and it's how the dashboard query in
 this lab is now written.
+
+---
+
+## Phase 7 — Writing the incident report
+
+**The point of the phase, in one line.** Six working detections are not a SOC; a SOC is
+what happens when someone has to *use* them, in order, under one incident. This phase
+replayed a single intrusion end to end and wrote it up the way an analyst would hand it
+over.
+
+### The decision that shaped the phase
+
+The obvious way to write this report was to take the alerts Phase 6 already captured and
+narrate them. I decided against it, and that choice is the whole phase.
+
+Phase 6's demo fires each detection **in isolation** — D1 from one address, D5 from
+another, the file detections from nothing in particular. Narrating that would have
+produced a report describing six unrelated findings dressed up as a story. So instead I
+wrote `scripts/demo-incident.sh`: **one attacker, one victim, six stages, in kill-chain
+order**, where the same address that brute-forces is the address threat intel already
+knows, and the implant it drops beacons to infrastructure from the same feed.
+
+That changed what the report could say. Not "these five rules work" but "here is how an
+intrusion looked as it crossed this SIEM, and here is the point at which an analyst would
+have known".
+
+*What to say if asked why it matters:* testing detections individually answers "does the
+rule fire?". Replaying an intrusion answers "would we have caught it, and would the
+alerts have made sense together?" Those are different questions, and only the second one
+is the job. The exercise proved the point immediately — it found two defects that
+individual testing had passed clean.
+
+### The two defects the replay found
+
+This is the part worth telling in an interview, because neither could have surfaced any
+other way.
+
+**1. Detection D2 had a branch that could never fire.** Rule 100210 matches
+`~/.ssh/authorized_keys` as a persistence location — it says so in the rule, in the
+detection table, and in the docs. But no syscheck directory in the agent config covered a
+home directory, so the agent **never sent an event for that path**. The rule loaded, read
+correctly, and that branch was decoration.
+
+Phase 6's own notes had already stated the principle — *"a rule against telemetry the lab
+doesn't collect looks exactly like coverage"* — and I had still shipped one, because the
+Phase 6 demo only ever exercised the `/etc` paths. One line of agent config fixed it
+(`/root/.ssh,/home`), and I proved the fix by writing to `authorized_keys` and watching
+the alert appear.
+
+**2. The correlation rule was silently disabled — twice, for two different reasons.**
+Rule 100103 ("repeated threat-intel matches — possible active compromise") did not fire.
+
+*First cause: Phase 6 had orphaned it.* It counted matches of rule 100101, and D5 is a
+more specific sibling — so once D5 existed, every failed login from a listed host matched
+D5 **instead of** 100101 and the counter simply stopped advancing. **Adding a rule
+disabled a different rule, at a distance, with no error anywhere.** The postscript to
+Phase 6 had noted this superseding behaviour breaking a *test*; what I had missed was that
+it also broke a *rule*.
+
+Fixed by counting the `misp_alert` **group** instead of one rule id. A group survives the
+next sibling somebody writes; a rule id does not.
+
+*Second cause, and the better story: rule order inside the file is load-bearing.*
+`<if_matched_sid>` and `<if_matched_group>` are resolved **when the file is parsed**,
+against the rules seen *so far*. Rule 100103 sat near the top, grouped with the enrichment
+rules it logically belongs with, and referenced rules defined hundreds of lines below it.
+analysisd resolves a forward reference to nothing and drops the rule:
+
+```
+WARNING: (7620): Signature ID '100240' was not found.
+         Invalid 'if_matched_sid'. Rule '100103' will be ignored.
+```
+
+A **WARNING**, once, at manager startup. The ruleset loads. `Total rules enabled` goes up.
+The file still contains a rule that is correct, well-commented, reviewed — and not in the
+running ruleset.
+
+*The thing to say:* this is the **third** time this project has met the same failure
+shape, after the uncompiled CDB list and the `syscheck.path` field in Phase 6. A detection
+that does not exist is indistinguishable, from the outside, from a detection that has not
+triggered yet. My rule now is blunt: a detection is not real until I have watched it fire
+against live input, and correlation rules go at the **bottom** of the file, after
+everything they count.
+
+### The debugging path, because it was not a straight line
+
+I did not find the warning first. I found "the rule does not fire", and then tested my way
+down: dropped `same_field` (no change), pointed `if_matched_sid` at the level-0 parent
+rule (no change), pointed it at a rule I could *see* firing eight times in eight seconds
+(no change). Only when three plausible fixes all failed identically did I stop tuning the
+rule and go read the startup log — where the answer had been sitting the whole time,
+naming the rule and the reason.
+
+*Lesson worth stating:* when several independent fixes fail in exactly the same way, the
+rule is not being evaluated at all. Stop editing it and go find out whether it is loaded.
+
+### A test that was measuring a race
+
+The report's credibility rests on its **controls**: the same brute force from an address
+threat intel does *not* know, which must produce no threat-intel alert. First run, the
+controls produced nothing at all — and I nearly wrote that up as a pass.
+
+It was a race. The capture loop stopped the moment the last *attack* alert landed, which
+was before the control events had even been ingested. "No alert fired" was measuring the
+capture window, not the detection.
+
+*Worth saying out loud:* **a negative result is only evidence if you can show the input
+reached the system.** The script now blocks until a stock alert from the control source is
+confirmed present before it slices the log. That is the difference between a control and a
+gap in the data.
+
+### What the report deliberately does not claim
+
+- **Exfiltration.** The lab collects no flow volume, no process telemetry, no DNS. The
+  report says "unknown, and not knowable from this telemetry" rather than "no evidence of
+  exfiltration", because those are very different sentences and only one of them is true.
+- **Lateral movement.** None was simulated, so no claim is made about whether it would
+  have been caught.
+- **That the response was performed.** Nothing was contained; there is no active response
+  in this lab, deliberately. The report presents the response an analyst *would* run and
+  says plainly that it was not executed.
+
+The report also states its own worst finding: **enrichment amplifies alert volume.** One
+brute force produced nine identical level-13 alerts, one per failed login. At real volume
+that is the first thing that would break, and the fix (a `frequency`/`ignore` window on
+D5) is named and not implemented.
+
+### Design choice: keep the stock alerts in the artifact
+
+Phase 6's artifact filtered down to the custom rules, which was right for a phase about
+those rules. Phase 7's keeps **everything** — the 5710s and the 5712 too. D1's entire
+claim is "this success correlates with that brute force", and without the brute-force
+alerts in the same file the reader has to take that on trust. An incident artifact is
+evidence; evidence you have pre-filtered to your conclusion is not evidence.
+
+One consequence worth understanding: **stock rule 5715 (`authentication success`) appears
+nowhere in the capture**, even though the successful login is the centre of the incident.
+Wazuh raises one rule per event and prefers the most specific sibling, so the login
+surfaced as D1 (100200) *instead of* 5715. The absence is correct, and it is exactly the
+sort of thing that makes a reader think the artifact is incomplete — so the report says so
+explicitly.
+
+### Result
+
+```
+47 passed, 0 failed     (incident)
+157 checks green across all seven phases
+```
+
+`scripts/incident-check.sh` does something the other suites do not: it verifies the
+**report against the evidence**, not just the lab against itself. It asserts the addresses
+the report names are the addresses in the capture, that the levels it quotes are the levels
+that fired, that every ATT&CK id in the prose appears in an alert, that the controls were
+ingested before being called silent — and it guards both defects above so they cannot
+return quietly.
+
+*Why that check exists:* a report is a set of claims, and claims drift from evidence the
+moment either changes. A write-up nobody can re-verify is a story about a lab, not a
+record of one.
+
+### Handover to Phase 8
+
+Everything the final README needs now exists: the architecture, the detections, the
+enrichment path, and one incident that exercises all of it end to end. Phase 8 is a
+documentation pass — quick-start, example alerts, the link to this report, and an honest
+"what I'd improve at scale" section — not new lab work.
