@@ -765,3 +765,106 @@ Everything the final README needs now exists: the architecture, the detections, 
 enrichment path, and one incident that exercises all of it end to end. Phase 8 is a
 documentation pass — quick-start, example alerts, the link to this report, and an honest
 "what I'd improve at scale" section — not new lab work.
+
+---
+
+## Phase 8 — The final documentation pass
+
+**The point of the phase, in one line.** A lab nobody else can build, verify or evaluate is
+a story about work rather than the work itself — this phase made the repository stand on
+its own.
+
+### What was actually missing
+
+Seven phases of documentation existed, one per phase, each thorough about *its* phase. What
+did not exist was the thing a reader meets first: how to build this from nothing, what the
+alerts actually look like, and an honest account of where it would break. So Phase 8 added
+exactly three things to the README — a quick start, real alert excerpts, and a
+"what I'd improve at scale" section — and reordered the rest to match how someone reads it:
+*what is this → what does it look like → how do I run it → what did you build → what are
+its limits*.
+
+### The quick start is mostly about ordering
+
+Listing the scripts was the easy part. The useful part is the two ordering constraints,
+because both fail **silently**:
+
+1. **`wazuh-passwords.sh` before the first `wazuh-up.sh`.** On a cold start the indexer
+   initialises its security index straight from `internal_users.yml`. Run the script after
+   the stack is already up and it takes a completely different path — pushing config with
+   `securityadmin.sh` and restarting services.
+2. **`misp-bootstrap.sh` before `wazuh-up.sh`.** The manager config is rendered at start-up
+   with the MISP API key read out of `misp/.env`. Without that file, the integration comes
+   up authenticating with nothing, every lookup 403s, and **the lab looks completely
+   healthy while enriching absolutely nothing**.
+
+*What to say if asked:* the second one is the interesting failure. Nothing crashes. The
+containers are healthy, the dashboard works, alerts flow. The only symptom is that a
+capability you believe you have does not exist — the same failure shape as the dead rules
+in Phase 7, one layer up the stack. That is why `wazuh-up.sh` warns loudly when the key is
+missing and why the check suite asserts the placeholder did not survive into the running
+config.
+
+### Two numbers that were wrong
+
+Writing the "at a glance" table meant measuring rather than remembering, and two published
+figures did not survive contact with the live system.
+
+The README and the Phase 7 incident report both said **26,290 indicators**. The actual
+count in MISP was **27,706**. I had carried the number forward from Phase 4's notes instead
+of querying, and it had drifted.
+
+Nobody would have noticed. That is precisely why it matters: an unverifiable number in a
+security write-up is indistinguishable from a fabricated one, and a reader who catches one
+stale figure is right to distrust every other figure in the document. Both are now
+corrected, and the corrected version says something better than the wrong one did —
+**URLhaus contributed 17,141 indicators and Feodo Tracker contributed 5, and the incident
+was caught by the feed with 5.** Volume is not usefulness.
+
+*The habit worth stating:* if a document asserts a number, either measure it at write time
+or make the check suite assert it. `incident-check.sh` already does this for the alert
+count and the addresses the report names — which is why *those* could not drift.
+
+### Writing "what I'd improve at scale" honestly
+
+The temptation in a portfolio README is to make this section a list of buzzwords that
+sounds like scale awareness. I wrote it instead as the design review I would expect to be
+given, grouped into four areas, and made myself name the *specific* thing wrong with *this*
+lab rather than generic best practice.
+
+The section that matters most is the enrichment one, because it identifies a real
+architectural mistake rather than a missing feature: **every MISP lookup is a synchronous
+HTTP round-trip on the alert path.** That makes MISP a hard dependency of detection — if
+MISP is down, enrichment stops — and it puts a network round-trip in the critical path of
+every alert. The fix inverts the flow: pull indicators out of MISP on a schedule into a
+local lookup structure, and query that. It is the right design and I did not build it,
+which is worth saying plainly.
+
+I also kept the lab's most obvious unfixed defect in the section rather than quietly
+omitting it: **enrichment amplifies alert volume**, nine identical level-13 alerts for one
+brute force. It is named, its fix is named, and it is not implemented.
+
+*What to say if asked why the section is so blunt:* every one of these limits was going to
+be obvious to a reviewer within ten minutes. Naming them first is the difference between
+"did not notice" and "understood the trade-off and ran out of scope" — and the second is
+the only one of those that is a skill.
+
+### Result
+
+```
+157 passed, 0 failed     across all six check suites
+```
+
+The repository is now self-contained: prerequisites, build order, verification, what the
+alerts look like, one full incident, and an honest account of the limits. `README.md` is
+404 lines, `docs/` is ~2,600 lines, and `scripts/` is 2,713 lines of shell and Python — of
+which **1,006 are the six check suites**.
+
+*That ratio is the thing I would point at.* More than a third of the code in this
+repository exists only to prove the rest of it works, and almost all of it was written
+after something failed silently and taught me that "it looks right" is not evidence. The
+lab is the artefact; the checks are the argument that it works.
+
+*(Both figures in this paragraph were measured while writing it — the previous paragraph
+about stale numbers would be worth very little otherwise. My first draft said "roughly
+half" and it is 37%.)*

@@ -215,9 +215,10 @@ That the attacking host and the callback host appear in the *same* C2 event supp
 single-actor interpretation: infrastructure already doing botnet C2 was also used to
 acquire the access, and the compromised host was pointed back at the same estate.
 
-**Intel coverage at the time of the incident:** 26,290 indicators across four abuse.ch
-feeds (ThreatFox, URLhaus, MalwareBazaar, Feodo Tracker). Feodo Tracker contributed only
-5 of those — and both hits came from that 5. Volume is not the same thing as usefulness.
+**Intel coverage at the time of the incident:** 27,706 indicators across four abuse.ch
+feeds — URLhaus 17,141, ThreatFox 8,762, MalwareBazaar 1,798, and Feodo Tracker **5**.
+Both hits came from that 5. Volume is not the same thing as usefulness: the smallest feed
+in the lab, by three orders of magnitude, is the one that caught this incident.
 
 ---
 
