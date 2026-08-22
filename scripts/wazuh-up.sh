@@ -82,6 +82,31 @@ relabel_path "$REPO_ROOT/wazuh/lists"
 log "Starting stack (project: $COMPOSE_PROJECT)"
 compose up -d
 
+# The dashboard's own copy of the wazuh-wui API password lives in wazuh.yml on
+# a named volume, templated once by the dashboard image's entrypoint on first
+# boot. It is never re-templated afterwards, so if that volume predates the
+# current API_PASSWORD (e.g. .env was regenerated, or the volume is older than
+# the password currently in it), the dashboard silently keeps authenticating
+# with the stale value and every Server API connection reads "Offline" with a
+# 401 in its logs — the UI itself loads fine, which makes this easy to miss.
+sync_dashboard_api_password() {
+  local current
+  current="$(compose exec -T wazuh.dashboard \
+    grep -oP '(?<=password: ")[^"]*' /usr/share/wazuh-dashboard/data/wazuh/config/wazuh.yml 2>/dev/null | tail -1)"
+  [[ "$current" == "$API_PASSWORD" ]] && return 0
+  log "Dashboard's stored API password is stale — resyncing from .env"
+  API_PW="$API_PASSWORD" compose exec -T wazuh.dashboard python3 -c '
+import os
+p = "/usr/share/wazuh-dashboard/data/wazuh/config/wazuh.yml"
+s = open(p).read()
+import re
+s2 = re.sub(r"password: \"[^\"]*\"", "password: \"" + os.environ["API_PW"] + "\"", s, count=1)
+open(p, "w").write(s2)
+' || { warn "could not resync the dashboard API password"; return 1; }
+  compose restart wazuh.dashboard
+}
+sync_dashboard_api_password
+
 log "Waiting for the indexer to report green (up to 5 minutes)"
 # The dashboard restarts a few times while the indexer initialises. That is
 # expected on a cold start and not a failure.
