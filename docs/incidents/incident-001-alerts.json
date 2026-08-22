@@ -1,8 +1,8 @@
 {
   "incident": "INC-2026-001",
   "captured": {
-    "started": "2026-08-21T13:34:43Z",
-    "ended": "2026-08-21T13:35:50Z",
+    "started": "2026-08-22T12:16:45Z",
+    "ended": "2026-08-22T12:17:47Z",
     "attacker_ip": "50.16.16.211",
     "c2_ip": "162.243.103.246",
     "control_unlisted_ip": "198.51.100.77",
@@ -12,7 +12,1058 @@
   "alert_count": 45,
   "alerts": [
     {
-      "timestamp": "2026-08-21T13:34:44.269+0000",
+      "timestamp": "2026-08-22T12:16:46.860+0000",
+      "rule": {
+        "level": 5,
+        "description": "sshd: Attempt to login using a non-existent user",
+        "id": "5710",
+        "mitre": {
+          "id": [
+            "T1110.001",
+            "T1021.004"
+          ],
+          "tactic": [
+            "Credential Access",
+            "Lateral Movement"
+          ],
+          "technique": [
+            "Password Guessing",
+            "SSH"
+          ]
+        },
+        "firedtimes": 1,
+        "mail": false,
+        "groups": [
+          "syslog",
+          "sshd",
+          "authentication_failed",
+          "invalid_login"
+        ],
+        "gdpr": [
+          "IV_35.7.d",
+          "IV_32.2"
+        ],
+        "gpg13": [
+          "7.1"
+        ],
+        "hipaa": [
+          "164.312.b"
+        ],
+        "nist_800_53": [
+          "AU.14",
+          "AC.7",
+          "AU.6"
+        ],
+        "pci_dss": [
+          "10.2.4",
+          "10.2.5",
+          "10.6.1"
+        ],
+        "tsc": [
+          "CC6.1",
+          "CC6.8",
+          "CC7.2",
+          "CC7.3"
+        ]
+      },
+      "agent": {
+        "id": "006",
+        "name": "endpoint01",
+        "ip": "172.19.0.2"
+      },
+      "manager": {
+        "name": "wazuh.manager"
+      },
+      "id": "1787401006.5280",
+      "full_log": "Aug 22 17:46:45 endpoint01 sshd[8001]: Failed password for invalid user root from 50.16.16.211 port 45001 ssh2",
+      "predecoder": {
+        "program_name": "sshd",
+        "timestamp": "Aug 22 17:46:45",
+        "hostname": "endpoint01"
+      },
+      "decoder": {
+        "parent": "sshd",
+        "name": "sshd"
+      },
+      "data": {
+        "srcip": "50.16.16.211",
+        "srcuser": "root"
+      },
+      "location": "/var/log/simulated/auth.log"
+    },
+    {
+      "timestamp": "2026-08-22T12:16:46.860+0000",
+      "rule": {
+        "level": 5,
+        "description": "sshd: Attempt to login using a non-existent user",
+        "id": "5710",
+        "mitre": {
+          "id": [
+            "T1110.001",
+            "T1021.004"
+          ],
+          "tactic": [
+            "Credential Access",
+            "Lateral Movement"
+          ],
+          "technique": [
+            "Password Guessing",
+            "SSH"
+          ]
+        },
+        "firedtimes": 2,
+        "mail": false,
+        "groups": [
+          "syslog",
+          "sshd",
+          "authentication_failed",
+          "invalid_login"
+        ],
+        "gdpr": [
+          "IV_35.7.d",
+          "IV_32.2"
+        ],
+        "gpg13": [
+          "7.1"
+        ],
+        "hipaa": [
+          "164.312.b"
+        ],
+        "nist_800_53": [
+          "AU.14",
+          "AC.7",
+          "AU.6"
+        ],
+        "pci_dss": [
+          "10.2.4",
+          "10.2.5",
+          "10.6.1"
+        ],
+        "tsc": [
+          "CC6.1",
+          "CC6.8",
+          "CC7.2",
+          "CC7.3"
+        ]
+      },
+      "agent": {
+        "id": "006",
+        "name": "endpoint01",
+        "ip": "172.19.0.2"
+      },
+      "manager": {
+        "name": "wazuh.manager"
+      },
+      "id": "1787401006.5823",
+      "full_log": "Aug 22 17:46:46 endpoint01 sshd[8002]: Failed password for invalid user root from 50.16.16.211 port 45002 ssh2",
+      "predecoder": {
+        "program_name": "sshd",
+        "timestamp": "Aug 22 17:46:46",
+        "hostname": "endpoint01"
+      },
+      "decoder": {
+        "parent": "sshd",
+        "name": "sshd"
+      },
+      "data": {
+        "srcip": "50.16.16.211",
+        "srcuser": "root"
+      },
+      "location": "/var/log/simulated/auth.log"
+    },
+    {
+      "timestamp": "2026-08-22T12:16:48.422+0000",
+      "rule": {
+        "level": 13,
+        "description": "Authentication attack from threat-intel-listed host 50.16.16.211 against endpoint01",
+        "id": "100240",
+        "mitre": {
+          "id": [
+            "T1110.001"
+          ],
+          "tactic": [
+            "Credential Access"
+          ],
+          "technique": [
+            "Password Guessing"
+          ]
+        },
+        "firedtimes": 1,
+        "mail": true,
+        "groups": [
+          "soclab",
+          "custom_detections",
+          "threat_intel",
+          "misp_alert",
+          "authentication_failures",
+          "attack",
+          "soclab_d5"
+        ]
+      },
+      "agent": {
+        "id": "006",
+        "name": "endpoint01",
+        "ip": "172.19.0.2"
+      },
+      "manager": {
+        "name": "wazuh.manager"
+      },
+      "id": "1787401008.6366",
+      "full_log": "{\"integration\": \"misp\", \"misp\": {\"source\": \"wazuh-custom-misp\", \"observable\": \"50.16.16.211\", \"observable_kind\": \"ip\", \"attribute_type\": \"ip-dst\", \"attribute_value\": \"50.16.16.211\", \"category\": \"Network activity\", \"to_ids\": \"True\", \"event_id\": \"1\", \"comment\": \"\", \"source_rule_id\": \"5710\", \"source_rule_description\": \"sshd: Attempt to login using a non-existent user\", \"source_rule_groups\": \"syslog,sshd,authentication_failed,invalid_login\", \"agent_name\": \"endpoint01\"}}",
+      "decoder": {
+        "name": "json"
+      },
+      "data": {
+        "integration": "misp",
+        "misp": {
+          "source": "wazuh-custom-misp",
+          "observable": "50.16.16.211",
+          "observable_kind": "ip",
+          "attribute_type": "ip-dst",
+          "attribute_value": "50.16.16.211",
+          "category": "Network activity",
+          "to_ids": "True",
+          "event_id": "1",
+          "source_rule_id": "5710",
+          "source_rule_description": "sshd: Attempt to login using a non-existent user",
+          "source_rule_groups": "syslog,sshd,authentication_failed,invalid_login",
+          "agent_name": "endpoint01"
+        }
+      },
+      "location": "custom-misp"
+    },
+    {
+      "timestamp": "2026-08-22T12:16:48.732+0000",
+      "rule": {
+        "level": 13,
+        "description": "Authentication attack from threat-intel-listed host 50.16.16.211 against endpoint01",
+        "id": "100240",
+        "mitre": {
+          "id": [
+            "T1110.001"
+          ],
+          "tactic": [
+            "Credential Access"
+          ],
+          "technique": [
+            "Password Guessing"
+          ]
+        },
+        "firedtimes": 2,
+        "mail": true,
+        "groups": [
+          "soclab",
+          "custom_detections",
+          "threat_intel",
+          "misp_alert",
+          "authentication_failures",
+          "attack",
+          "soclab_d5"
+        ]
+      },
+      "agent": {
+        "id": "006",
+        "name": "endpoint01",
+        "ip": "172.19.0.2"
+      },
+      "manager": {
+        "name": "wazuh.manager"
+      },
+      "id": "1787401008.7574",
+      "full_log": "{\"integration\": \"misp\", \"misp\": {\"source\": \"wazuh-custom-misp\", \"observable\": \"50.16.16.211\", \"observable_kind\": \"ip\", \"attribute_type\": \"ip-dst\", \"attribute_value\": \"50.16.16.211\", \"category\": \"Network activity\", \"to_ids\": \"True\", \"event_id\": \"1\", \"comment\": \"\", \"source_rule_id\": \"5710\", \"source_rule_description\": \"sshd: Attempt to login using a non-existent user\", \"source_rule_groups\": \"syslog,sshd,authentication_failed,invalid_login\", \"agent_name\": \"endpoint01\"}}",
+      "decoder": {
+        "name": "json"
+      },
+      "data": {
+        "integration": "misp",
+        "misp": {
+          "source": "wazuh-custom-misp",
+          "observable": "50.16.16.211",
+          "observable_kind": "ip",
+          "attribute_type": "ip-dst",
+          "attribute_value": "50.16.16.211",
+          "category": "Network activity",
+          "to_ids": "True",
+          "event_id": "1",
+          "source_rule_id": "5710",
+          "source_rule_description": "sshd: Attempt to login using a non-existent user",
+          "source_rule_groups": "syslog,sshd,authentication_failed,invalid_login",
+          "agent_name": "endpoint01"
+        }
+      },
+      "location": "custom-misp"
+    },
+    {
+      "timestamp": "2026-08-22T12:16:48.860+0000",
+      "rule": {
+        "level": 5,
+        "description": "sshd: Attempt to login using a non-existent user",
+        "id": "5710",
+        "mitre": {
+          "id": [
+            "T1110.001",
+            "T1021.004"
+          ],
+          "tactic": [
+            "Credential Access",
+            "Lateral Movement"
+          ],
+          "technique": [
+            "Password Guessing",
+            "SSH"
+          ]
+        },
+        "firedtimes": 3,
+        "mail": false,
+        "groups": [
+          "syslog",
+          "sshd",
+          "authentication_failed",
+          "invalid_login"
+        ],
+        "gdpr": [
+          "IV_35.7.d",
+          "IV_32.2"
+        ],
+        "gpg13": [
+          "7.1"
+        ],
+        "hipaa": [
+          "164.312.b"
+        ],
+        "nist_800_53": [
+          "AU.14",
+          "AC.7",
+          "AU.6"
+        ],
+        "pci_dss": [
+          "10.2.4",
+          "10.2.5",
+          "10.6.1"
+        ],
+        "tsc": [
+          "CC6.1",
+          "CC6.8",
+          "CC7.2",
+          "CC7.3"
+        ]
+      },
+      "agent": {
+        "id": "006",
+        "name": "endpoint01",
+        "ip": "172.19.0.2"
+      },
+      "manager": {
+        "name": "wazuh.manager"
+      },
+      "id": "1787401008.8782",
+      "full_log": "Aug 22 17:46:47 endpoint01 sshd[8003]: Failed password for invalid user admin from 50.16.16.211 port 45003 ssh2",
+      "predecoder": {
+        "program_name": "sshd",
+        "timestamp": "Aug 22 17:46:47",
+        "hostname": "endpoint01"
+      },
+      "decoder": {
+        "parent": "sshd",
+        "name": "sshd"
+      },
+      "data": {
+        "srcip": "50.16.16.211",
+        "srcuser": "admin"
+      },
+      "location": "/var/log/simulated/auth.log"
+    },
+    {
+      "timestamp": "2026-08-22T12:16:50.290+0000",
+      "rule": {
+        "level": 13,
+        "description": "Authentication attack from threat-intel-listed host 50.16.16.211 against endpoint01",
+        "id": "100240",
+        "mitre": {
+          "id": [
+            "T1110.001"
+          ],
+          "tactic": [
+            "Credential Access"
+          ],
+          "technique": [
+            "Password Guessing"
+          ]
+        },
+        "firedtimes": 3,
+        "mail": true,
+        "groups": [
+          "soclab",
+          "custom_detections",
+          "threat_intel",
+          "misp_alert",
+          "authentication_failures",
+          "attack",
+          "soclab_d5"
+        ]
+      },
+      "agent": {
+        "id": "006",
+        "name": "endpoint01",
+        "ip": "172.19.0.2"
+      },
+      "manager": {
+        "name": "wazuh.manager"
+      },
+      "id": "1787401010.9326",
+      "full_log": "{\"integration\": \"misp\", \"misp\": {\"source\": \"wazuh-custom-misp\", \"observable\": \"50.16.16.211\", \"observable_kind\": \"ip\", \"attribute_type\": \"ip-dst\", \"attribute_value\": \"50.16.16.211\", \"category\": \"Network activity\", \"to_ids\": \"True\", \"event_id\": \"1\", \"comment\": \"\", \"source_rule_id\": \"5710\", \"source_rule_description\": \"sshd: Attempt to login using a non-existent user\", \"source_rule_groups\": \"syslog,sshd,authentication_failed,invalid_login\", \"agent_name\": \"endpoint01\"}}",
+      "decoder": {
+        "name": "json"
+      },
+      "data": {
+        "integration": "misp",
+        "misp": {
+          "source": "wazuh-custom-misp",
+          "observable": "50.16.16.211",
+          "observable_kind": "ip",
+          "attribute_type": "ip-dst",
+          "attribute_value": "50.16.16.211",
+          "category": "Network activity",
+          "to_ids": "True",
+          "event_id": "1",
+          "source_rule_id": "5710",
+          "source_rule_description": "sshd: Attempt to login using a non-existent user",
+          "source_rule_groups": "syslog,sshd,authentication_failed,invalid_login",
+          "agent_name": "endpoint01"
+        }
+      },
+      "location": "custom-misp"
+    },
+    {
+      "timestamp": "2026-08-22T12:16:50.860+0000",
+      "rule": {
+        "level": 5,
+        "description": "sshd: Attempt to login using a non-existent user",
+        "id": "5710",
+        "mitre": {
+          "id": [
+            "T1110.001",
+            "T1021.004"
+          ],
+          "tactic": [
+            "Credential Access",
+            "Lateral Movement"
+          ],
+          "technique": [
+            "Password Guessing",
+            "SSH"
+          ]
+        },
+        "firedtimes": 4,
+        "mail": false,
+        "groups": [
+          "syslog",
+          "sshd",
+          "authentication_failed",
+          "invalid_login"
+        ],
+        "gdpr": [
+          "IV_35.7.d",
+          "IV_32.2"
+        ],
+        "gpg13": [
+          "7.1"
+        ],
+        "hipaa": [
+          "164.312.b"
+        ],
+        "nist_800_53": [
+          "AU.14",
+          "AC.7",
+          "AU.6"
+        ],
+        "pci_dss": [
+          "10.2.4",
+          "10.2.5",
+          "10.6.1"
+        ],
+        "tsc": [
+          "CC6.1",
+          "CC6.8",
+          "CC7.2",
+          "CC7.3"
+        ]
+      },
+      "agent": {
+        "id": "006",
+        "name": "endpoint01",
+        "ip": "172.19.0.2"
+      },
+      "manager": {
+        "name": "wazuh.manager"
+      },
+      "id": "1787401010.10534",
+      "full_log": "Aug 22 17:46:48 endpoint01 sshd[8004]: Failed password for invalid user admin from 50.16.16.211 port 45004 ssh2",
+      "predecoder": {
+        "program_name": "sshd",
+        "timestamp": "Aug 22 17:46:48",
+        "hostname": "endpoint01"
+      },
+      "decoder": {
+        "parent": "sshd",
+        "name": "sshd"
+      },
+      "data": {
+        "srcip": "50.16.16.211",
+        "srcuser": "admin"
+      },
+      "location": "/var/log/simulated/auth.log"
+    },
+    {
+      "timestamp": "2026-08-22T12:16:50.900+0000",
+      "rule": {
+        "level": 5,
+        "description": "sshd: Attempt to login using a non-existent user",
+        "id": "5710",
+        "mitre": {
+          "id": [
+            "T1110.001",
+            "T1021.004"
+          ],
+          "tactic": [
+            "Credential Access",
+            "Lateral Movement"
+          ],
+          "technique": [
+            "Password Guessing",
+            "SSH"
+          ]
+        },
+        "firedtimes": 5,
+        "mail": false,
+        "groups": [
+          "syslog",
+          "sshd",
+          "authentication_failed",
+          "invalid_login"
+        ],
+        "gdpr": [
+          "IV_35.7.d",
+          "IV_32.2"
+        ],
+        "gpg13": [
+          "7.1"
+        ],
+        "hipaa": [
+          "164.312.b"
+        ],
+        "nist_800_53": [
+          "AU.14",
+          "AC.7",
+          "AU.6"
+        ],
+        "pci_dss": [
+          "10.2.4",
+          "10.2.5",
+          "10.6.1"
+        ],
+        "tsc": [
+          "CC6.1",
+          "CC6.8",
+          "CC7.2",
+          "CC7.3"
+        ]
+      },
+      "agent": {
+        "id": "006",
+        "name": "endpoint01",
+        "ip": "172.19.0.2"
+      },
+      "manager": {
+        "name": "wazuh.manager"
+      },
+      "id": "1787401010.11079",
+      "full_log": "Aug 22 17:46:49 endpoint01 sshd[8005]: Failed password for invalid user oracle from 50.16.16.211 port 45005 ssh2",
+      "predecoder": {
+        "program_name": "sshd",
+        "timestamp": "Aug 22 17:46:49",
+        "hostname": "endpoint01"
+      },
+      "decoder": {
+        "parent": "sshd",
+        "name": "sshd"
+      },
+      "data": {
+        "srcip": "50.16.16.211",
+        "srcuser": "oracle"
+      },
+      "location": "/var/log/simulated/auth.log"
+    },
+    {
+      "timestamp": "2026-08-22T12:16:52.706+0000",
+      "rule": {
+        "level": 14,
+        "description": "MISP: repeated threat-intel matches from endpoint01 \u2014 possible active compromise",
+        "id": "100103",
+        "frequency": 4,
+        "firedtimes": 1,
+        "mail": true,
+        "groups": [
+          "threat_intel",
+          "misp",
+          "threat_intel",
+          "misp_correlation",
+          "attack"
+        ]
+      },
+      "agent": {
+        "id": "006",
+        "name": "endpoint01",
+        "ip": "172.19.0.2"
+      },
+      "manager": {
+        "name": "wazuh.manager"
+      },
+      "id": "1787401012.11625",
+      "previous_output": "{\"integration\": \"misp\", \"misp\": {\"source\": \"wazuh-custom-misp\", \"observable\": \"50.16.16.211\", \"observable_kind\": \"ip\", \"attribute_type\": \"ip-dst\", \"attribute_value\": \"50.16.16.211\", \"category\": \"Network activity\", \"to_ids\": \"True\", \"event_id\": \"1\", \"comment\": \"\", \"source_rule_id\": \"5710\", \"source_rule_description\": \"sshd: Attempt to login using a non-existent user\", \"source_rule_groups\": \"syslog,sshd,authentication_failed,invalid_login\", \"agent_name\": \"endpoint01\"}}\n{\"integration\": \"misp\", \"misp\": {\"source\": \"wazuh-custom-misp\", \"observable\": \"50.16.16.211\", \"observable_kind\": \"ip\", \"attribute_type\": \"ip-dst\", \"attribute_value\": \"50.16.16.211\", \"category\": \"Network activity\", \"to_ids\": \"True\", \"event_id\": \"1\", \"comment\": \"\", \"source_rule_id\": \"5710\", \"source_rule_description\": \"sshd: Attempt to login using a non-existent user\", \"source_rule_groups\": \"syslog,sshd,authentication_failed,invalid_login\", \"agent_name\": \"endpoint01\"}}\n{\"integration\": \"misp\", \"misp\": {\"source\": \"wazuh-custom-misp\", \"observable\": \"50.16.16.211\", \"observable_kind\": \"ip\", \"attribute_type\": \"ip-dst\", \"attribute_value\": \"50.16.16.211\", \"category\": \"Network activity\", \"to_ids\": \"True\", \"event_id\": \"1\", \"comment\": \"\", \"source_rule_id\": \"5710\", \"source_rule_description\": \"sshd: Attempt to login using a non-existent user\", \"source_rule_groups\": \"syslog,sshd,authentication_failed,invalid_login\", \"agent_name\": \"endpoint01\"}}",
+      "full_log": "{\"integration\": \"misp\", \"misp\": {\"source\": \"wazuh-custom-misp\", \"observable\": \"50.16.16.211\", \"observable_kind\": \"ip\", \"attribute_type\": \"ip-dst\", \"attribute_value\": \"50.16.16.211\", \"category\": \"Network activity\", \"to_ids\": \"True\", \"event_id\": \"1\", \"comment\": \"\", \"source_rule_id\": \"5710\", \"source_rule_description\": \"sshd: Attempt to login using a non-existent user\", \"source_rule_groups\": \"syslog,sshd,authentication_failed,invalid_login\", \"agent_name\": \"endpoint01\"}}",
+      "decoder": {
+        "name": "json"
+      },
+      "data": {
+        "integration": "misp",
+        "misp": {
+          "source": "wazuh-custom-misp",
+          "observable": "50.16.16.211",
+          "observable_kind": "ip",
+          "attribute_type": "ip-dst",
+          "attribute_value": "50.16.16.211",
+          "category": "Network activity",
+          "to_ids": "True",
+          "event_id": "1",
+          "source_rule_id": "5710",
+          "source_rule_description": "sshd: Attempt to login using a non-existent user",
+          "source_rule_groups": "syslog,sshd,authentication_failed,invalid_login",
+          "agent_name": "endpoint01"
+        }
+      },
+      "location": "custom-misp"
+    },
+    {
+      "timestamp": "2026-08-22T12:16:52.860+0000",
+      "rule": {
+        "level": 5,
+        "description": "sshd: Attempt to login using a non-existent user",
+        "id": "5710",
+        "mitre": {
+          "id": [
+            "T1110.001",
+            "T1021.004"
+          ],
+          "tactic": [
+            "Credential Access",
+            "Lateral Movement"
+          ],
+          "technique": [
+            "Password Guessing",
+            "SSH"
+          ]
+        },
+        "firedtimes": 6,
+        "mail": false,
+        "groups": [
+          "syslog",
+          "sshd",
+          "authentication_failed",
+          "invalid_login"
+        ],
+        "gdpr": [
+          "IV_35.7.d",
+          "IV_32.2"
+        ],
+        "gpg13": [
+          "7.1"
+        ],
+        "hipaa": [
+          "164.312.b"
+        ],
+        "nist_800_53": [
+          "AU.14",
+          "AC.7",
+          "AU.6"
+        ],
+        "pci_dss": [
+          "10.2.4",
+          "10.2.5",
+          "10.6.1"
+        ],
+        "tsc": [
+          "CC6.1",
+          "CC6.8",
+          "CC7.2",
+          "CC7.3"
+        ]
+      },
+      "agent": {
+        "id": "006",
+        "name": "endpoint01",
+        "ip": "172.19.0.2"
+      },
+      "manager": {
+        "name": "wazuh.manager"
+      },
+      "id": "1787401012.14211",
+      "full_log": "Aug 22 17:46:50 endpoint01 sshd[8006]: Failed password for invalid user postgres from 50.16.16.211 port 45006 ssh2",
+      "predecoder": {
+        "program_name": "sshd",
+        "timestamp": "Aug 22 17:46:50",
+        "hostname": "endpoint01"
+      },
+      "decoder": {
+        "parent": "sshd",
+        "name": "sshd"
+      },
+      "data": {
+        "srcip": "50.16.16.211",
+        "srcuser": "postgres"
+      },
+      "location": "/var/log/simulated/auth.log"
+    },
+    {
+      "timestamp": "2026-08-22T12:16:52.860+0000",
+      "rule": {
+        "level": 5,
+        "description": "sshd: Attempt to login using a non-existent user",
+        "id": "5710",
+        "mitre": {
+          "id": [
+            "T1110.001",
+            "T1021.004"
+          ],
+          "tactic": [
+            "Credential Access",
+            "Lateral Movement"
+          ],
+          "technique": [
+            "Password Guessing",
+            "SSH"
+          ]
+        },
+        "firedtimes": 7,
+        "mail": false,
+        "groups": [
+          "syslog",
+          "sshd",
+          "authentication_failed",
+          "invalid_login"
+        ],
+        "gdpr": [
+          "IV_35.7.d",
+          "IV_32.2"
+        ],
+        "gpg13": [
+          "7.1"
+        ],
+        "hipaa": [
+          "164.312.b"
+        ],
+        "nist_800_53": [
+          "AU.14",
+          "AC.7",
+          "AU.6"
+        ],
+        "pci_dss": [
+          "10.2.4",
+          "10.2.5",
+          "10.6.1"
+        ],
+        "tsc": [
+          "CC6.1",
+          "CC6.8",
+          "CC7.2",
+          "CC7.3"
+        ]
+      },
+      "agent": {
+        "id": "006",
+        "name": "endpoint01",
+        "ip": "172.19.0.2"
+      },
+      "manager": {
+        "name": "wazuh.manager"
+      },
+      "id": "1787401012.14759",
+      "full_log": "Aug 22 17:46:52 endpoint01 sshd[8007]: Failed password for invalid user ubuntu from 50.16.16.211 port 45007 ssh2",
+      "predecoder": {
+        "program_name": "sshd",
+        "timestamp": "Aug 22 17:46:52",
+        "hostname": "endpoint01"
+      },
+      "decoder": {
+        "parent": "sshd",
+        "name": "sshd"
+      },
+      "data": {
+        "srcip": "50.16.16.211",
+        "srcuser": "ubuntu"
+      },
+      "location": "/var/log/simulated/auth.log"
+    },
+    {
+      "timestamp": "2026-08-22T12:16:53.015+0000",
+      "rule": {
+        "level": 13,
+        "description": "Authentication attack from threat-intel-listed host 50.16.16.211 against endpoint01",
+        "id": "100240",
+        "mitre": {
+          "id": [
+            "T1110.001"
+          ],
+          "tactic": [
+            "Credential Access"
+          ],
+          "technique": [
+            "Password Guessing"
+          ]
+        },
+        "firedtimes": 4,
+        "mail": true,
+        "groups": [
+          "soclab",
+          "custom_detections",
+          "threat_intel",
+          "misp_alert",
+          "authentication_failures",
+          "attack",
+          "soclab_d5"
+        ]
+      },
+      "agent": {
+        "id": "006",
+        "name": "endpoint01",
+        "ip": "172.19.0.2"
+      },
+      "manager": {
+        "name": "wazuh.manager"
+      },
+      "id": "1787401013.15305",
+      "full_log": "{\"integration\": \"misp\", \"misp\": {\"source\": \"wazuh-custom-misp\", \"observable\": \"50.16.16.211\", \"observable_kind\": \"ip\", \"attribute_type\": \"ip-dst\", \"attribute_value\": \"50.16.16.211\", \"category\": \"Network activity\", \"to_ids\": \"True\", \"event_id\": \"1\", \"comment\": \"\", \"source_rule_id\": \"5710\", \"source_rule_description\": \"sshd: Attempt to login using a non-existent user\", \"source_rule_groups\": \"syslog,sshd,authentication_failed,invalid_login\", \"agent_name\": \"endpoint01\"}}",
+      "decoder": {
+        "name": "json"
+      },
+      "data": {
+        "integration": "misp",
+        "misp": {
+          "source": "wazuh-custom-misp",
+          "observable": "50.16.16.211",
+          "observable_kind": "ip",
+          "attribute_type": "ip-dst",
+          "attribute_value": "50.16.16.211",
+          "category": "Network activity",
+          "to_ids": "True",
+          "event_id": "1",
+          "source_rule_id": "5710",
+          "source_rule_description": "sshd: Attempt to login using a non-existent user",
+          "source_rule_groups": "syslog,sshd,authentication_failed,invalid_login",
+          "agent_name": "endpoint01"
+        }
+      },
+      "location": "custom-misp"
+    },
+    {
+      "timestamp": "2026-08-22T12:16:53.446+0000",
+      "rule": {
+        "level": 13,
+        "description": "Authentication attack from threat-intel-listed host 50.16.16.211 against endpoint01",
+        "id": "100240",
+        "mitre": {
+          "id": [
+            "T1110.001"
+          ],
+          "tactic": [
+            "Credential Access"
+          ],
+          "technique": [
+            "Password Guessing"
+          ]
+        },
+        "firedtimes": 5,
+        "mail": true,
+        "groups": [
+          "soclab",
+          "custom_detections",
+          "threat_intel",
+          "misp_alert",
+          "authentication_failures",
+          "attack",
+          "soclab_d5"
+        ]
+      },
+      "agent": {
+        "id": "006",
+        "name": "endpoint01",
+        "ip": "172.19.0.2"
+      },
+      "manager": {
+        "name": "wazuh.manager"
+      },
+      "id": "1787401013.16514",
+      "full_log": "{\"integration\": \"misp\", \"misp\": {\"source\": \"wazuh-custom-misp\", \"observable\": \"50.16.16.211\", \"observable_kind\": \"ip\", \"attribute_type\": \"ip-dst\", \"attribute_value\": \"50.16.16.211\", \"category\": \"Network activity\", \"to_ids\": \"True\", \"event_id\": \"1\", \"comment\": \"\", \"source_rule_id\": \"5710\", \"source_rule_description\": \"sshd: Attempt to login using a non-existent user\", \"source_rule_groups\": \"syslog,sshd,authentication_failed,invalid_login\", \"agent_name\": \"endpoint01\"}}",
+      "decoder": {
+        "name": "json"
+      },
+      "data": {
+        "integration": "misp",
+        "misp": {
+          "source": "wazuh-custom-misp",
+          "observable": "50.16.16.211",
+          "observable_kind": "ip",
+          "attribute_type": "ip-dst",
+          "attribute_value": "50.16.16.211",
+          "category": "Network activity",
+          "to_ids": "True",
+          "event_id": "1",
+          "source_rule_id": "5710",
+          "source_rule_description": "sshd: Attempt to login using a non-existent user",
+          "source_rule_groups": "syslog,sshd,authentication_failed,invalid_login",
+          "agent_name": "endpoint01"
+        }
+      },
+      "location": "custom-misp"
+    },
+    {
+      "timestamp": "2026-08-22T12:16:53.754+0000",
+      "rule": {
+        "level": 13,
+        "description": "Authentication attack from threat-intel-listed host 50.16.16.211 against endpoint01",
+        "id": "100240",
+        "mitre": {
+          "id": [
+            "T1110.001"
+          ],
+          "tactic": [
+            "Credential Access"
+          ],
+          "technique": [
+            "Password Guessing"
+          ]
+        },
+        "firedtimes": 6,
+        "mail": true,
+        "groups": [
+          "soclab",
+          "custom_detections",
+          "threat_intel",
+          "misp_alert",
+          "authentication_failures",
+          "attack",
+          "soclab_d5"
+        ]
+      },
+      "agent": {
+        "id": "006",
+        "name": "endpoint01",
+        "ip": "172.19.0.2"
+      },
+      "manager": {
+        "name": "wazuh.manager"
+      },
+      "id": "1787401013.17723",
+      "full_log": "{\"integration\": \"misp\", \"misp\": {\"source\": \"wazuh-custom-misp\", \"observable\": \"50.16.16.211\", \"observable_kind\": \"ip\", \"attribute_type\": \"ip-dst\", \"attribute_value\": \"50.16.16.211\", \"category\": \"Network activity\", \"to_ids\": \"True\", \"event_id\": \"1\", \"comment\": \"\", \"source_rule_id\": \"5710\", \"source_rule_description\": \"sshd: Attempt to login using a non-existent user\", \"source_rule_groups\": \"syslog,sshd,authentication_failed,invalid_login\", \"agent_name\": \"endpoint01\"}}",
+      "decoder": {
+        "name": "json"
+      },
+      "data": {
+        "integration": "misp",
+        "misp": {
+          "source": "wazuh-custom-misp",
+          "observable": "50.16.16.211",
+          "observable_kind": "ip",
+          "attribute_type": "ip-dst",
+          "attribute_value": "50.16.16.211",
+          "category": "Network activity",
+          "to_ids": "True",
+          "event_id": "1",
+          "source_rule_id": "5710",
+          "source_rule_description": "sshd: Attempt to login using a non-existent user",
+          "source_rule_groups": "syslog,sshd,authentication_failed,invalid_login",
+          "agent_name": "endpoint01"
+        }
+      },
+      "location": "custom-misp"
+    },
+    {
+      "timestamp": "2026-08-22T12:16:54.861+0000",
+      "rule": {
+        "level": 10,
+        "description": "sshd: brute force trying to get access to the system. Non existent user.",
+        "id": "5712",
+        "mitre": {
+          "id": [
+            "T1110"
+          ],
+          "tactic": [
+            "Credential Access"
+          ],
+          "technique": [
+            "Brute Force"
+          ]
+        },
+        "frequency": 8,
+        "firedtimes": 1,
+        "mail": false,
+        "groups": [
+          "syslog",
+          "sshd",
+          "authentication_failures"
+        ],
+        "gdpr": [
+          "IV_35.7.d",
+          "IV_32.2"
+        ],
+        "hipaa": [
+          "164.312.b"
+        ],
+        "nist_800_53": [
+          "SI.4",
+          "AU.14",
+          "AC.7"
+        ],
+        "pci_dss": [
+          "11.4",
+          "10.2.4",
+          "10.2.5"
+        ],
+        "tsc": [
+          "CC6.1",
+          "CC6.8",
+          "CC7.2",
+          "CC7.3"
+        ]
+      },
+      "agent": {
+        "id": "006",
+        "name": "endpoint01",
+        "ip": "172.19.0.2"
+      },
+      "manager": {
+        "name": "wazuh.manager"
+      },
+      "id": "1787401014.18932",
+      "previous_output": "Aug 22 17:46:52 endpoint01 sshd[8007]: Failed password for invalid user ubuntu from 50.16.16.211 port 45007 ssh2\nAug 22 17:46:50 endpoint01 sshd[8006]: Failed password for invalid user postgres from 50.16.16.211 port 45006 ssh2\nAug 22 17:46:49 endpoint01 sshd[8005]: Failed password for invalid user oracle from 50.16.16.211 port 45005 ssh2\nAug 22 17:46:48 endpoint01 sshd[8004]: Failed password for invalid user admin from 50.16.16.211 port 45004 ssh2\nAug 22 17:46:47 endpoint01 sshd[8003]: Failed password for invalid user admin from 50.16.16.211 port 45003 ssh2\nAug 22 17:46:46 endpoint01 sshd[8002]: Failed password for invalid user root from 50.16.16.211 port 45002 ssh2\nAug 22 17:46:45 endpoint01 sshd[8001]: Failed password for invalid user root from 50.16.16.211 port 45001 ssh2",
+      "full_log": "Aug 22 17:46:53 endpoint01 sshd[8008]: Failed password for invalid user jenkins from 50.16.16.211 port 45008 ssh2",
+      "predecoder": {
+        "program_name": "sshd",
+        "timestamp": "Aug 22 17:46:53",
+        "hostname": "endpoint01"
+      },
+      "decoder": {
+        "parent": "sshd",
+        "name": "sshd"
+      },
+      "data": {
+        "srcip": "50.16.16.211",
+        "srcuser": "jenkins"
+      },
+      "location": "/var/log/simulated/auth.log"
+    },
+    {
+      "timestamp": "2026-08-22T12:16:54.861+0000",
       "rule": {
         "level": 5,
         "description": "sshd: Attempt to login using a non-existent user",
@@ -69,16 +1120,16 @@
       "agent": {
         "id": "006",
         "name": "endpoint01",
-        "ip": "172.19.0.4"
+        "ip": "172.19.0.2"
       },
       "manager": {
         "name": "wazuh.manager"
       },
-      "id": "1787319284.1588948",
-      "full_log": "Aug 21 19:04:43 endpoint01 sshd[8001]: Failed password for invalid user root from 50.16.16.211 port 45001 ssh2",
+      "id": "1787401014.20267",
+      "full_log": "Aug 22 17:46:54 endpoint01 sshd[8009]: Failed password for invalid user git from 50.16.16.211 port 45009 ssh2",
       "predecoder": {
         "program_name": "sshd",
-        "timestamp": "Aug 21 19:04:43",
+        "timestamp": "Aug 22 17:46:54",
         "hostname": "endpoint01"
       },
       "decoder": {
@@ -87,12 +1138,62 @@
       },
       "data": {
         "srcip": "50.16.16.211",
-        "srcuser": "root"
+        "srcuser": "git"
       },
       "location": "/var/log/simulated/auth.log"
     },
     {
-      "timestamp": "2026-08-21T13:34:45.377+0000",
+      "timestamp": "2026-08-22T12:16:56.398+0000",
+      "rule": {
+        "level": 14,
+        "description": "MISP: repeated threat-intel matches from endpoint01 \u2014 possible active compromise",
+        "id": "100103",
+        "frequency": 4,
+        "firedtimes": 2,
+        "mail": true,
+        "groups": [
+          "threat_intel",
+          "misp",
+          "threat_intel",
+          "misp_correlation",
+          "attack"
+        ]
+      },
+      "agent": {
+        "id": "006",
+        "name": "endpoint01",
+        "ip": "172.19.0.2"
+      },
+      "manager": {
+        "name": "wazuh.manager"
+      },
+      "id": "1787401016.20810",
+      "previous_output": "{\"integration\": \"misp\", \"misp\": {\"source\": \"wazuh-custom-misp\", \"observable\": \"50.16.16.211\", \"observable_kind\": \"ip\", \"attribute_type\": \"ip-dst\", \"attribute_value\": \"50.16.16.211\", \"category\": \"Network activity\", \"to_ids\": \"True\", \"event_id\": \"1\", \"comment\": \"\", \"source_rule_id\": \"5710\", \"source_rule_description\": \"sshd: Attempt to login using a non-existent user\", \"source_rule_groups\": \"syslog,sshd,authentication_failed,invalid_login\", \"agent_name\": \"endpoint01\"}}\n{\"integration\": \"misp\", \"misp\": {\"source\": \"wazuh-custom-misp\", \"observable\": \"50.16.16.211\", \"observable_kind\": \"ip\", \"attribute_type\": \"ip-dst\", \"attribute_value\": \"50.16.16.211\", \"category\": \"Network activity\", \"to_ids\": \"True\", \"event_id\": \"1\", \"comment\": \"\", \"source_rule_id\": \"5710\", \"source_rule_description\": \"sshd: Attempt to login using a non-existent user\", \"source_rule_groups\": \"syslog,sshd,authentication_failed,invalid_login\", \"agent_name\": \"endpoint01\"}}\n{\"integration\": \"misp\", \"misp\": {\"source\": \"wazuh-custom-misp\", \"observable\": \"50.16.16.211\", \"observable_kind\": \"ip\", \"attribute_type\": \"ip-dst\", \"attribute_value\": \"50.16.16.211\", \"category\": \"Network activity\", \"to_ids\": \"True\", \"event_id\": \"1\", \"comment\": \"\", \"source_rule_id\": \"5710\", \"source_rule_description\": \"sshd: Attempt to login using a non-existent user\", \"source_rule_groups\": \"syslog,sshd,authentication_failed,invalid_login\", \"agent_name\": \"endpoint01\"}}",
+      "full_log": "{\"integration\": \"misp\", \"misp\": {\"source\": \"wazuh-custom-misp\", \"observable\": \"50.16.16.211\", \"observable_kind\": \"ip\", \"attribute_type\": \"ip-dst\", \"attribute_value\": \"50.16.16.211\", \"category\": \"Network activity\", \"to_ids\": \"True\", \"event_id\": \"1\", \"comment\": \"\", \"source_rule_id\": \"5712\", \"source_rule_description\": \"sshd: brute force trying to get access to the system. Non existent user.\", \"source_rule_groups\": \"syslog,sshd,authentication_failures\", \"agent_name\": \"endpoint01\"}}",
+      "decoder": {
+        "name": "json"
+      },
+      "data": {
+        "integration": "misp",
+        "misp": {
+          "source": "wazuh-custom-misp",
+          "observable": "50.16.16.211",
+          "observable_kind": "ip",
+          "attribute_type": "ip-dst",
+          "attribute_value": "50.16.16.211",
+          "category": "Network activity",
+          "to_ids": "True",
+          "event_id": "1",
+          "source_rule_id": "5712",
+          "source_rule_description": "sshd: brute force trying to get access to the system. Non existent user.",
+          "source_rule_groups": "syslog,sshd,authentication_failures",
+          "agent_name": "endpoint01"
+        }
+      },
+      "location": "custom-misp"
+    },
+    {
+      "timestamp": "2026-08-22T12:16:56.723+0000",
       "rule": {
         "level": 13,
         "description": "Authentication attack from threat-intel-listed host 50.16.16.211 against endpoint01",
@@ -123,12 +1224,12 @@
       "agent": {
         "id": "006",
         "name": "endpoint01",
-        "ip": "172.19.0.4"
+        "ip": "172.19.0.2"
       },
       "manager": {
         "name": "wazuh.manager"
       },
-      "id": "1787319285.1589494",
+      "id": "1787401016.23420",
       "full_log": "{\"integration\": \"misp\", \"misp\": {\"source\": \"wazuh-custom-misp\", \"observable\": \"50.16.16.211\", \"observable_kind\": \"ip\", \"attribute_type\": \"ip-dst\", \"attribute_value\": \"50.16.16.211\", \"category\": \"Network activity\", \"to_ids\": \"True\", \"event_id\": \"1\", \"comment\": \"\", \"source_rule_id\": \"5710\", \"source_rule_description\": \"sshd: Attempt to login using a non-existent user\", \"source_rule_groups\": \"syslog,sshd,authentication_failed,invalid_login\", \"agent_name\": \"endpoint01\"}}",
       "decoder": {
         "name": "json"
@@ -153,7 +1254,7 @@
       "location": "custom-misp"
     },
     {
-      "timestamp": "2026-08-21T13:34:46.269+0000",
+      "timestamp": "2026-08-22T12:16:56.861+0000",
       "rule": {
         "level": 5,
         "description": "sshd: Attempt to login using a non-existent user",
@@ -210,16 +1311,16 @@
       "agent": {
         "id": "006",
         "name": "endpoint01",
-        "ip": "172.19.0.4"
+        "ip": "172.19.0.2"
       },
       "manager": {
         "name": "wazuh.manager"
       },
-      "id": "1787319286.1590705",
-      "full_log": "Aug 21 19:04:44 endpoint01 sshd[8002]: Failed password for invalid user root from 50.16.16.211 port 45002 ssh2",
+      "id": "1787401016.24629",
+      "full_log": "Aug 22 17:46:55 endpoint01 sshd[8010]: Failed password for invalid user test from 50.16.16.211 port 45010 ssh2",
       "predecoder": {
         "program_name": "sshd",
-        "timestamp": "Aug 21 19:04:44",
+        "timestamp": "Aug 22 17:46:55",
         "hostname": "endpoint01"
       },
       "decoder": {
@@ -228,12 +1329,12 @@
       },
       "data": {
         "srcip": "50.16.16.211",
-        "srcuser": "root"
+        "srcuser": "test"
       },
       "location": "/var/log/simulated/auth.log"
     },
     {
-      "timestamp": "2026-08-21T13:34:46.269+0000",
+      "timestamp": "2026-08-22T12:16:56.861+0000",
       "rule": {
         "level": 5,
         "description": "sshd: Attempt to login using a non-existent user",
@@ -290,16 +1391,16 @@
       "agent": {
         "id": "006",
         "name": "endpoint01",
-        "ip": "172.19.0.4"
+        "ip": "172.19.0.2"
       },
       "manager": {
         "name": "wazuh.manager"
       },
-      "id": "1787319286.1591251",
-      "full_log": "Aug 21 19:04:45 endpoint01 sshd[8003]: Failed password for invalid user admin from 50.16.16.211 port 45003 ssh2",
+      "id": "1787401016.25173",
+      "full_log": "Aug 22 17:46:56 endpoint01 sshd[8011]: Failed password for invalid user ftpuser from 50.16.16.211 port 45011 ssh2",
       "predecoder": {
         "program_name": "sshd",
-        "timestamp": "Aug 21 19:04:45",
+        "timestamp": "Aug 22 17:46:56",
         "hostname": "endpoint01"
       },
       "decoder": {
@@ -308,12 +1409,12 @@
       },
       "data": {
         "srcip": "50.16.16.211",
-        "srcuser": "admin"
+        "srcuser": "ftpuser"
       },
       "location": "/var/log/simulated/auth.log"
     },
     {
-      "timestamp": "2026-08-21T13:34:47.836+0000",
+      "timestamp": "2026-08-22T12:16:58.251+0000",
       "rule": {
         "level": 13,
         "description": "Authentication attack from threat-intel-listed host 50.16.16.211 against endpoint01",
@@ -344,12 +1445,12 @@
       "agent": {
         "id": "006",
         "name": "endpoint01",
-        "ip": "172.19.0.4"
+        "ip": "172.19.0.2"
       },
       "manager": {
         "name": "wazuh.manager"
       },
-      "id": "1787319287.1591798",
+      "id": "1787401018.25720",
       "full_log": "{\"integration\": \"misp\", \"misp\": {\"source\": \"wazuh-custom-misp\", \"observable\": \"50.16.16.211\", \"observable_kind\": \"ip\", \"attribute_type\": \"ip-dst\", \"attribute_value\": \"50.16.16.211\", \"category\": \"Network activity\", \"to_ids\": \"True\", \"event_id\": \"1\", \"comment\": \"\", \"source_rule_id\": \"5710\", \"source_rule_description\": \"sshd: Attempt to login using a non-existent user\", \"source_rule_groups\": \"syslog,sshd,authentication_failed,invalid_login\", \"agent_name\": \"endpoint01\"}}",
       "decoder": {
         "name": "json"
@@ -374,7 +1475,7 @@
       "location": "custom-misp"
     },
     {
-      "timestamp": "2026-08-21T13:34:48.161+0000",
+      "timestamp": "2026-08-22T12:16:58.557+0000",
       "rule": {
         "level": 13,
         "description": "Authentication attack from threat-intel-listed host 50.16.16.211 against endpoint01",
@@ -405,12 +1506,12 @@
       "agent": {
         "id": "006",
         "name": "endpoint01",
-        "ip": "172.19.0.4"
+        "ip": "172.19.0.2"
       },
       "manager": {
         "name": "wazuh.manager"
       },
-      "id": "1787319288.1593009",
+      "id": "1787401018.26929",
       "full_log": "{\"integration\": \"misp\", \"misp\": {\"source\": \"wazuh-custom-misp\", \"observable\": \"50.16.16.211\", \"observable_kind\": \"ip\", \"attribute_type\": \"ip-dst\", \"attribute_value\": \"50.16.16.211\", \"category\": \"Network activity\", \"to_ids\": \"True\", \"event_id\": \"1\", \"comment\": \"\", \"source_rule_id\": \"5710\", \"source_rule_description\": \"sshd: Attempt to login using a non-existent user\", \"source_rule_groups\": \"syslog,sshd,authentication_failed,invalid_login\", \"agent_name\": \"endpoint01\"}}",
       "decoder": {
         "name": "json"
@@ -435,7 +1536,7 @@
       "location": "custom-misp"
     },
     {
-      "timestamp": "2026-08-21T13:34:48.269+0000",
+      "timestamp": "2026-08-22T12:16:58.861+0000",
       "rule": {
         "level": 5,
         "description": "sshd: Attempt to login using a non-existent user",
@@ -492,16 +1593,16 @@
       "agent": {
         "id": "006",
         "name": "endpoint01",
-        "ip": "172.19.0.4"
+        "ip": "172.19.0.2"
       },
       "manager": {
         "name": "wazuh.manager"
       },
-      "id": "1787319288.1594220",
-      "full_log": "Aug 21 19:04:47 endpoint01 sshd[8004]: Failed password for invalid user admin from 50.16.16.211 port 45004 ssh2",
+      "id": "1787401018.28138",
+      "full_log": "Aug 22 17:46:57 endpoint01 sshd[8012]: Failed password for invalid user backupsvc from 50.16.16.211 port 45012 ssh2",
       "predecoder": {
         "program_name": "sshd",
-        "timestamp": "Aug 21 19:04:47",
+        "timestamp": "Aug 22 17:46:57",
         "hostname": "endpoint01"
       },
       "decoder": {
@@ -510,12 +1611,729 @@
       },
       "data": {
         "srcip": "50.16.16.211",
-        "srcuser": "admin"
+        "srcuser": "backupsvc"
       },
       "location": "/var/log/simulated/auth.log"
     },
     {
-      "timestamp": "2026-08-21T13:34:48.310+0000",
+      "timestamp": "2026-08-22T12:17:00.090+0000",
+      "rule": {
+        "level": 14,
+        "description": "MISP: repeated threat-intel matches from endpoint01 \u2014 possible active compromise",
+        "id": "100103",
+        "frequency": 4,
+        "firedtimes": 3,
+        "mail": true,
+        "groups": [
+          "threat_intel",
+          "misp",
+          "threat_intel",
+          "misp_correlation",
+          "attack"
+        ]
+      },
+      "agent": {
+        "id": "006",
+        "name": "endpoint01",
+        "ip": "172.19.0.2"
+      },
+      "manager": {
+        "name": "wazuh.manager"
+      },
+      "id": "1787401020.28687",
+      "previous_output": "{\"integration\": \"misp\", \"misp\": {\"source\": \"wazuh-custom-misp\", \"observable\": \"50.16.16.211\", \"observable_kind\": \"ip\", \"attribute_type\": \"ip-dst\", \"attribute_value\": \"50.16.16.211\", \"category\": \"Network activity\", \"to_ids\": \"True\", \"event_id\": \"1\", \"comment\": \"\", \"source_rule_id\": \"5710\", \"source_rule_description\": \"sshd: Attempt to login using a non-existent user\", \"source_rule_groups\": \"syslog,sshd,authentication_failed,invalid_login\", \"agent_name\": \"endpoint01\"}}\n{\"integration\": \"misp\", \"misp\": {\"source\": \"wazuh-custom-misp\", \"observable\": \"50.16.16.211\", \"observable_kind\": \"ip\", \"attribute_type\": \"ip-dst\", \"attribute_value\": \"50.16.16.211\", \"category\": \"Network activity\", \"to_ids\": \"True\", \"event_id\": \"1\", \"comment\": \"\", \"source_rule_id\": \"5710\", \"source_rule_description\": \"sshd: Attempt to login using a non-existent user\", \"source_rule_groups\": \"syslog,sshd,authentication_failed,invalid_login\", \"agent_name\": \"endpoint01\"}}\n{\"integration\": \"misp\", \"misp\": {\"source\": \"wazuh-custom-misp\", \"observable\": \"50.16.16.211\", \"observable_kind\": \"ip\", \"attribute_type\": \"ip-dst\", \"attribute_value\": \"50.16.16.211\", \"category\": \"Network activity\", \"to_ids\": \"True\", \"event_id\": \"1\", \"comment\": \"\", \"source_rule_id\": \"5710\", \"source_rule_description\": \"sshd: Attempt to login using a non-existent user\", \"source_rule_groups\": \"syslog,sshd,authentication_failed,invalid_login\", \"agent_name\": \"endpoint01\"}}",
+      "full_log": "{\"integration\": \"misp\", \"misp\": {\"source\": \"wazuh-custom-misp\", \"observable\": \"50.16.16.211\", \"observable_kind\": \"ip\", \"attribute_type\": \"ip-dst\", \"attribute_value\": \"50.16.16.211\", \"category\": \"Network activity\", \"to_ids\": \"True\", \"event_id\": \"1\", \"comment\": \"\", \"source_rule_id\": \"5710\", \"source_rule_description\": \"sshd: Attempt to login using a non-existent user\", \"source_rule_groups\": \"syslog,sshd,authentication_failed,invalid_login\", \"agent_name\": \"endpoint01\"}}",
+      "decoder": {
+        "name": "json"
+      },
+      "data": {
+        "integration": "misp",
+        "misp": {
+          "source": "wazuh-custom-misp",
+          "observable": "50.16.16.211",
+          "observable_kind": "ip",
+          "attribute_type": "ip-dst",
+          "attribute_value": "50.16.16.211",
+          "category": "Network activity",
+          "to_ids": "True",
+          "event_id": "1",
+          "source_rule_id": "5710",
+          "source_rule_description": "sshd: Attempt to login using a non-existent user",
+          "source_rule_groups": "syslog,sshd,authentication_failed,invalid_login",
+          "agent_name": "endpoint01"
+        }
+      },
+      "location": "custom-misp"
+    },
+    {
+      "timestamp": "2026-08-22T12:17:02.861+0000",
+      "rule": {
+        "level": 14,
+        "description": "Successful SSH login from 50.16.16.211, which was brute-forcing moments ago \u2014 probable credential compromise",
+        "id": "100200",
+        "mitre": {
+          "id": [
+            "T1110.001",
+            "T1078"
+          ],
+          "tactic": [
+            "Credential Access",
+            "Defense Evasion",
+            "Persistence",
+            "Privilege Escalation",
+            "Initial Access"
+          ],
+          "technique": [
+            "Password Guessing",
+            "Valid Accounts"
+          ]
+        },
+        "frequency": 2,
+        "firedtimes": 1,
+        "mail": true,
+        "groups": [
+          "soclab",
+          "custom_detections",
+          "authentication_success",
+          "attack",
+          "soclab_d1"
+        ]
+      },
+      "agent": {
+        "id": "006",
+        "name": "endpoint01",
+        "ip": "172.19.0.2"
+      },
+      "manager": {
+        "name": "wazuh.manager"
+      },
+      "id": "1787401022.31273",
+      "full_log": "Aug 22 17:47:02 endpoint01 sshd[8100]: Accepted password for backupsvc from 50.16.16.211 port 45100 ssh2",
+      "predecoder": {
+        "program_name": "sshd",
+        "timestamp": "Aug 22 17:47:02",
+        "hostname": "endpoint01"
+      },
+      "decoder": {
+        "parent": "sshd",
+        "name": "sshd"
+      },
+      "data": {
+        "srcip": "50.16.16.211",
+        "srcport": "45100",
+        "dstuser": "backupsvc"
+      },
+      "location": "/var/log/simulated/auth.log"
+    },
+    {
+      "timestamp": "2026-08-22T12:17:04.514+0000",
+      "rule": {
+        "level": 12,
+        "description": "MISP: known-bad ip seen on endpoint01 \u2014 ip-dst matched threat intel [triggered by rule 100200]",
+        "id": "100101",
+        "firedtimes": 1,
+        "mail": true,
+        "groups": [
+          "threat_intel",
+          "misp",
+          "threat_intel",
+          "misp_alert"
+        ]
+      },
+      "agent": {
+        "id": "006",
+        "name": "endpoint01",
+        "ip": "172.19.0.2"
+      },
+      "manager": {
+        "name": "wazuh.manager"
+      },
+      "id": "1787401024.31854",
+      "full_log": "{\"integration\": \"misp\", \"misp\": {\"source\": \"wazuh-custom-misp\", \"observable\": \"50.16.16.211\", \"observable_kind\": \"ip\", \"attribute_type\": \"ip-dst\", \"attribute_value\": \"50.16.16.211\", \"category\": \"Network activity\", \"to_ids\": \"True\", \"event_id\": \"1\", \"comment\": \"\", \"source_rule_id\": \"100200\", \"source_rule_description\": \"Successful SSH login from 50.16.16.211, which was brute-forcing moments ago \\u2014 probable credential compromise\", \"source_rule_groups\": \"soclab,custom_detections,authentication_success,attack,soclab_d1\", \"agent_name\": \"endpoint01\"}}",
+      "decoder": {
+        "name": "json"
+      },
+      "data": {
+        "integration": "misp",
+        "misp": {
+          "source": "wazuh-custom-misp",
+          "observable": "50.16.16.211",
+          "observable_kind": "ip",
+          "attribute_type": "ip-dst",
+          "attribute_value": "50.16.16.211",
+          "category": "Network activity",
+          "to_ids": "True",
+          "event_id": "1",
+          "source_rule_id": "100200",
+          "source_rule_description": "Successful SSH login from 50.16.16.211, which was brute-forcing moments ago \u2014 probable credential compromise",
+          "source_rule_groups": "soclab,custom_detections,authentication_success,attack,soclab_d1",
+          "agent_name": "endpoint01"
+        }
+      },
+      "location": "custom-misp"
+    },
+    {
+      "timestamp": "2026-08-22T12:17:08.730+0000",
+      "rule": {
+        "level": 12,
+        "description": "Security-critical file created or modified: /root/.ssh/authorized_keys",
+        "id": "100210",
+        "mitre": {
+          "id": [
+            "T1098.004",
+            "T1053.003",
+            "T1136"
+          ],
+          "tactic": [
+            "Persistence",
+            "Execution",
+            "Privilege Escalation"
+          ],
+          "technique": [
+            "SSH Authorized Keys",
+            "Cron",
+            "Create Account"
+          ]
+        },
+        "firedtimes": 4,
+        "mail": true,
+        "groups": [
+          "soclab",
+          "custom_detections",
+          "syscheck",
+          "attack",
+          "soclab_d2"
+        ]
+      },
+      "agent": {
+        "id": "006",
+        "name": "endpoint01",
+        "ip": "172.19.0.2"
+      },
+      "manager": {
+        "name": "wazuh.manager"
+      },
+      "id": "1787401028.33193",
+      "full_log": "File '/root/.ssh/authorized_keys' added\nMode: realtime\n",
+      "syscheck": {
+        "path": "/root/.ssh/authorized_keys",
+        "mode": "realtime",
+        "size_after": "88",
+        "perm_after": "rw-------",
+        "uid_after": "0",
+        "gid_after": "0",
+        "md5_after": "d96518534f9e8f2bf5f8454fa0f9bec5",
+        "sha1_after": "63755d6fee7fab78777b330d81bf7c1840dc1d20",
+        "sha256_after": "208dae3805839d5fe6f70f24356e229a5cecd93e70a4710b55bae11454848802",
+        "uname_after": "root",
+        "gname_after": "root",
+        "mtime_after": "2026-08-22T12:17:08",
+        "inode_after": 991225,
+        "event": "added"
+      },
+      "decoder": {
+        "name": "syscheck_new_entry"
+      },
+      "location": "syscheck"
+    },
+    {
+      "timestamp": "2026-08-22T12:17:08.735+0000",
+      "rule": {
+        "level": 12,
+        "description": "Security-critical file created or modified: /etc/cron.d/systemd-udevd-refresh",
+        "id": "100210",
+        "mitre": {
+          "id": [
+            "T1098.004",
+            "T1053.003",
+            "T1136"
+          ],
+          "tactic": [
+            "Persistence",
+            "Execution",
+            "Privilege Escalation"
+          ],
+          "technique": [
+            "SSH Authorized Keys",
+            "Cron",
+            "Create Account"
+          ]
+        },
+        "firedtimes": 5,
+        "mail": true,
+        "groups": [
+          "soclab",
+          "custom_detections",
+          "syscheck",
+          "attack",
+          "soclab_d2"
+        ]
+      },
+      "agent": {
+        "id": "006",
+        "name": "endpoint01",
+        "ip": "172.19.0.2"
+      },
+      "manager": {
+        "name": "wazuh.manager"
+      },
+      "id": "1787401028.33790",
+      "full_log": "File '/etc/cron.d/systemd-udevd-refresh' added\nMode: realtime\n",
+      "syscheck": {
+        "path": "/etc/cron.d/systemd-udevd-refresh",
+        "mode": "realtime",
+        "size_after": "47",
+        "perm_after": "rw-r--r--",
+        "uid_after": "0",
+        "gid_after": "0",
+        "md5_after": "563e4ade8b605ec44cf5fc9c89de0219",
+        "sha1_after": "2a51fac9b5b203f86c7f82225b8b896344abcb07",
+        "sha256_after": "54c648fda98ae3dc1cecd4656b1d2ec94dc709d706dd0e7cd954d58d3662a15f",
+        "uname_after": "root",
+        "gname_after": "root",
+        "mtime_after": "2026-08-22T12:17:08",
+        "inode_after": 991227,
+        "event": "added"
+      },
+      "decoder": {
+        "name": "syscheck_new_entry"
+      },
+      "location": "syscheck"
+    },
+    {
+      "timestamp": "2026-08-22T12:17:08.776+0000",
+      "rule": {
+        "level": 12,
+        "description": "Security-critical file created or modified: /etc/sudoers.d/99-backupsvc",
+        "id": "100210",
+        "mitre": {
+          "id": [
+            "T1098.004",
+            "T1053.003",
+            "T1136"
+          ],
+          "tactic": [
+            "Persistence",
+            "Execution",
+            "Privilege Escalation"
+          ],
+          "technique": [
+            "SSH Authorized Keys",
+            "Cron",
+            "Create Account"
+          ]
+        },
+        "firedtimes": 6,
+        "mail": true,
+        "groups": [
+          "soclab",
+          "custom_detections",
+          "syscheck",
+          "attack",
+          "soclab_d2"
+        ]
+      },
+      "agent": {
+        "id": "006",
+        "name": "endpoint01",
+        "ip": "172.19.0.2"
+      },
+      "manager": {
+        "name": "wazuh.manager"
+      },
+      "id": "1787401028.34401",
+      "full_log": "File '/etc/sudoers.d/99-backupsvc' added\nMode: realtime\n",
+      "syscheck": {
+        "path": "/etc/sudoers.d/99-backupsvc",
+        "mode": "realtime",
+        "size_after": "34",
+        "perm_after": "rw-r--r--",
+        "uid_after": "0",
+        "gid_after": "0",
+        "md5_after": "e551a12fb42466a28179b10ca80a3cdc",
+        "sha1_after": "4f9a368d203c77b230a2b22d1c38370ccec02bc7",
+        "sha256_after": "20833e66a4ef4cec7833a1516328898a7e8014bbe3af4aca750cd6b663b70ca1",
+        "uname_after": "root",
+        "gname_after": "root",
+        "mtime_after": "2026-08-22T12:17:08",
+        "inode_after": 991226,
+        "event": "added"
+      },
+      "decoder": {
+        "name": "syscheck_new_entry"
+      },
+      "location": "syscheck"
+    },
+    {
+      "timestamp": "2026-08-22T12:17:14.811+0000",
+      "rule": {
+        "level": 12,
+        "description": "New executable dropped into a system binary directory: /usr/bin/systemd-udevd-helper",
+        "id": "100220",
+        "mitre": {
+          "id": [
+            "T1036.005",
+            "T1543"
+          ],
+          "tactic": [
+            "Defense Evasion",
+            "Persistence",
+            "Privilege Escalation"
+          ],
+          "technique": [
+            "Match Legitimate Name or Location",
+            "Create or Modify System Process"
+          ]
+        },
+        "firedtimes": 1,
+        "mail": true,
+        "groups": [
+          "soclab",
+          "custom_detections",
+          "syscheck",
+          "attack",
+          "soclab_d3"
+        ]
+      },
+      "agent": {
+        "id": "006",
+        "name": "endpoint01",
+        "ip": "172.19.0.2"
+      },
+      "manager": {
+        "name": "wazuh.manager"
+      },
+      "id": "1787401034.35000",
+      "full_log": "File '/usr/bin/systemd-udevd-helper' added\nMode: realtime\n",
+      "syscheck": {
+        "path": "/usr/bin/systemd-udevd-helper",
+        "mode": "realtime",
+        "size_after": "62",
+        "perm_after": "rwxr-xr-x",
+        "uid_after": "0",
+        "gid_after": "0",
+        "md5_after": "1ec7fa26e9750c5016b97a9f704b1ce7",
+        "sha1_after": "f8da49a59cf7575a5c314d0f810a0e8944148962",
+        "sha256_after": "41ccfecbe85209d143ef27930957cc4e487b7c7ee2dde021703d012c69cb2a98",
+        "uname_after": "root",
+        "gname_after": "root",
+        "mtime_after": "2026-08-22T12:17:14",
+        "inode_after": 991276,
+        "event": "added"
+      },
+      "decoder": {
+        "name": "syscheck_new_entry"
+      },
+      "location": "syscheck"
+    },
+    {
+      "timestamp": "2026-08-22T12:17:22.863+0000",
+      "rule": {
+        "level": 3,
+        "description": "Outbound connection from 172.20.0.5 to external host 162.243.103.246:443",
+        "id": "100230",
+        "firedtimes": 1,
+        "mail": false,
+        "groups": [
+          "soclab",
+          "custom_detections",
+          "firewall",
+          "soclab_d4"
+        ]
+      },
+      "agent": {
+        "id": "006",
+        "name": "endpoint01",
+        "ip": "172.19.0.2"
+      },
+      "manager": {
+        "name": "wazuh.manager"
+      },
+      "id": "1787401042.35614",
+      "full_log": "Aug 22 17:47:20 endpoint01 kernel: OUTBOUND-ACCEPT IN= OUT=eth0 SRC=172.20.0.5 DST=162.243.103.246 LEN=60 TOS=0x00 PREC=0x00 TTL=64 ID=5001 DF PROTO=TCP SPT=44321 DPT=443 WINDOW=64240 RES=0x00 SYN URGP=0",
+      "predecoder": {
+        "program_name": "kernel",
+        "timestamp": "Aug 22 17:47:20",
+        "hostname": "endpoint01"
+      },
+      "decoder": {
+        "parent": "kernel",
+        "name": "kernel"
+      },
+      "data": {
+        "protocol": "TCP",
+        "action": "OUTBOUND-ACCEPT",
+        "srcip": "172.20.0.5",
+        "srcport": "44321",
+        "dstip": "162.243.103.246",
+        "dstport": "443"
+      },
+      "location": "/var/log/simulated/firewall.log"
+    },
+    {
+      "timestamp": "2026-08-22T12:17:24.538+0000",
+      "rule": {
+        "level": 13,
+        "description": "Outbound connection to known-malicious infrastructure from endpoint01: 162.243.103.246 \u2014 MISP ip-dst",
+        "id": "100231",
+        "mitre": {
+          "id": [
+            "T1071.001",
+            "T1571"
+          ],
+          "tactic": [
+            "Command and Control"
+          ],
+          "technique": [
+            "Web Protocols",
+            "Non-Standard Port"
+          ]
+        },
+        "firedtimes": 1,
+        "mail": true,
+        "groups": [
+          "soclab",
+          "custom_detections",
+          "threat_intel",
+          "misp_alert",
+          "attack",
+          "soclab_d4"
+        ]
+      },
+      "agent": {
+        "id": "006",
+        "name": "endpoint01",
+        "ip": "172.19.0.2"
+      },
+      "manager": {
+        "name": "wazuh.manager"
+      },
+      "id": "1787401044.36138",
+      "full_log": "{\"integration\": \"misp\", \"misp\": {\"source\": \"wazuh-custom-misp\", \"observable\": \"162.243.103.246\", \"observable_kind\": \"ip\", \"attribute_type\": \"ip-dst\", \"attribute_value\": \"162.243.103.246\", \"category\": \"Network activity\", \"to_ids\": \"True\", \"event_id\": \"1\", \"comment\": \"\", \"source_rule_id\": \"100230\", \"source_rule_description\": \"Outbound connection from 172.20.0.5 to external host 162.243.103.246:443\", \"source_rule_groups\": \"soclab,custom_detections,firewall,soclab_d4\", \"agent_name\": \"endpoint01\"}}",
+      "decoder": {
+        "name": "json"
+      },
+      "data": {
+        "integration": "misp",
+        "misp": {
+          "source": "wazuh-custom-misp",
+          "observable": "162.243.103.246",
+          "observable_kind": "ip",
+          "attribute_type": "ip-dst",
+          "attribute_value": "162.243.103.246",
+          "category": "Network activity",
+          "to_ids": "True",
+          "event_id": "1",
+          "source_rule_id": "100230",
+          "source_rule_description": "Outbound connection from 172.20.0.5 to external host 162.243.103.246:443",
+          "source_rule_groups": "soclab,custom_detections,firewall,soclab_d4",
+          "agent_name": "endpoint01"
+        }
+      },
+      "location": "custom-misp"
+    },
+    {
+      "timestamp": "2026-08-22T12:17:26.864+0000",
+      "rule": {
+        "level": 3,
+        "description": "Outbound connection from 172.20.0.5 to external host 162.243.103.246:443",
+        "id": "100230",
+        "firedtimes": 2,
+        "mail": false,
+        "groups": [
+          "soclab",
+          "custom_detections",
+          "firewall",
+          "soclab_d4"
+        ]
+      },
+      "agent": {
+        "id": "006",
+        "name": "endpoint01",
+        "ip": "172.19.0.2"
+      },
+      "manager": {
+        "name": "wazuh.manager"
+      },
+      "id": "1787401046.37398",
+      "full_log": "Aug 22 17:47:25 endpoint01 kernel: OUTBOUND-ACCEPT IN= OUT=eth0 SRC=172.20.0.5 DST=162.243.103.246 LEN=60 TOS=0x00 PREC=0x00 TTL=64 ID=5002 DF PROTO=TCP SPT=44322 DPT=443 WINDOW=64240 RES=0x00 SYN URGP=0",
+      "predecoder": {
+        "program_name": "kernel",
+        "timestamp": "Aug 22 17:47:25",
+        "hostname": "endpoint01"
+      },
+      "decoder": {
+        "parent": "kernel",
+        "name": "kernel"
+      },
+      "data": {
+        "protocol": "TCP",
+        "action": "OUTBOUND-ACCEPT",
+        "srcip": "172.20.0.5",
+        "srcport": "44322",
+        "dstip": "162.243.103.246",
+        "dstport": "443"
+      },
+      "location": "/var/log/simulated/firewall.log"
+    },
+    {
+      "timestamp": "2026-08-22T12:17:27.964+0000",
+      "rule": {
+        "level": 13,
+        "description": "Outbound connection to known-malicious infrastructure from endpoint01: 162.243.103.246 \u2014 MISP ip-dst",
+        "id": "100231",
+        "mitre": {
+          "id": [
+            "T1071.001",
+            "T1571"
+          ],
+          "tactic": [
+            "Command and Control"
+          ],
+          "technique": [
+            "Web Protocols",
+            "Non-Standard Port"
+          ]
+        },
+        "firedtimes": 2,
+        "mail": true,
+        "groups": [
+          "soclab",
+          "custom_detections",
+          "threat_intel",
+          "misp_alert",
+          "attack",
+          "soclab_d4"
+        ]
+      },
+      "agent": {
+        "id": "006",
+        "name": "endpoint01",
+        "ip": "172.19.0.2"
+      },
+      "manager": {
+        "name": "wazuh.manager"
+      },
+      "id": "1787401047.37922",
+      "full_log": "{\"integration\": \"misp\", \"misp\": {\"source\": \"wazuh-custom-misp\", \"observable\": \"162.243.103.246\", \"observable_kind\": \"ip\", \"attribute_type\": \"ip-dst\", \"attribute_value\": \"162.243.103.246\", \"category\": \"Network activity\", \"to_ids\": \"True\", \"event_id\": \"1\", \"comment\": \"\", \"source_rule_id\": \"100230\", \"source_rule_description\": \"Outbound connection from 172.20.0.5 to external host 162.243.103.246:443\", \"source_rule_groups\": \"soclab,custom_detections,firewall,soclab_d4\", \"agent_name\": \"endpoint01\"}}",
+      "decoder": {
+        "name": "json"
+      },
+      "data": {
+        "integration": "misp",
+        "misp": {
+          "source": "wazuh-custom-misp",
+          "observable": "162.243.103.246",
+          "observable_kind": "ip",
+          "attribute_type": "ip-dst",
+          "attribute_value": "162.243.103.246",
+          "category": "Network activity",
+          "to_ids": "True",
+          "event_id": "1",
+          "source_rule_id": "100230",
+          "source_rule_description": "Outbound connection from 172.20.0.5 to external host 162.243.103.246:443",
+          "source_rule_groups": "soclab,custom_detections,firewall,soclab_d4",
+          "agent_name": "endpoint01"
+        }
+      },
+      "location": "custom-misp"
+    },
+    {
+      "timestamp": "2026-08-22T12:17:32.864+0000",
+      "rule": {
+        "level": 3,
+        "description": "Outbound connection from 172.20.0.5 to external host 162.243.103.246:443",
+        "id": "100230",
+        "firedtimes": 3,
+        "mail": false,
+        "groups": [
+          "soclab",
+          "custom_detections",
+          "firewall",
+          "soclab_d4"
+        ]
+      },
+      "agent": {
+        "id": "006",
+        "name": "endpoint01",
+        "ip": "172.19.0.2"
+      },
+      "manager": {
+        "name": "wazuh.manager"
+      },
+      "id": "1787401052.39182",
+      "full_log": "Aug 22 17:47:30 endpoint01 kernel: OUTBOUND-ACCEPT IN= OUT=eth0 SRC=172.20.0.5 DST=162.243.103.246 LEN=60 TOS=0x00 PREC=0x00 TTL=64 ID=5003 DF PROTO=TCP SPT=44323 DPT=443 WINDOW=64240 RES=0x00 SYN URGP=0",
+      "predecoder": {
+        "program_name": "kernel",
+        "timestamp": "Aug 22 17:47:30",
+        "hostname": "endpoint01"
+      },
+      "decoder": {
+        "parent": "kernel",
+        "name": "kernel"
+      },
+      "data": {
+        "protocol": "TCP",
+        "action": "OUTBOUND-ACCEPT",
+        "srcip": "172.20.0.5",
+        "srcport": "44323",
+        "dstip": "162.243.103.246",
+        "dstport": "443"
+      },
+      "location": "/var/log/simulated/firewall.log"
+    },
+    {
+      "timestamp": "2026-08-22T12:17:34.387+0000",
+      "rule": {
+        "level": 14,
+        "description": "MISP: repeated threat-intel matches from endpoint01 \u2014 possible active compromise",
+        "id": "100103",
+        "frequency": 4,
+        "firedtimes": 4,
+        "mail": true,
+        "groups": [
+          "threat_intel",
+          "misp",
+          "threat_intel",
+          "misp_correlation",
+          "attack"
+        ]
+      },
+      "agent": {
+        "id": "006",
+        "name": "endpoint01",
+        "ip": "172.19.0.2"
+      },
+      "manager": {
+        "name": "wazuh.manager"
+      },
+      "id": "1787401054.39706",
+      "previous_output": "{\"integration\": \"misp\", \"misp\": {\"source\": \"wazuh-custom-misp\", \"observable\": \"162.243.103.246\", \"observable_kind\": \"ip\", \"attribute_type\": \"ip-dst\", \"attribute_value\": \"162.243.103.246\", \"category\": \"Network activity\", \"to_ids\": \"True\", \"event_id\": \"1\", \"comment\": \"\", \"source_rule_id\": \"100230\", \"source_rule_description\": \"Outbound connection from 172.20.0.5 to external host 162.243.103.246:443\", \"source_rule_groups\": \"soclab,custom_detections,firewall,soclab_d4\", \"agent_name\": \"endpoint01\"}}\n{\"integration\": \"misp\", \"misp\": {\"source\": \"wazuh-custom-misp\", \"observable\": \"162.243.103.246\", \"observable_kind\": \"ip\", \"attribute_type\": \"ip-dst\", \"attribute_value\": \"162.243.103.246\", \"category\": \"Network activity\", \"to_ids\": \"True\", \"event_id\": \"1\", \"comment\": \"\", \"source_rule_id\": \"100230\", \"source_rule_description\": \"Outbound connection from 172.20.0.5 to external host 162.243.103.246:443\", \"source_rule_groups\": \"soclab,custom_detections,firewall,soclab_d4\", \"agent_name\": \"endpoint01\"}}\n{\"integration\": \"misp\", \"misp\": {\"source\": \"wazuh-custom-misp\", \"observable\": \"50.16.16.211\", \"observable_kind\": \"ip\", \"attribute_type\": \"ip-dst\", \"attribute_value\": \"50.16.16.211\", \"category\": \"Network activity\", \"to_ids\": \"True\", \"event_id\": \"1\", \"comment\": \"\", \"source_rule_id\": \"100200\", \"source_rule_description\": \"Successful SSH login from 50.16.16.211, which was brute-forcing moments ago \\u2014 probable credential compromise\", \"source_rule_groups\": \"soclab,custom_detections,authentication_success,attack,soclab_d1\", \"agent_name\": \"endpoint01\"}}",
+      "full_log": "{\"integration\": \"misp\", \"misp\": {\"source\": \"wazuh-custom-misp\", \"observable\": \"162.243.103.246\", \"observable_kind\": \"ip\", \"attribute_type\": \"ip-dst\", \"attribute_value\": \"162.243.103.246\", \"category\": \"Network activity\", \"to_ids\": \"True\", \"event_id\": \"1\", \"comment\": \"\", \"source_rule_id\": \"100230\", \"source_rule_description\": \"Outbound connection from 172.20.0.5 to external host 162.243.103.246:443\", \"source_rule_groups\": \"soclab,custom_detections,firewall,soclab_d4\", \"agent_name\": \"endpoint01\"}}",
+      "decoder": {
+        "name": "json"
+      },
+      "data": {
+        "integration": "misp",
+        "misp": {
+          "source": "wazuh-custom-misp",
+          "observable": "162.243.103.246",
+          "observable_kind": "ip",
+          "attribute_type": "ip-dst",
+          "attribute_value": "162.243.103.246",
+          "category": "Network activity",
+          "to_ids": "True",
+          "event_id": "1",
+          "source_rule_id": "100230",
+          "source_rule_description": "Outbound connection from 172.20.0.5 to external host 162.243.103.246:443",
+          "source_rule_groups": "soclab,custom_detections,firewall,soclab_d4",
+          "agent_name": "endpoint01"
+        }
+      },
+      "location": "custom-misp"
+    },
+    {
+      "timestamp": "2026-08-22T12:17:36.864+0000",
       "rule": {
         "level": 5,
         "description": "sshd: Attempt to login using a non-existent user",
@@ -572,16 +2390,16 @@
       "agent": {
         "id": "006",
         "name": "endpoint01",
-        "ip": "172.19.0.4"
+        "ip": "172.19.0.2"
       },
       "manager": {
         "name": "wazuh.manager"
       },
-      "id": "1787319288.1594767",
-      "full_log": "Aug 21 19:04:48 endpoint01 sshd[8005]: Failed password for invalid user oracle from 50.16.16.211 port 45005 ssh2",
+      "id": "1787401056.42488",
+      "full_log": "Aug 22 17:47:36 endpoint01 sshd[8201]: Failed password for invalid user admin from 198.51.100.77 port 46001 ssh2",
       "predecoder": {
         "program_name": "sshd",
-        "timestamp": "Aug 21 19:04:48",
+        "timestamp": "Aug 22 17:47:36",
         "hostname": "endpoint01"
       },
       "decoder": {
@@ -589,124 +2407,13 @@
         "name": "sshd"
       },
       "data": {
-        "srcip": "50.16.16.211",
-        "srcuser": "oracle"
+        "srcip": "198.51.100.77",
+        "srcuser": "admin"
       },
       "location": "/var/log/simulated/auth.log"
     },
     {
-      "timestamp": "2026-08-21T13:34:49.745+0000",
-      "rule": {
-        "level": 14,
-        "description": "MISP: repeated threat-intel matches from endpoint01 \u2014 possible active compromise",
-        "id": "100103",
-        "frequency": 4,
-        "firedtimes": 3,
-        "mail": true,
-        "groups": [
-          "threat_intel",
-          "misp",
-          "threat_intel",
-          "misp_correlation",
-          "attack"
-        ]
-      },
-      "agent": {
-        "id": "006",
-        "name": "endpoint01",
-        "ip": "172.19.0.4"
-      },
-      "manager": {
-        "name": "wazuh.manager"
-      },
-      "id": "1787319289.1595315",
-      "previous_output": "{\"integration\": \"misp\", \"misp\": {\"source\": \"wazuh-custom-misp\", \"observable\": \"50.16.16.211\", \"observable_kind\": \"ip\", \"attribute_type\": \"ip-dst\", \"attribute_value\": \"50.16.16.211\", \"category\": \"Network activity\", \"to_ids\": \"True\", \"event_id\": \"1\", \"comment\": \"\", \"source_rule_id\": \"5710\", \"source_rule_description\": \"sshd: Attempt to login using a non-existent user\", \"source_rule_groups\": \"syslog,sshd,authentication_failed,invalid_login\", \"agent_name\": \"endpoint01\"}}\n{\"integration\": \"misp\", \"misp\": {\"source\": \"wazuh-custom-misp\", \"observable\": \"50.16.16.211\", \"observable_kind\": \"ip\", \"attribute_type\": \"ip-dst\", \"attribute_value\": \"50.16.16.211\", \"category\": \"Network activity\", \"to_ids\": \"True\", \"event_id\": \"1\", \"comment\": \"\", \"source_rule_id\": \"5710\", \"source_rule_description\": \"sshd: Attempt to login using a non-existent user\", \"source_rule_groups\": \"syslog,sshd,authentication_failed,invalid_login\", \"agent_name\": \"endpoint01\"}}\n{\"integration\": \"misp\", \"misp\": {\"source\": \"wazuh-custom-misp\", \"observable\": \"50.16.16.211\", \"observable_kind\": \"ip\", \"attribute_type\": \"ip-dst\", \"attribute_value\": \"50.16.16.211\", \"category\": \"Network activity\", \"to_ids\": \"True\", \"event_id\": \"1\", \"comment\": \"\", \"source_rule_id\": \"5710\", \"source_rule_description\": \"sshd: Attempt to login using a non-existent user\", \"source_rule_groups\": \"syslog,sshd,authentication_failed,invalid_login\", \"agent_name\": \"endpoint01\"}}",
-      "full_log": "{\"integration\": \"misp\", \"misp\": {\"source\": \"wazuh-custom-misp\", \"observable\": \"50.16.16.211\", \"observable_kind\": \"ip\", \"attribute_type\": \"ip-dst\", \"attribute_value\": \"50.16.16.211\", \"category\": \"Network activity\", \"to_ids\": \"True\", \"event_id\": \"1\", \"comment\": \"\", \"source_rule_id\": \"5710\", \"source_rule_description\": \"sshd: Attempt to login using a non-existent user\", \"source_rule_groups\": \"syslog,sshd,authentication_failed,invalid_login\", \"agent_name\": \"endpoint01\"}}",
-      "decoder": {
-        "name": "json"
-      },
-      "data": {
-        "integration": "misp",
-        "misp": {
-          "source": "wazuh-custom-misp",
-          "observable": "50.16.16.211",
-          "observable_kind": "ip",
-          "attribute_type": "ip-dst",
-          "attribute_value": "50.16.16.211",
-          "category": "Network activity",
-          "to_ids": "True",
-          "event_id": "1",
-          "source_rule_id": "5710",
-          "source_rule_description": "sshd: Attempt to login using a non-existent user",
-          "source_rule_groups": "syslog,sshd,authentication_failed,invalid_login",
-          "agent_name": "endpoint01"
-        }
-      },
-      "location": "custom-misp"
-    },
-    {
-      "timestamp": "2026-08-21T13:34:50.081+0000",
-      "rule": {
-        "level": 13,
-        "description": "Authentication attack from threat-intel-listed host 50.16.16.211 against endpoint01",
-        "id": "100240",
-        "mitre": {
-          "id": [
-            "T1110.001"
-          ],
-          "tactic": [
-            "Credential Access"
-          ],
-          "technique": [
-            "Password Guessing"
-          ]
-        },
-        "firedtimes": 10,
-        "mail": true,
-        "groups": [
-          "soclab",
-          "custom_detections",
-          "threat_intel",
-          "misp_alert",
-          "authentication_failures",
-          "attack",
-          "soclab_d5"
-        ]
-      },
-      "agent": {
-        "id": "006",
-        "name": "endpoint01",
-        "ip": "172.19.0.4"
-      },
-      "manager": {
-        "name": "wazuh.manager"
-      },
-      "id": "1787319290.1597903",
-      "full_log": "{\"integration\": \"misp\", \"misp\": {\"source\": \"wazuh-custom-misp\", \"observable\": \"50.16.16.211\", \"observable_kind\": \"ip\", \"attribute_type\": \"ip-dst\", \"attribute_value\": \"50.16.16.211\", \"category\": \"Network activity\", \"to_ids\": \"True\", \"event_id\": \"1\", \"comment\": \"\", \"source_rule_id\": \"5710\", \"source_rule_description\": \"sshd: Attempt to login using a non-existent user\", \"source_rule_groups\": \"syslog,sshd,authentication_failed,invalid_login\", \"agent_name\": \"endpoint01\"}}",
-      "decoder": {
-        "name": "json"
-      },
-      "data": {
-        "integration": "misp",
-        "misp": {
-          "source": "wazuh-custom-misp",
-          "observable": "50.16.16.211",
-          "observable_kind": "ip",
-          "attribute_type": "ip-dst",
-          "attribute_value": "50.16.16.211",
-          "category": "Network activity",
-          "to_ids": "True",
-          "event_id": "1",
-          "source_rule_id": "5710",
-          "source_rule_description": "sshd: Attempt to login using a non-existent user",
-          "source_rule_groups": "syslog,sshd,authentication_failed,invalid_login",
-          "agent_name": "endpoint01"
-        }
-      },
-      "location": "custom-misp"
-    },
-    {
-      "timestamp": "2026-08-21T13:34:50.269+0000",
+      "timestamp": "2026-08-22T12:17:36.864+0000",
       "rule": {
         "level": 5,
         "description": "sshd: Attempt to login using a non-existent user",
@@ -763,16 +2470,16 @@
       "agent": {
         "id": "006",
         "name": "endpoint01",
-        "ip": "172.19.0.4"
+        "ip": "172.19.0.2"
       },
       "manager": {
         "name": "wazuh.manager"
       },
-      "id": "1787319290.1599114",
-      "full_log": "Aug 21 19:04:49 endpoint01 sshd[8006]: Failed password for invalid user postgres from 50.16.16.211 port 45006 ssh2",
+      "id": "1787401056.43035",
+      "full_log": "Aug 22 17:47:36 endpoint01 sshd[8202]: Failed password for invalid user admin from 198.51.100.77 port 46002 ssh2",
       "predecoder": {
         "program_name": "sshd",
-        "timestamp": "Aug 21 19:04:49",
+        "timestamp": "Aug 22 17:47:36",
         "hostname": "endpoint01"
       },
       "decoder": {
@@ -780,74 +2487,13 @@
         "name": "sshd"
       },
       "data": {
-        "srcip": "50.16.16.211",
-        "srcuser": "postgres"
+        "srcip": "198.51.100.77",
+        "srcuser": "admin"
       },
       "location": "/var/log/simulated/auth.log"
     },
     {
-      "timestamp": "2026-08-21T13:34:51.665+0000",
-      "rule": {
-        "level": 13,
-        "description": "Authentication attack from threat-intel-listed host 50.16.16.211 against endpoint01",
-        "id": "100240",
-        "mitre": {
-          "id": [
-            "T1110.001"
-          ],
-          "tactic": [
-            "Credential Access"
-          ],
-          "technique": [
-            "Password Guessing"
-          ]
-        },
-        "firedtimes": 11,
-        "mail": true,
-        "groups": [
-          "soclab",
-          "custom_detections",
-          "threat_intel",
-          "misp_alert",
-          "authentication_failures",
-          "attack",
-          "soclab_d5"
-        ]
-      },
-      "agent": {
-        "id": "006",
-        "name": "endpoint01",
-        "ip": "172.19.0.4"
-      },
-      "manager": {
-        "name": "wazuh.manager"
-      },
-      "id": "1787319291.1599664",
-      "full_log": "{\"integration\": \"misp\", \"misp\": {\"source\": \"wazuh-custom-misp\", \"observable\": \"50.16.16.211\", \"observable_kind\": \"ip\", \"attribute_type\": \"ip-dst\", \"attribute_value\": \"50.16.16.211\", \"category\": \"Network activity\", \"to_ids\": \"True\", \"event_id\": \"1\", \"comment\": \"\", \"source_rule_id\": \"5710\", \"source_rule_description\": \"sshd: Attempt to login using a non-existent user\", \"source_rule_groups\": \"syslog,sshd,authentication_failed,invalid_login\", \"agent_name\": \"endpoint01\"}}",
-      "decoder": {
-        "name": "json"
-      },
-      "data": {
-        "integration": "misp",
-        "misp": {
-          "source": "wazuh-custom-misp",
-          "observable": "50.16.16.211",
-          "observable_kind": "ip",
-          "attribute_type": "ip-dst",
-          "attribute_value": "50.16.16.211",
-          "category": "Network activity",
-          "to_ids": "True",
-          "event_id": "1",
-          "source_rule_id": "5710",
-          "source_rule_description": "sshd: Attempt to login using a non-existent user",
-          "source_rule_groups": "syslog,sshd,authentication_failed,invalid_login",
-          "agent_name": "endpoint01"
-        }
-      },
-      "location": "custom-misp"
-    },
-    {
-      "timestamp": "2026-08-21T13:34:52.270+0000",
+      "timestamp": "2026-08-22T12:17:36.867+0000",
       "rule": {
         "level": 5,
         "description": "sshd: Attempt to login using a non-existent user",
@@ -904,16 +2550,16 @@
       "agent": {
         "id": "006",
         "name": "endpoint01",
-        "ip": "172.19.0.4"
+        "ip": "172.19.0.2"
       },
       "manager": {
         "name": "wazuh.manager"
       },
-      "id": "1787319292.1600875",
-      "full_log": "Aug 21 19:04:50 endpoint01 sshd[8007]: Failed password for invalid user ubuntu from 50.16.16.211 port 45007 ssh2",
+      "id": "1787401056.43582",
+      "full_log": "Aug 22 17:47:36 endpoint01 sshd[8203]: Failed password for invalid user admin from 198.51.100.77 port 46003 ssh2",
       "predecoder": {
         "program_name": "sshd",
-        "timestamp": "Aug 21 19:04:50",
+        "timestamp": "Aug 22 17:47:36",
         "hostname": "endpoint01"
       },
       "decoder": {
@@ -921,149 +2567,13 @@
         "name": "sshd"
       },
       "data": {
-        "srcip": "50.16.16.211",
-        "srcuser": "ubuntu"
+        "srcip": "198.51.100.77",
+        "srcuser": "admin"
       },
       "location": "/var/log/simulated/auth.log"
     },
     {
-      "timestamp": "2026-08-21T13:34:52.270+0000",
-      "rule": {
-        "level": 10,
-        "description": "sshd: brute force trying to get access to the system. Non existent user.",
-        "id": "5712",
-        "mitre": {
-          "id": [
-            "T1110"
-          ],
-          "tactic": [
-            "Credential Access"
-          ],
-          "technique": [
-            "Brute Force"
-          ]
-        },
-        "frequency": 8,
-        "firedtimes": 2,
-        "mail": false,
-        "groups": [
-          "syslog",
-          "sshd",
-          "authentication_failures"
-        ],
-        "gdpr": [
-          "IV_35.7.d",
-          "IV_32.2"
-        ],
-        "hipaa": [
-          "164.312.b"
-        ],
-        "nist_800_53": [
-          "SI.4",
-          "AU.14",
-          "AC.7"
-        ],
-        "pci_dss": [
-          "11.4",
-          "10.2.4",
-          "10.2.5"
-        ],
-        "tsc": [
-          "CC6.1",
-          "CC6.8",
-          "CC7.2",
-          "CC7.3"
-        ]
-      },
-      "agent": {
-        "id": "006",
-        "name": "endpoint01",
-        "ip": "172.19.0.4"
-      },
-      "manager": {
-        "name": "wazuh.manager"
-      },
-      "id": "1787319292.1601423",
-      "previous_output": "Aug 21 19:04:50 endpoint01 sshd[8007]: Failed password for invalid user ubuntu from 50.16.16.211 port 45007 ssh2\nAug 21 19:04:49 endpoint01 sshd[8006]: Failed password for invalid user postgres from 50.16.16.211 port 45006 ssh2\nAug 21 19:04:48 endpoint01 sshd[8005]: Failed password for invalid user oracle from 50.16.16.211 port 45005 ssh2\nAug 21 19:04:47 endpoint01 sshd[8004]: Failed password for invalid user admin from 50.16.16.211 port 45004 ssh2\nAug 21 19:04:45 endpoint01 sshd[8003]: Failed password for invalid user admin from 50.16.16.211 port 45003 ssh2\nAug 21 19:04:44 endpoint01 sshd[8002]: Failed password for invalid user root from 50.16.16.211 port 45002 ssh2\nAug 21 19:04:43 endpoint01 sshd[8001]: Failed password for invalid user root from 50.16.16.211 port 45001 ssh2",
-      "full_log": "Aug 21 19:04:51 endpoint01 sshd[8008]: Failed password for invalid user jenkins from 50.16.16.211 port 45008 ssh2",
-      "predecoder": {
-        "program_name": "sshd",
-        "timestamp": "Aug 21 19:04:51",
-        "hostname": "endpoint01"
-      },
-      "decoder": {
-        "parent": "sshd",
-        "name": "sshd"
-      },
-      "data": {
-        "srcip": "50.16.16.211",
-        "srcuser": "jenkins"
-      },
-      "location": "/var/log/simulated/auth.log"
-    },
-    {
-      "timestamp": "2026-08-21T13:34:54.118+0000",
-      "rule": {
-        "level": 13,
-        "description": "Authentication attack from threat-intel-listed host 50.16.16.211 against endpoint01",
-        "id": "100240",
-        "mitre": {
-          "id": [
-            "T1110.001"
-          ],
-          "tactic": [
-            "Credential Access"
-          ],
-          "technique": [
-            "Password Guessing"
-          ]
-        },
-        "firedtimes": 12,
-        "mail": true,
-        "groups": [
-          "soclab",
-          "custom_detections",
-          "threat_intel",
-          "misp_alert",
-          "authentication_failures",
-          "attack",
-          "soclab_d5"
-        ]
-      },
-      "agent": {
-        "id": "006",
-        "name": "endpoint01",
-        "ip": "172.19.0.4"
-      },
-      "manager": {
-        "name": "wazuh.manager"
-      },
-      "id": "1787319294.1602760",
-      "full_log": "{\"integration\": \"misp\", \"misp\": {\"source\": \"wazuh-custom-misp\", \"observable\": \"50.16.16.211\", \"observable_kind\": \"ip\", \"attribute_type\": \"ip-dst\", \"attribute_value\": \"50.16.16.211\", \"category\": \"Network activity\", \"to_ids\": \"True\", \"event_id\": \"1\", \"comment\": \"\", \"source_rule_id\": \"5710\", \"source_rule_description\": \"sshd: Attempt to login using a non-existent user\", \"source_rule_groups\": \"syslog,sshd,authentication_failed,invalid_login\", \"agent_name\": \"endpoint01\"}}",
-      "decoder": {
-        "name": "json"
-      },
-      "data": {
-        "integration": "misp",
-        "misp": {
-          "source": "wazuh-custom-misp",
-          "observable": "50.16.16.211",
-          "observable_kind": "ip",
-          "attribute_type": "ip-dst",
-          "attribute_value": "50.16.16.211",
-          "category": "Network activity",
-          "to_ids": "True",
-          "event_id": "1",
-          "source_rule_id": "5710",
-          "source_rule_description": "sshd: Attempt to login using a non-existent user",
-          "source_rule_groups": "syslog,sshd,authentication_failed,invalid_login",
-          "agent_name": "endpoint01"
-        }
-      },
-      "location": "custom-misp"
-    },
-    {
-      "timestamp": "2026-08-21T13:34:54.270+0000",
+      "timestamp": "2026-08-22T12:17:36.869+0000",
       "rule": {
         "level": 5,
         "description": "sshd: Attempt to login using a non-existent user",
@@ -1120,16 +2630,16 @@
       "agent": {
         "id": "006",
         "name": "endpoint01",
-        "ip": "172.19.0.4"
+        "ip": "172.19.0.2"
       },
       "manager": {
         "name": "wazuh.manager"
       },
-      "id": "1787319294.1603971",
-      "full_log": "Aug 21 19:04:52 endpoint01 sshd[8009]: Failed password for invalid user git from 50.16.16.211 port 45009 ssh2",
+      "id": "1787401056.44129",
+      "full_log": "Aug 22 17:47:36 endpoint01 sshd[8204]: Failed password for invalid user admin from 198.51.100.77 port 46004 ssh2",
       "predecoder": {
         "program_name": "sshd",
-        "timestamp": "Aug 21 19:04:52",
+        "timestamp": "Aug 22 17:47:36",
         "hostname": "endpoint01"
       },
       "decoder": {
@@ -1137,13 +2647,13 @@
         "name": "sshd"
       },
       "data": {
-        "srcip": "50.16.16.211",
-        "srcuser": "git"
+        "srcip": "198.51.100.77",
+        "srcuser": "admin"
       },
       "location": "/var/log/simulated/auth.log"
     },
     {
-      "timestamp": "2026-08-21T13:34:54.270+0000",
+      "timestamp": "2026-08-22T12:17:36.871+0000",
       "rule": {
         "level": 5,
         "description": "sshd: Attempt to login using a non-existent user",
@@ -1200,16 +2710,16 @@
       "agent": {
         "id": "006",
         "name": "endpoint01",
-        "ip": "172.19.0.4"
+        "ip": "172.19.0.2"
       },
       "manager": {
         "name": "wazuh.manager"
       },
-      "id": "1787319294.1604516",
-      "full_log": "Aug 21 19:04:53 endpoint01 sshd[8010]: Failed password for invalid user test from 50.16.16.211 port 45010 ssh2",
+      "id": "1787401056.44676",
+      "full_log": "Aug 22 17:47:36 endpoint01 sshd[8205]: Failed password for invalid user admin from 198.51.100.77 port 46005 ssh2",
       "predecoder": {
         "program_name": "sshd",
-        "timestamp": "Aug 21 19:04:53",
+        "timestamp": "Aug 22 17:47:36",
         "hostname": "endpoint01"
       },
       "decoder": {
@@ -1217,185 +2727,13 @@
         "name": "sshd"
       },
       "data": {
-        "srcip": "50.16.16.211",
-        "srcuser": "test"
+        "srcip": "198.51.100.77",
+        "srcuser": "admin"
       },
       "location": "/var/log/simulated/auth.log"
     },
     {
-      "timestamp": "2026-08-21T13:34:54.449+0000",
-      "rule": {
-        "level": 14,
-        "description": "MISP: repeated threat-intel matches from endpoint01 \u2014 possible active compromise",
-        "id": "100103",
-        "frequency": 4,
-        "firedtimes": 4,
-        "mail": true,
-        "groups": [
-          "threat_intel",
-          "misp",
-          "threat_intel",
-          "misp_correlation",
-          "attack"
-        ]
-      },
-      "agent": {
-        "id": "006",
-        "name": "endpoint01",
-        "ip": "172.19.0.4"
-      },
-      "manager": {
-        "name": "wazuh.manager"
-      },
-      "id": "1787319294.1605062",
-      "previous_output": "{\"integration\": \"misp\", \"misp\": {\"source\": \"wazuh-custom-misp\", \"observable\": \"50.16.16.211\", \"observable_kind\": \"ip\", \"attribute_type\": \"ip-dst\", \"attribute_value\": \"50.16.16.211\", \"category\": \"Network activity\", \"to_ids\": \"True\", \"event_id\": \"1\", \"comment\": \"\", \"source_rule_id\": \"5710\", \"source_rule_description\": \"sshd: Attempt to login using a non-existent user\", \"source_rule_groups\": \"syslog,sshd,authentication_failed,invalid_login\", \"agent_name\": \"endpoint01\"}}\n{\"integration\": \"misp\", \"misp\": {\"source\": \"wazuh-custom-misp\", \"observable\": \"50.16.16.211\", \"observable_kind\": \"ip\", \"attribute_type\": \"ip-dst\", \"attribute_value\": \"50.16.16.211\", \"category\": \"Network activity\", \"to_ids\": \"True\", \"event_id\": \"1\", \"comment\": \"\", \"source_rule_id\": \"5710\", \"source_rule_description\": \"sshd: Attempt to login using a non-existent user\", \"source_rule_groups\": \"syslog,sshd,authentication_failed,invalid_login\", \"agent_name\": \"endpoint01\"}}\n{\"integration\": \"misp\", \"misp\": {\"source\": \"wazuh-custom-misp\", \"observable\": \"50.16.16.211\", \"observable_kind\": \"ip\", \"attribute_type\": \"ip-dst\", \"attribute_value\": \"50.16.16.211\", \"category\": \"Network activity\", \"to_ids\": \"True\", \"event_id\": \"1\", \"comment\": \"\", \"source_rule_id\": \"5710\", \"source_rule_description\": \"sshd: Attempt to login using a non-existent user\", \"source_rule_groups\": \"syslog,sshd,authentication_failed,invalid_login\", \"agent_name\": \"endpoint01\"}}",
-      "full_log": "{\"integration\": \"misp\", \"misp\": {\"source\": \"wazuh-custom-misp\", \"observable\": \"50.16.16.211\", \"observable_kind\": \"ip\", \"attribute_type\": \"ip-dst\", \"attribute_value\": \"50.16.16.211\", \"category\": \"Network activity\", \"to_ids\": \"True\", \"event_id\": \"1\", \"comment\": \"\", \"source_rule_id\": \"5712\", \"source_rule_description\": \"sshd: brute force trying to get access to the system. Non existent user.\", \"source_rule_groups\": \"syslog,sshd,authentication_failures\", \"agent_name\": \"endpoint01\"}}",
-      "decoder": {
-        "name": "json"
-      },
-      "data": {
-        "integration": "misp",
-        "misp": {
-          "source": "wazuh-custom-misp",
-          "observable": "50.16.16.211",
-          "observable_kind": "ip",
-          "attribute_type": "ip-dst",
-          "attribute_value": "50.16.16.211",
-          "category": "Network activity",
-          "to_ids": "True",
-          "event_id": "1",
-          "source_rule_id": "5712",
-          "source_rule_description": "sshd: brute force trying to get access to the system. Non existent user.",
-          "source_rule_groups": "syslog,sshd,authentication_failures",
-          "agent_name": "endpoint01"
-        }
-      },
-      "location": "custom-misp"
-    },
-    {
-      "timestamp": "2026-08-21T13:34:54.940+0000",
-      "rule": {
-        "level": 13,
-        "description": "Authentication attack from threat-intel-listed host 50.16.16.211 against endpoint01",
-        "id": "100240",
-        "mitre": {
-          "id": [
-            "T1110.001"
-          ],
-          "tactic": [
-            "Credential Access"
-          ],
-          "technique": [
-            "Password Guessing"
-          ]
-        },
-        "firedtimes": 13,
-        "mail": true,
-        "groups": [
-          "soclab",
-          "custom_detections",
-          "threat_intel",
-          "misp_alert",
-          "authentication_failures",
-          "attack",
-          "soclab_d5"
-        ]
-      },
-      "agent": {
-        "id": "006",
-        "name": "endpoint01",
-        "ip": "172.19.0.4"
-      },
-      "manager": {
-        "name": "wazuh.manager"
-      },
-      "id": "1787319294.1607674",
-      "full_log": "{\"integration\": \"misp\", \"misp\": {\"source\": \"wazuh-custom-misp\", \"observable\": \"50.16.16.211\", \"observable_kind\": \"ip\", \"attribute_type\": \"ip-dst\", \"attribute_value\": \"50.16.16.211\", \"category\": \"Network activity\", \"to_ids\": \"True\", \"event_id\": \"1\", \"comment\": \"\", \"source_rule_id\": \"5710\", \"source_rule_description\": \"sshd: Attempt to login using a non-existent user\", \"source_rule_groups\": \"syslog,sshd,authentication_failed,invalid_login\", \"agent_name\": \"endpoint01\"}}",
-      "decoder": {
-        "name": "json"
-      },
-      "data": {
-        "integration": "misp",
-        "misp": {
-          "source": "wazuh-custom-misp",
-          "observable": "50.16.16.211",
-          "observable_kind": "ip",
-          "attribute_type": "ip-dst",
-          "attribute_value": "50.16.16.211",
-          "category": "Network activity",
-          "to_ids": "True",
-          "event_id": "1",
-          "source_rule_id": "5710",
-          "source_rule_description": "sshd: Attempt to login using a non-existent user",
-          "source_rule_groups": "syslog,sshd,authentication_failed,invalid_login",
-          "agent_name": "endpoint01"
-        }
-      },
-      "location": "custom-misp"
-    },
-    {
-      "timestamp": "2026-08-21T13:34:55.269+0000",
-      "rule": {
-        "level": 13,
-        "description": "Authentication attack from threat-intel-listed host 50.16.16.211 against endpoint01",
-        "id": "100240",
-        "mitre": {
-          "id": [
-            "T1110.001"
-          ],
-          "tactic": [
-            "Credential Access"
-          ],
-          "technique": [
-            "Password Guessing"
-          ]
-        },
-        "firedtimes": 14,
-        "mail": true,
-        "groups": [
-          "soclab",
-          "custom_detections",
-          "threat_intel",
-          "misp_alert",
-          "authentication_failures",
-          "attack",
-          "soclab_d5"
-        ]
-      },
-      "agent": {
-        "id": "006",
-        "name": "endpoint01",
-        "ip": "172.19.0.4"
-      },
-      "manager": {
-        "name": "wazuh.manager"
-      },
-      "id": "1787319295.1608885",
-      "full_log": "{\"integration\": \"misp\", \"misp\": {\"source\": \"wazuh-custom-misp\", \"observable\": \"50.16.16.211\", \"observable_kind\": \"ip\", \"attribute_type\": \"ip-dst\", \"attribute_value\": \"50.16.16.211\", \"category\": \"Network activity\", \"to_ids\": \"True\", \"event_id\": \"1\", \"comment\": \"\", \"source_rule_id\": \"5710\", \"source_rule_description\": \"sshd: Attempt to login using a non-existent user\", \"source_rule_groups\": \"syslog,sshd,authentication_failed,invalid_login\", \"agent_name\": \"endpoint01\"}}",
-      "decoder": {
-        "name": "json"
-      },
-      "data": {
-        "integration": "misp",
-        "misp": {
-          "source": "wazuh-custom-misp",
-          "observable": "50.16.16.211",
-          "observable_kind": "ip",
-          "attribute_type": "ip-dst",
-          "attribute_value": "50.16.16.211",
-          "category": "Network activity",
-          "to_ids": "True",
-          "event_id": "1",
-          "source_rule_id": "5710",
-          "source_rule_description": "sshd: Attempt to login using a non-existent user",
-          "source_rule_groups": "syslog,sshd,authentication_failed,invalid_login",
-          "agent_name": "endpoint01"
-        }
-      },
-      "location": "custom-misp"
-    },
-    {
-      "timestamp": "2026-08-21T13:34:56.270+0000",
+      "timestamp": "2026-08-22T12:17:36.873+0000",
       "rule": {
         "level": 5,
         "description": "sshd: Attempt to login using a non-existent user",
@@ -1452,16 +2790,16 @@
       "agent": {
         "id": "006",
         "name": "endpoint01",
-        "ip": "172.19.0.4"
+        "ip": "172.19.0.2"
       },
       "manager": {
         "name": "wazuh.manager"
       },
-      "id": "1787319296.1610096",
-      "full_log": "Aug 21 19:04:54 endpoint01 sshd[8011]: Failed password for invalid user ftpuser from 50.16.16.211 port 45011 ssh2",
+      "id": "1787401056.45223",
+      "full_log": "Aug 22 17:47:36 endpoint01 sshd[8206]: Failed password for invalid user admin from 198.51.100.77 port 46006 ssh2",
       "predecoder": {
         "program_name": "sshd",
-        "timestamp": "Aug 21 19:04:54",
+        "timestamp": "Aug 22 17:47:36",
         "hostname": "endpoint01"
       },
       "decoder": {
@@ -1469,13 +2807,13 @@
         "name": "sshd"
       },
       "data": {
-        "srcip": "50.16.16.211",
-        "srcuser": "ftpuser"
+        "srcip": "198.51.100.77",
+        "srcuser": "admin"
       },
       "location": "/var/log/simulated/auth.log"
     },
     {
-      "timestamp": "2026-08-21T13:34:56.270+0000",
+      "timestamp": "2026-08-22T12:17:36.875+0000",
       "rule": {
         "level": 5,
         "description": "sshd: Attempt to login using a non-existent user",
@@ -1532,16 +2870,16 @@
       "agent": {
         "id": "006",
         "name": "endpoint01",
-        "ip": "172.19.0.4"
+        "ip": "172.19.0.2"
       },
       "manager": {
         "name": "wazuh.manager"
       },
-      "id": "1787319296.1610645",
-      "full_log": "Aug 21 19:04:55 endpoint01 sshd[8012]: Failed password for invalid user backupsvc from 50.16.16.211 port 45012 ssh2",
+      "id": "1787401056.45770",
+      "full_log": "Aug 22 17:47:36 endpoint01 sshd[8207]: Failed password for invalid user admin from 198.51.100.77 port 46007 ssh2",
       "predecoder": {
         "program_name": "sshd",
-        "timestamp": "Aug 21 19:04:55",
+        "timestamp": "Aug 22 17:47:36",
         "hostname": "endpoint01"
       },
       "decoder": {
@@ -1549,169 +2887,79 @@
         "name": "sshd"
       },
       "data": {
-        "srcip": "50.16.16.211",
-        "srcuser": "backupsvc"
+        "srcip": "198.51.100.77",
+        "srcuser": "admin"
       },
       "location": "/var/log/simulated/auth.log"
     },
     {
-      "timestamp": "2026-08-21T13:34:57.979+0000",
+      "timestamp": "2026-08-22T12:17:36.877+0000",
       "rule": {
-        "level": 13,
-        "description": "Authentication attack from threat-intel-listed host 50.16.16.211 against endpoint01",
-        "id": "100240",
-        "mitre": {
-          "id": [
-            "T1110.001"
-          ],
-          "tactic": [
-            "Credential Access"
-          ],
-          "technique": [
-            "Password Guessing"
-          ]
-        },
-        "firedtimes": 15,
-        "mail": true,
-        "groups": [
-          "soclab",
-          "custom_detections",
-          "threat_intel",
-          "misp_alert",
-          "authentication_failures",
-          "attack",
-          "soclab_d5"
-        ]
-      },
-      "agent": {
-        "id": "006",
-        "name": "endpoint01",
-        "ip": "172.19.0.4"
-      },
-      "manager": {
-        "name": "wazuh.manager"
-      },
-      "id": "1787319297.1611196",
-      "full_log": "{\"integration\": \"misp\", \"misp\": {\"source\": \"wazuh-custom-misp\", \"observable\": \"50.16.16.211\", \"observable_kind\": \"ip\", \"attribute_type\": \"ip-dst\", \"attribute_value\": \"50.16.16.211\", \"category\": \"Network activity\", \"to_ids\": \"True\", \"event_id\": \"1\", \"comment\": \"\", \"source_rule_id\": \"5710\", \"source_rule_description\": \"sshd: Attempt to login using a non-existent user\", \"source_rule_groups\": \"syslog,sshd,authentication_failed,invalid_login\", \"agent_name\": \"endpoint01\"}}",
-      "decoder": {
-        "name": "json"
-      },
-      "data": {
-        "integration": "misp",
-        "misp": {
-          "source": "wazuh-custom-misp",
-          "observable": "50.16.16.211",
-          "observable_kind": "ip",
-          "attribute_type": "ip-dst",
-          "attribute_value": "50.16.16.211",
-          "category": "Network activity",
-          "to_ids": "True",
-          "event_id": "1",
-          "source_rule_id": "5710",
-          "source_rule_description": "sshd: Attempt to login using a non-existent user",
-          "source_rule_groups": "syslog,sshd,authentication_failed,invalid_login",
-          "agent_name": "endpoint01"
-        }
-      },
-      "location": "custom-misp"
-    },
-    {
-      "timestamp": "2026-08-21T13:34:58.308+0000",
-      "rule": {
-        "level": 14,
-        "description": "MISP: repeated threat-intel matches from endpoint01 \u2014 possible active compromise",
-        "id": "100103",
-        "frequency": 4,
-        "firedtimes": 5,
-        "mail": true,
-        "groups": [
-          "threat_intel",
-          "misp",
-          "threat_intel",
-          "misp_correlation",
-          "attack"
-        ]
-      },
-      "agent": {
-        "id": "006",
-        "name": "endpoint01",
-        "ip": "172.19.0.4"
-      },
-      "manager": {
-        "name": "wazuh.manager"
-      },
-      "id": "1787319298.1612407",
-      "previous_output": "{\"integration\": \"misp\", \"misp\": {\"source\": \"wazuh-custom-misp\", \"observable\": \"50.16.16.211\", \"observable_kind\": \"ip\", \"attribute_type\": \"ip-dst\", \"attribute_value\": \"50.16.16.211\", \"category\": \"Network activity\", \"to_ids\": \"True\", \"event_id\": \"1\", \"comment\": \"\", \"source_rule_id\": \"5710\", \"source_rule_description\": \"sshd: Attempt to login using a non-existent user\", \"source_rule_groups\": \"syslog,sshd,authentication_failed,invalid_login\", \"agent_name\": \"endpoint01\"}}\n{\"integration\": \"misp\", \"misp\": {\"source\": \"wazuh-custom-misp\", \"observable\": \"50.16.16.211\", \"observable_kind\": \"ip\", \"attribute_type\": \"ip-dst\", \"attribute_value\": \"50.16.16.211\", \"category\": \"Network activity\", \"to_ids\": \"True\", \"event_id\": \"1\", \"comment\": \"\", \"source_rule_id\": \"5710\", \"source_rule_description\": \"sshd: Attempt to login using a non-existent user\", \"source_rule_groups\": \"syslog,sshd,authentication_failed,invalid_login\", \"agent_name\": \"endpoint01\"}}\n{\"integration\": \"misp\", \"misp\": {\"source\": \"wazuh-custom-misp\", \"observable\": \"50.16.16.211\", \"observable_kind\": \"ip\", \"attribute_type\": \"ip-dst\", \"attribute_value\": \"50.16.16.211\", \"category\": \"Network activity\", \"to_ids\": \"True\", \"event_id\": \"1\", \"comment\": \"\", \"source_rule_id\": \"5710\", \"source_rule_description\": \"sshd: Attempt to login using a non-existent user\", \"source_rule_groups\": \"syslog,sshd,authentication_failed,invalid_login\", \"agent_name\": \"endpoint01\"}}",
-      "full_log": "{\"integration\": \"misp\", \"misp\": {\"source\": \"wazuh-custom-misp\", \"observable\": \"50.16.16.211\", \"observable_kind\": \"ip\", \"attribute_type\": \"ip-dst\", \"attribute_value\": \"50.16.16.211\", \"category\": \"Network activity\", \"to_ids\": \"True\", \"event_id\": \"1\", \"comment\": \"\", \"source_rule_id\": \"5710\", \"source_rule_description\": \"sshd: Attempt to login using a non-existent user\", \"source_rule_groups\": \"syslog,sshd,authentication_failed,invalid_login\", \"agent_name\": \"endpoint01\"}}",
-      "decoder": {
-        "name": "json"
-      },
-      "data": {
-        "integration": "misp",
-        "misp": {
-          "source": "wazuh-custom-misp",
-          "observable": "50.16.16.211",
-          "observable_kind": "ip",
-          "attribute_type": "ip-dst",
-          "attribute_value": "50.16.16.211",
-          "category": "Network activity",
-          "to_ids": "True",
-          "event_id": "1",
-          "source_rule_id": "5710",
-          "source_rule_description": "sshd: Attempt to login using a non-existent user",
-          "source_rule_groups": "syslog,sshd,authentication_failed,invalid_login",
-          "agent_name": "endpoint01"
-        }
-      },
-      "location": "custom-misp"
-    },
-    {
-      "timestamp": "2026-08-21T13:35:02.270+0000",
-      "rule": {
-        "level": 14,
-        "description": "Successful SSH login from 50.16.16.211, which was brute-forcing moments ago \u2014 probable credential compromise",
-        "id": "100200",
+        "level": 5,
+        "description": "sshd: Attempt to login using a non-existent user",
+        "id": "5710",
         "mitre": {
           "id": [
             "T1110.001",
-            "T1078"
+            "T1021.004"
           ],
           "tactic": [
             "Credential Access",
-            "Defense Evasion",
-            "Persistence",
-            "Privilege Escalation",
-            "Initial Access"
+            "Lateral Movement"
           ],
           "technique": [
             "Password Guessing",
-            "Valid Accounts"
+            "SSH"
           ]
         },
-        "frequency": 2,
-        "firedtimes": 1,
-        "mail": true,
+        "firedtimes": 2,
+        "mail": false,
         "groups": [
-          "soclab",
-          "custom_detections",
-          "authentication_success",
-          "attack",
-          "soclab_d1"
+          "syslog",
+          "sshd",
+          "authentication_failed",
+          "invalid_login"
+        ],
+        "gdpr": [
+          "IV_35.7.d",
+          "IV_32.2"
+        ],
+        "gpg13": [
+          "7.1"
+        ],
+        "hipaa": [
+          "164.312.b"
+        ],
+        "nist_800_53": [
+          "AU.14",
+          "AC.7",
+          "AU.6"
+        ],
+        "pci_dss": [
+          "10.2.4",
+          "10.2.5",
+          "10.6.1"
+        ],
+        "tsc": [
+          "CC6.1",
+          "CC6.8",
+          "CC7.2",
+          "CC7.3"
         ]
       },
       "agent": {
         "id": "006",
         "name": "endpoint01",
-        "ip": "172.19.0.4"
+        "ip": "172.19.0.2"
       },
       "manager": {
         "name": "wazuh.manager"
       },
-      "id": "1787319302.1614995",
-      "full_log": "Aug 21 19:05:00 endpoint01 sshd[8100]: Accepted password for backupsvc from 50.16.16.211 port 45100 ssh2",
+      "id": "1787401056.46317",
+      "full_log": "Aug 22 17:47:36 endpoint01 sshd[8208]: Failed password for invalid user admin from 198.51.100.77 port 46008 ssh2",
       "predecoder": {
         "program_name": "sshd",
-        "timestamp": "Aug 21 19:05:00",
+        "timestamp": "Aug 22 17:47:36",
         "hostname": "endpoint01"
       },
       "decoder": {
@@ -1719,621 +2967,13 @@
         "name": "sshd"
       },
       "data": {
-        "srcip": "50.16.16.211",
-        "srcport": "45100",
-        "dstuser": "backupsvc"
+        "srcip": "198.51.100.77",
+        "srcuser": "admin"
       },
       "location": "/var/log/simulated/auth.log"
     },
     {
-      "timestamp": "2026-08-21T13:35:03.877+0000",
-      "rule": {
-        "level": 12,
-        "description": "MISP: known-bad ip seen on endpoint01 \u2014 ip-dst matched threat intel [triggered by rule 100200]",
-        "id": "100101",
-        "firedtimes": 1,
-        "mail": true,
-        "groups": [
-          "threat_intel",
-          "misp",
-          "threat_intel",
-          "misp_alert"
-        ]
-      },
-      "agent": {
-        "id": "006",
-        "name": "endpoint01",
-        "ip": "172.19.0.4"
-      },
-      "manager": {
-        "name": "wazuh.manager"
-      },
-      "id": "1787319303.1615578",
-      "full_log": "{\"integration\": \"misp\", \"misp\": {\"source\": \"wazuh-custom-misp\", \"observable\": \"50.16.16.211\", \"observable_kind\": \"ip\", \"attribute_type\": \"ip-dst\", \"attribute_value\": \"50.16.16.211\", \"category\": \"Network activity\", \"to_ids\": \"True\", \"event_id\": \"1\", \"comment\": \"\", \"source_rule_id\": \"100200\", \"source_rule_description\": \"Successful SSH login from 50.16.16.211, which was brute-forcing moments ago \\u2014 probable credential compromise\", \"source_rule_groups\": \"soclab,custom_detections,authentication_success,attack,soclab_d1\", \"agent_name\": \"endpoint01\"}}",
-      "decoder": {
-        "name": "json"
-      },
-      "data": {
-        "integration": "misp",
-        "misp": {
-          "source": "wazuh-custom-misp",
-          "observable": "50.16.16.211",
-          "observable_kind": "ip",
-          "attribute_type": "ip-dst",
-          "attribute_value": "50.16.16.211",
-          "category": "Network activity",
-          "to_ids": "True",
-          "event_id": "1",
-          "source_rule_id": "100200",
-          "source_rule_description": "Successful SSH login from 50.16.16.211, which was brute-forcing moments ago \u2014 probable credential compromise",
-          "source_rule_groups": "soclab,custom_detections,authentication_success,attack,soclab_d1",
-          "agent_name": "endpoint01"
-        }
-      },
-      "location": "custom-misp"
-    },
-    {
-      "timestamp": "2026-08-21T13:35:07.042+0000",
-      "rule": {
-        "level": 12,
-        "description": "Security-critical file created or modified: /root/.ssh/authorized_keys",
-        "id": "100210",
-        "mitre": {
-          "id": [
-            "T1098.004",
-            "T1053.003",
-            "T1136"
-          ],
-          "tactic": [
-            "Persistence",
-            "Execution",
-            "Privilege Escalation"
-          ],
-          "technique": [
-            "SSH Authorized Keys",
-            "Cron",
-            "Create Account"
-          ]
-        },
-        "firedtimes": 4,
-        "mail": true,
-        "groups": [
-          "soclab",
-          "custom_detections",
-          "syscheck",
-          "attack",
-          "soclab_d2"
-        ]
-      },
-      "agent": {
-        "id": "006",
-        "name": "endpoint01",
-        "ip": "172.19.0.4"
-      },
-      "manager": {
-        "name": "wazuh.manager"
-      },
-      "id": "1787319307.1616919",
-      "full_log": "File '/root/.ssh/authorized_keys' added\nMode: realtime\n",
-      "syscheck": {
-        "path": "/root/.ssh/authorized_keys",
-        "mode": "realtime",
-        "size_after": "88",
-        "perm_after": "rw-------",
-        "uid_after": "0",
-        "gid_after": "0",
-        "md5_after": "d96518534f9e8f2bf5f8454fa0f9bec5",
-        "sha1_after": "63755d6fee7fab78777b330d81bf7c1840dc1d20",
-        "sha256_after": "208dae3805839d5fe6f70f24356e229a5cecd93e70a4710b55bae11454848802",
-        "uname_after": "root",
-        "gname_after": "root",
-        "mtime_after": "2026-08-21T13:35:07",
-        "inode_after": 925987,
-        "event": "added"
-      },
-      "decoder": {
-        "name": "syscheck_new_entry"
-      },
-      "location": "syscheck"
-    },
-    {
-      "timestamp": "2026-08-21T13:35:07.082+0000",
-      "rule": {
-        "level": 12,
-        "description": "Security-critical file created or modified: /etc/sudoers.d/99-backupsvc",
-        "id": "100210",
-        "mitre": {
-          "id": [
-            "T1098.004",
-            "T1053.003",
-            "T1136"
-          ],
-          "tactic": [
-            "Persistence",
-            "Execution",
-            "Privilege Escalation"
-          ],
-          "technique": [
-            "SSH Authorized Keys",
-            "Cron",
-            "Create Account"
-          ]
-        },
-        "firedtimes": 5,
-        "mail": true,
-        "groups": [
-          "soclab",
-          "custom_detections",
-          "syscheck",
-          "attack",
-          "soclab_d2"
-        ]
-      },
-      "agent": {
-        "id": "006",
-        "name": "endpoint01",
-        "ip": "172.19.0.4"
-      },
-      "manager": {
-        "name": "wazuh.manager"
-      },
-      "id": "1787319307.1617518",
-      "full_log": "File '/etc/sudoers.d/99-backupsvc' added\nMode: realtime\n",
-      "syscheck": {
-        "path": "/etc/sudoers.d/99-backupsvc",
-        "mode": "realtime",
-        "size_after": "34",
-        "perm_after": "rw-r--r--",
-        "uid_after": "0",
-        "gid_after": "0",
-        "md5_after": "e551a12fb42466a28179b10ca80a3cdc",
-        "sha1_after": "4f9a368d203c77b230a2b22d1c38370ccec02bc7",
-        "sha256_after": "20833e66a4ef4cec7833a1516328898a7e8014bbe3af4aca750cd6b663b70ca1",
-        "uname_after": "root",
-        "gname_after": "root",
-        "mtime_after": "2026-08-21T13:35:07",
-        "inode_after": 925988,
-        "event": "added"
-      },
-      "decoder": {
-        "name": "syscheck_new_entry"
-      },
-      "location": "syscheck"
-    },
-    {
-      "timestamp": "2026-08-21T13:35:07.082+0000",
-      "rule": {
-        "level": 12,
-        "description": "Security-critical file created or modified: /etc/cron.d/systemd-udevd-refresh",
-        "id": "100210",
-        "mitre": {
-          "id": [
-            "T1098.004",
-            "T1053.003",
-            "T1136"
-          ],
-          "tactic": [
-            "Persistence",
-            "Execution",
-            "Privilege Escalation"
-          ],
-          "technique": [
-            "SSH Authorized Keys",
-            "Cron",
-            "Create Account"
-          ]
-        },
-        "firedtimes": 6,
-        "mail": true,
-        "groups": [
-          "soclab",
-          "custom_detections",
-          "syscheck",
-          "attack",
-          "soclab_d2"
-        ]
-      },
-      "agent": {
-        "id": "006",
-        "name": "endpoint01",
-        "ip": "172.19.0.4"
-      },
-      "manager": {
-        "name": "wazuh.manager"
-      },
-      "id": "1787319307.1618119",
-      "full_log": "File '/etc/cron.d/systemd-udevd-refresh' added\nMode: realtime\n",
-      "syscheck": {
-        "path": "/etc/cron.d/systemd-udevd-refresh",
-        "mode": "realtime",
-        "size_after": "47",
-        "perm_after": "rw-r--r--",
-        "uid_after": "0",
-        "gid_after": "0",
-        "md5_after": "563e4ade8b605ec44cf5fc9c89de0219",
-        "sha1_after": "2a51fac9b5b203f86c7f82225b8b896344abcb07",
-        "sha256_after": "54c648fda98ae3dc1cecd4656b1d2ec94dc709d706dd0e7cd954d58d3662a15f",
-        "uname_after": "root",
-        "gname_after": "root",
-        "mtime_after": "2026-08-21T13:35:07",
-        "inode_after": 925989,
-        "event": "added"
-      },
-      "decoder": {
-        "name": "syscheck_new_entry"
-      },
-      "location": "syscheck"
-    },
-    {
-      "timestamp": "2026-08-21T13:35:13.135+0000",
-      "rule": {
-        "level": 12,
-        "description": "New executable dropped into a system binary directory: /usr/bin/systemd-udevd-helper",
-        "id": "100220",
-        "mitre": {
-          "id": [
-            "T1036.005",
-            "T1543"
-          ],
-          "tactic": [
-            "Defense Evasion",
-            "Persistence",
-            "Privilege Escalation"
-          ],
-          "technique": [
-            "Match Legitimate Name or Location",
-            "Create or Modify System Process"
-          ]
-        },
-        "firedtimes": 1,
-        "mail": true,
-        "groups": [
-          "soclab",
-          "custom_detections",
-          "syscheck",
-          "attack",
-          "soclab_d3"
-        ]
-      },
-      "agent": {
-        "id": "006",
-        "name": "endpoint01",
-        "ip": "172.19.0.4"
-      },
-      "manager": {
-        "name": "wazuh.manager"
-      },
-      "id": "1787319313.1618732",
-      "full_log": "File '/usr/bin/systemd-udevd-helper' added\nMode: realtime\n",
-      "syscheck": {
-        "path": "/usr/bin/systemd-udevd-helper",
-        "mode": "realtime",
-        "size_after": "62",
-        "perm_after": "rwxr-xr-x",
-        "uid_after": "0",
-        "gid_after": "0",
-        "md5_after": "1ec7fa26e9750c5016b97a9f704b1ce7",
-        "sha1_after": "f8da49a59cf7575a5c314d0f810a0e8944148962",
-        "sha256_after": "41ccfecbe85209d143ef27930957cc4e487b7c7ee2dde021703d012c69cb2a98",
-        "uname_after": "root",
-        "gname_after": "root",
-        "mtime_after": "2026-08-21T13:35:13",
-        "inode_after": 926064,
-        "event": "added"
-      },
-      "decoder": {
-        "name": "syscheck_new_entry"
-      },
-      "location": "syscheck"
-    },
-    {
-      "timestamp": "2026-08-21T13:35:20.271+0000",
-      "rule": {
-        "level": 3,
-        "description": "Outbound connection from 172.20.0.5 to external host 162.243.103.246:443",
-        "id": "100230",
-        "firedtimes": 1,
-        "mail": false,
-        "groups": [
-          "soclab",
-          "custom_detections",
-          "firewall",
-          "soclab_d4"
-        ]
-      },
-      "agent": {
-        "id": "006",
-        "name": "endpoint01",
-        "ip": "172.19.0.4"
-      },
-      "manager": {
-        "name": "wazuh.manager"
-      },
-      "id": "1787319320.1619348",
-      "full_log": "Aug 21 19:05:19 endpoint01 kernel: OUTBOUND-ACCEPT IN= OUT=eth0 SRC=172.20.0.5 DST=162.243.103.246 LEN=60 TOS=0x00 PREC=0x00 TTL=64 ID=5001 DF PROTO=TCP SPT=44321 DPT=443 WINDOW=64240 RES=0x00 SYN URGP=0",
-      "predecoder": {
-        "program_name": "kernel",
-        "timestamp": "Aug 21 19:05:19",
-        "hostname": "endpoint01"
-      },
-      "decoder": {
-        "parent": "kernel",
-        "name": "kernel"
-      },
-      "data": {
-        "protocol": "TCP",
-        "action": "OUTBOUND-ACCEPT",
-        "srcip": "172.20.0.5",
-        "srcport": "44321",
-        "dstip": "162.243.103.246",
-        "dstport": "443"
-      },
-      "location": "/var/log/simulated/firewall.log"
-    },
-    {
-      "timestamp": "2026-08-21T13:35:22.127+0000",
-      "rule": {
-        "level": 13,
-        "description": "Outbound connection to known-malicious infrastructure from endpoint01: 162.243.103.246 \u2014 MISP ip-dst",
-        "id": "100231",
-        "mitre": {
-          "id": [
-            "T1071.001",
-            "T1571"
-          ],
-          "tactic": [
-            "Command and Control"
-          ],
-          "technique": [
-            "Web Protocols",
-            "Non-Standard Port"
-          ]
-        },
-        "firedtimes": 1,
-        "mail": true,
-        "groups": [
-          "soclab",
-          "custom_detections",
-          "threat_intel",
-          "misp_alert",
-          "attack",
-          "soclab_d4"
-        ]
-      },
-      "agent": {
-        "id": "006",
-        "name": "endpoint01",
-        "ip": "172.19.0.4"
-      },
-      "manager": {
-        "name": "wazuh.manager"
-      },
-      "id": "1787319322.1619874",
-      "full_log": "{\"integration\": \"misp\", \"misp\": {\"source\": \"wazuh-custom-misp\", \"observable\": \"162.243.103.246\", \"observable_kind\": \"ip\", \"attribute_type\": \"ip-dst\", \"attribute_value\": \"162.243.103.246\", \"category\": \"Network activity\", \"to_ids\": \"True\", \"event_id\": \"1\", \"comment\": \"\", \"source_rule_id\": \"100230\", \"source_rule_description\": \"Outbound connection from 172.20.0.5 to external host 162.243.103.246:443\", \"source_rule_groups\": \"soclab,custom_detections,firewall,soclab_d4\", \"agent_name\": \"endpoint01\"}}",
-      "decoder": {
-        "name": "json"
-      },
-      "data": {
-        "integration": "misp",
-        "misp": {
-          "source": "wazuh-custom-misp",
-          "observable": "162.243.103.246",
-          "observable_kind": "ip",
-          "attribute_type": "ip-dst",
-          "attribute_value": "162.243.103.246",
-          "category": "Network activity",
-          "to_ids": "True",
-          "event_id": "1",
-          "source_rule_id": "100230",
-          "source_rule_description": "Outbound connection from 172.20.0.5 to external host 162.243.103.246:443",
-          "source_rule_groups": "soclab,custom_detections,firewall,soclab_d4",
-          "agent_name": "endpoint01"
-        }
-      },
-      "location": "custom-misp"
-    },
-    {
-      "timestamp": "2026-08-21T13:35:26.272+0000",
-      "rule": {
-        "level": 3,
-        "description": "Outbound connection from 172.20.0.5 to external host 162.243.103.246:443",
-        "id": "100230",
-        "firedtimes": 2,
-        "mail": false,
-        "groups": [
-          "soclab",
-          "custom_detections",
-          "firewall",
-          "soclab_d4"
-        ]
-      },
-      "agent": {
-        "id": "006",
-        "name": "endpoint01",
-        "ip": "172.19.0.4"
-      },
-      "manager": {
-        "name": "wazuh.manager"
-      },
-      "id": "1787319326.1621136",
-      "full_log": "Aug 21 19:05:24 endpoint01 kernel: OUTBOUND-ACCEPT IN= OUT=eth0 SRC=172.20.0.5 DST=162.243.103.246 LEN=60 TOS=0x00 PREC=0x00 TTL=64 ID=5002 DF PROTO=TCP SPT=44322 DPT=443 WINDOW=64240 RES=0x00 SYN URGP=0",
-      "predecoder": {
-        "program_name": "kernel",
-        "timestamp": "Aug 21 19:05:24",
-        "hostname": "endpoint01"
-      },
-      "decoder": {
-        "parent": "kernel",
-        "name": "kernel"
-      },
-      "data": {
-        "protocol": "TCP",
-        "action": "OUTBOUND-ACCEPT",
-        "srcip": "172.20.0.5",
-        "srcport": "44322",
-        "dstip": "162.243.103.246",
-        "dstport": "443"
-      },
-      "location": "/var/log/simulated/firewall.log"
-    },
-    {
-      "timestamp": "2026-08-21T13:35:27.598+0000",
-      "rule": {
-        "level": 13,
-        "description": "Outbound connection to known-malicious infrastructure from endpoint01: 162.243.103.246 \u2014 MISP ip-dst",
-        "id": "100231",
-        "mitre": {
-          "id": [
-            "T1071.001",
-            "T1571"
-          ],
-          "tactic": [
-            "Command and Control"
-          ],
-          "technique": [
-            "Web Protocols",
-            "Non-Standard Port"
-          ]
-        },
-        "firedtimes": 2,
-        "mail": true,
-        "groups": [
-          "soclab",
-          "custom_detections",
-          "threat_intel",
-          "misp_alert",
-          "attack",
-          "soclab_d4"
-        ]
-      },
-      "agent": {
-        "id": "006",
-        "name": "endpoint01",
-        "ip": "172.19.0.4"
-      },
-      "manager": {
-        "name": "wazuh.manager"
-      },
-      "id": "1787319327.1621662",
-      "full_log": "{\"integration\": \"misp\", \"misp\": {\"source\": \"wazuh-custom-misp\", \"observable\": \"162.243.103.246\", \"observable_kind\": \"ip\", \"attribute_type\": \"ip-dst\", \"attribute_value\": \"162.243.103.246\", \"category\": \"Network activity\", \"to_ids\": \"True\", \"event_id\": \"1\", \"comment\": \"\", \"source_rule_id\": \"100230\", \"source_rule_description\": \"Outbound connection from 172.20.0.5 to external host 162.243.103.246:443\", \"source_rule_groups\": \"soclab,custom_detections,firewall,soclab_d4\", \"agent_name\": \"endpoint01\"}}",
-      "decoder": {
-        "name": "json"
-      },
-      "data": {
-        "integration": "misp",
-        "misp": {
-          "source": "wazuh-custom-misp",
-          "observable": "162.243.103.246",
-          "observable_kind": "ip",
-          "attribute_type": "ip-dst",
-          "attribute_value": "162.243.103.246",
-          "category": "Network activity",
-          "to_ids": "True",
-          "event_id": "1",
-          "source_rule_id": "100230",
-          "source_rule_description": "Outbound connection from 172.20.0.5 to external host 162.243.103.246:443",
-          "source_rule_groups": "soclab,custom_detections,firewall,soclab_d4",
-          "agent_name": "endpoint01"
-        }
-      },
-      "location": "custom-misp"
-    },
-    {
-      "timestamp": "2026-08-21T13:35:30.272+0000",
-      "rule": {
-        "level": 3,
-        "description": "Outbound connection from 172.20.0.5 to external host 162.243.103.246:443",
-        "id": "100230",
-        "firedtimes": 3,
-        "mail": false,
-        "groups": [
-          "soclab",
-          "custom_detections",
-          "firewall",
-          "soclab_d4"
-        ]
-      },
-      "agent": {
-        "id": "006",
-        "name": "endpoint01",
-        "ip": "172.19.0.4"
-      },
-      "manager": {
-        "name": "wazuh.manager"
-      },
-      "id": "1787319330.1622924",
-      "full_log": "Aug 21 19:05:29 endpoint01 kernel: OUTBOUND-ACCEPT IN= OUT=eth0 SRC=172.20.0.5 DST=162.243.103.246 LEN=60 TOS=0x00 PREC=0x00 TTL=64 ID=5003 DF PROTO=TCP SPT=44323 DPT=443 WINDOW=64240 RES=0x00 SYN URGP=0",
-      "predecoder": {
-        "program_name": "kernel",
-        "timestamp": "Aug 21 19:05:29",
-        "hostname": "endpoint01"
-      },
-      "decoder": {
-        "parent": "kernel",
-        "name": "kernel"
-      },
-      "data": {
-        "protocol": "TCP",
-        "action": "OUTBOUND-ACCEPT",
-        "srcip": "172.20.0.5",
-        "srcport": "44323",
-        "dstip": "162.243.103.246",
-        "dstport": "443"
-      },
-      "location": "/var/log/simulated/firewall.log"
-    },
-    {
-      "timestamp": "2026-08-21T13:35:32.054+0000",
-      "rule": {
-        "level": 14,
-        "description": "MISP: repeated threat-intel matches from endpoint01 \u2014 possible active compromise",
-        "id": "100103",
-        "frequency": 4,
-        "firedtimes": 6,
-        "mail": true,
-        "groups": [
-          "threat_intel",
-          "misp",
-          "threat_intel",
-          "misp_correlation",
-          "attack"
-        ]
-      },
-      "agent": {
-        "id": "006",
-        "name": "endpoint01",
-        "ip": "172.19.0.4"
-      },
-      "manager": {
-        "name": "wazuh.manager"
-      },
-      "id": "1787319332.1623450",
-      "previous_output": "{\"integration\": \"misp\", \"misp\": {\"source\": \"wazuh-custom-misp\", \"observable\": \"162.243.103.246\", \"observable_kind\": \"ip\", \"attribute_type\": \"ip-dst\", \"attribute_value\": \"162.243.103.246\", \"category\": \"Network activity\", \"to_ids\": \"True\", \"event_id\": \"1\", \"comment\": \"\", \"source_rule_id\": \"100230\", \"source_rule_description\": \"Outbound connection from 172.20.0.5 to external host 162.243.103.246:443\", \"source_rule_groups\": \"soclab,custom_detections,firewall,soclab_d4\", \"agent_name\": \"endpoint01\"}}\n{\"integration\": \"misp\", \"misp\": {\"source\": \"wazuh-custom-misp\", \"observable\": \"162.243.103.246\", \"observable_kind\": \"ip\", \"attribute_type\": \"ip-dst\", \"attribute_value\": \"162.243.103.246\", \"category\": \"Network activity\", \"to_ids\": \"True\", \"event_id\": \"1\", \"comment\": \"\", \"source_rule_id\": \"100230\", \"source_rule_description\": \"Outbound connection from 172.20.0.5 to external host 162.243.103.246:443\", \"source_rule_groups\": \"soclab,custom_detections,firewall,soclab_d4\", \"agent_name\": \"endpoint01\"}}\n{\"integration\": \"misp\", \"misp\": {\"source\": \"wazuh-custom-misp\", \"observable\": \"50.16.16.211\", \"observable_kind\": \"ip\", \"attribute_type\": \"ip-dst\", \"attribute_value\": \"50.16.16.211\", \"category\": \"Network activity\", \"to_ids\": \"True\", \"event_id\": \"1\", \"comment\": \"\", \"source_rule_id\": \"100200\", \"source_rule_description\": \"Successful SSH login from 50.16.16.211, which was brute-forcing moments ago \\u2014 probable credential compromise\", \"source_rule_groups\": \"soclab,custom_detections,authentication_success,attack,soclab_d1\", \"agent_name\": \"endpoint01\"}}",
-      "full_log": "{\"integration\": \"misp\", \"misp\": {\"source\": \"wazuh-custom-misp\", \"observable\": \"162.243.103.246\", \"observable_kind\": \"ip\", \"attribute_type\": \"ip-dst\", \"attribute_value\": \"162.243.103.246\", \"category\": \"Network activity\", \"to_ids\": \"True\", \"event_id\": \"1\", \"comment\": \"\", \"source_rule_id\": \"100230\", \"source_rule_description\": \"Outbound connection from 172.20.0.5 to external host 162.243.103.246:443\", \"source_rule_groups\": \"soclab,custom_detections,firewall,soclab_d4\", \"agent_name\": \"endpoint01\"}}",
-      "decoder": {
-        "name": "json"
-      },
-      "data": {
-        "integration": "misp",
-        "misp": {
-          "source": "wazuh-custom-misp",
-          "observable": "162.243.103.246",
-          "observable_kind": "ip",
-          "attribute_type": "ip-dst",
-          "attribute_value": "162.243.103.246",
-          "category": "Network activity",
-          "to_ids": "True",
-          "event_id": "1",
-          "source_rule_id": "100230",
-          "source_rule_description": "Outbound connection from 172.20.0.5 to external host 162.243.103.246:443",
-          "source_rule_groups": "soclab,custom_detections,firewall,soclab_d4",
-          "agent_name": "endpoint01"
-        }
-      },
-      "location": "custom-misp"
-    },
-    {
-      "timestamp": "2026-08-21T13:35:36.272+0000",
+      "timestamp": "2026-08-22T12:17:36.879+0000",
       "rule": {
         "level": 5,
         "description": "sshd: Attempt to login using a non-existent user",
@@ -2390,656 +3030,16 @@
       "agent": {
         "id": "006",
         "name": "endpoint01",
-        "ip": "172.19.0.4"
+        "ip": "172.19.0.2"
       },
       "manager": {
         "name": "wazuh.manager"
       },
-      "id": "1787319336.1626234",
-      "full_log": "Aug 21 19:05:34 endpoint01 sshd[8201]: Failed password for invalid user admin from 198.51.100.77 port 46001 ssh2",
+      "id": "1787401056.46864",
+      "full_log": "Aug 22 17:47:36 endpoint01 sshd[8209]: Failed password for invalid user admin from 198.51.100.77 port 46009 ssh2",
       "predecoder": {
         "program_name": "sshd",
-        "timestamp": "Aug 21 19:05:34",
-        "hostname": "endpoint01"
-      },
-      "decoder": {
-        "parent": "sshd",
-        "name": "sshd"
-      },
-      "data": {
-        "srcip": "198.51.100.77",
-        "srcuser": "admin"
-      },
-      "location": "/var/log/simulated/auth.log"
-    },
-    {
-      "timestamp": "2026-08-21T13:35:36.273+0000",
-      "rule": {
-        "level": 5,
-        "description": "sshd: Attempt to login using a non-existent user",
-        "id": "5710",
-        "mitre": {
-          "id": [
-            "T1110.001",
-            "T1021.004"
-          ],
-          "tactic": [
-            "Credential Access",
-            "Lateral Movement"
-          ],
-          "technique": [
-            "Password Guessing",
-            "SSH"
-          ]
-        },
-        "firedtimes": 20,
-        "mail": false,
-        "groups": [
-          "syslog",
-          "sshd",
-          "authentication_failed",
-          "invalid_login"
-        ],
-        "gdpr": [
-          "IV_35.7.d",
-          "IV_32.2"
-        ],
-        "gpg13": [
-          "7.1"
-        ],
-        "hipaa": [
-          "164.312.b"
-        ],
-        "nist_800_53": [
-          "AU.14",
-          "AC.7",
-          "AU.6"
-        ],
-        "pci_dss": [
-          "10.2.4",
-          "10.2.5",
-          "10.6.1"
-        ],
-        "tsc": [
-          "CC6.1",
-          "CC6.8",
-          "CC7.2",
-          "CC7.3"
-        ]
-      },
-      "agent": {
-        "id": "006",
-        "name": "endpoint01",
-        "ip": "172.19.0.4"
-      },
-      "manager": {
-        "name": "wazuh.manager"
-      },
-      "id": "1787319336.1626783",
-      "full_log": "Aug 21 19:05:34 endpoint01 sshd[8202]: Failed password for invalid user admin from 198.51.100.77 port 46002 ssh2",
-      "predecoder": {
-        "program_name": "sshd",
-        "timestamp": "Aug 21 19:05:34",
-        "hostname": "endpoint01"
-      },
-      "decoder": {
-        "parent": "sshd",
-        "name": "sshd"
-      },
-      "data": {
-        "srcip": "198.51.100.77",
-        "srcuser": "admin"
-      },
-      "location": "/var/log/simulated/auth.log"
-    },
-    {
-      "timestamp": "2026-08-21T13:35:36.275+0000",
-      "rule": {
-        "level": 5,
-        "description": "sshd: Attempt to login using a non-existent user",
-        "id": "5710",
-        "mitre": {
-          "id": [
-            "T1110.001",
-            "T1021.004"
-          ],
-          "tactic": [
-            "Credential Access",
-            "Lateral Movement"
-          ],
-          "technique": [
-            "Password Guessing",
-            "SSH"
-          ]
-        },
-        "firedtimes": 21,
-        "mail": false,
-        "groups": [
-          "syslog",
-          "sshd",
-          "authentication_failed",
-          "invalid_login"
-        ],
-        "gdpr": [
-          "IV_35.7.d",
-          "IV_32.2"
-        ],
-        "gpg13": [
-          "7.1"
-        ],
-        "hipaa": [
-          "164.312.b"
-        ],
-        "nist_800_53": [
-          "AU.14",
-          "AC.7",
-          "AU.6"
-        ],
-        "pci_dss": [
-          "10.2.4",
-          "10.2.5",
-          "10.6.1"
-        ],
-        "tsc": [
-          "CC6.1",
-          "CC6.8",
-          "CC7.2",
-          "CC7.3"
-        ]
-      },
-      "agent": {
-        "id": "006",
-        "name": "endpoint01",
-        "ip": "172.19.0.4"
-      },
-      "manager": {
-        "name": "wazuh.manager"
-      },
-      "id": "1787319336.1627332",
-      "full_log": "Aug 21 19:05:34 endpoint01 sshd[8203]: Failed password for invalid user admin from 198.51.100.77 port 46003 ssh2",
-      "predecoder": {
-        "program_name": "sshd",
-        "timestamp": "Aug 21 19:05:34",
-        "hostname": "endpoint01"
-      },
-      "decoder": {
-        "parent": "sshd",
-        "name": "sshd"
-      },
-      "data": {
-        "srcip": "198.51.100.77",
-        "srcuser": "admin"
-      },
-      "location": "/var/log/simulated/auth.log"
-    },
-    {
-      "timestamp": "2026-08-21T13:35:36.277+0000",
-      "rule": {
-        "level": 5,
-        "description": "sshd: Attempt to login using a non-existent user",
-        "id": "5710",
-        "mitre": {
-          "id": [
-            "T1110.001",
-            "T1021.004"
-          ],
-          "tactic": [
-            "Credential Access",
-            "Lateral Movement"
-          ],
-          "technique": [
-            "Password Guessing",
-            "SSH"
-          ]
-        },
-        "firedtimes": 22,
-        "mail": false,
-        "groups": [
-          "syslog",
-          "sshd",
-          "authentication_failed",
-          "invalid_login"
-        ],
-        "gdpr": [
-          "IV_35.7.d",
-          "IV_32.2"
-        ],
-        "gpg13": [
-          "7.1"
-        ],
-        "hipaa": [
-          "164.312.b"
-        ],
-        "nist_800_53": [
-          "AU.14",
-          "AC.7",
-          "AU.6"
-        ],
-        "pci_dss": [
-          "10.2.4",
-          "10.2.5",
-          "10.6.1"
-        ],
-        "tsc": [
-          "CC6.1",
-          "CC6.8",
-          "CC7.2",
-          "CC7.3"
-        ]
-      },
-      "agent": {
-        "id": "006",
-        "name": "endpoint01",
-        "ip": "172.19.0.4"
-      },
-      "manager": {
-        "name": "wazuh.manager"
-      },
-      "id": "1787319336.1627881",
-      "full_log": "Aug 21 19:05:34 endpoint01 sshd[8204]: Failed password for invalid user admin from 198.51.100.77 port 46004 ssh2",
-      "predecoder": {
-        "program_name": "sshd",
-        "timestamp": "Aug 21 19:05:34",
-        "hostname": "endpoint01"
-      },
-      "decoder": {
-        "parent": "sshd",
-        "name": "sshd"
-      },
-      "data": {
-        "srcip": "198.51.100.77",
-        "srcuser": "admin"
-      },
-      "location": "/var/log/simulated/auth.log"
-    },
-    {
-      "timestamp": "2026-08-21T13:35:36.279+0000",
-      "rule": {
-        "level": 5,
-        "description": "sshd: Attempt to login using a non-existent user",
-        "id": "5710",
-        "mitre": {
-          "id": [
-            "T1110.001",
-            "T1021.004"
-          ],
-          "tactic": [
-            "Credential Access",
-            "Lateral Movement"
-          ],
-          "technique": [
-            "Password Guessing",
-            "SSH"
-          ]
-        },
-        "firedtimes": 23,
-        "mail": false,
-        "groups": [
-          "syslog",
-          "sshd",
-          "authentication_failed",
-          "invalid_login"
-        ],
-        "gdpr": [
-          "IV_35.7.d",
-          "IV_32.2"
-        ],
-        "gpg13": [
-          "7.1"
-        ],
-        "hipaa": [
-          "164.312.b"
-        ],
-        "nist_800_53": [
-          "AU.14",
-          "AC.7",
-          "AU.6"
-        ],
-        "pci_dss": [
-          "10.2.4",
-          "10.2.5",
-          "10.6.1"
-        ],
-        "tsc": [
-          "CC6.1",
-          "CC6.8",
-          "CC7.2",
-          "CC7.3"
-        ]
-      },
-      "agent": {
-        "id": "006",
-        "name": "endpoint01",
-        "ip": "172.19.0.4"
-      },
-      "manager": {
-        "name": "wazuh.manager"
-      },
-      "id": "1787319336.1628430",
-      "full_log": "Aug 21 19:05:34 endpoint01 sshd[8205]: Failed password for invalid user admin from 198.51.100.77 port 46005 ssh2",
-      "predecoder": {
-        "program_name": "sshd",
-        "timestamp": "Aug 21 19:05:34",
-        "hostname": "endpoint01"
-      },
-      "decoder": {
-        "parent": "sshd",
-        "name": "sshd"
-      },
-      "data": {
-        "srcip": "198.51.100.77",
-        "srcuser": "admin"
-      },
-      "location": "/var/log/simulated/auth.log"
-    },
-    {
-      "timestamp": "2026-08-21T13:35:36.281+0000",
-      "rule": {
-        "level": 5,
-        "description": "sshd: Attempt to login using a non-existent user",
-        "id": "5710",
-        "mitre": {
-          "id": [
-            "T1110.001",
-            "T1021.004"
-          ],
-          "tactic": [
-            "Credential Access",
-            "Lateral Movement"
-          ],
-          "technique": [
-            "Password Guessing",
-            "SSH"
-          ]
-        },
-        "firedtimes": 24,
-        "mail": false,
-        "groups": [
-          "syslog",
-          "sshd",
-          "authentication_failed",
-          "invalid_login"
-        ],
-        "gdpr": [
-          "IV_35.7.d",
-          "IV_32.2"
-        ],
-        "gpg13": [
-          "7.1"
-        ],
-        "hipaa": [
-          "164.312.b"
-        ],
-        "nist_800_53": [
-          "AU.14",
-          "AC.7",
-          "AU.6"
-        ],
-        "pci_dss": [
-          "10.2.4",
-          "10.2.5",
-          "10.6.1"
-        ],
-        "tsc": [
-          "CC6.1",
-          "CC6.8",
-          "CC7.2",
-          "CC7.3"
-        ]
-      },
-      "agent": {
-        "id": "006",
-        "name": "endpoint01",
-        "ip": "172.19.0.4"
-      },
-      "manager": {
-        "name": "wazuh.manager"
-      },
-      "id": "1787319336.1628979",
-      "full_log": "Aug 21 19:05:34 endpoint01 sshd[8206]: Failed password for invalid user admin from 198.51.100.77 port 46006 ssh2",
-      "predecoder": {
-        "program_name": "sshd",
-        "timestamp": "Aug 21 19:05:34",
-        "hostname": "endpoint01"
-      },
-      "decoder": {
-        "parent": "sshd",
-        "name": "sshd"
-      },
-      "data": {
-        "srcip": "198.51.100.77",
-        "srcuser": "admin"
-      },
-      "location": "/var/log/simulated/auth.log"
-    },
-    {
-      "timestamp": "2026-08-21T13:35:36.283+0000",
-      "rule": {
-        "level": 5,
-        "description": "sshd: Attempt to login using a non-existent user",
-        "id": "5710",
-        "mitre": {
-          "id": [
-            "T1110.001",
-            "T1021.004"
-          ],
-          "tactic": [
-            "Credential Access",
-            "Lateral Movement"
-          ],
-          "technique": [
-            "Password Guessing",
-            "SSH"
-          ]
-        },
-        "firedtimes": 25,
-        "mail": false,
-        "groups": [
-          "syslog",
-          "sshd",
-          "authentication_failed",
-          "invalid_login"
-        ],
-        "gdpr": [
-          "IV_35.7.d",
-          "IV_32.2"
-        ],
-        "gpg13": [
-          "7.1"
-        ],
-        "hipaa": [
-          "164.312.b"
-        ],
-        "nist_800_53": [
-          "AU.14",
-          "AC.7",
-          "AU.6"
-        ],
-        "pci_dss": [
-          "10.2.4",
-          "10.2.5",
-          "10.6.1"
-        ],
-        "tsc": [
-          "CC6.1",
-          "CC6.8",
-          "CC7.2",
-          "CC7.3"
-        ]
-      },
-      "agent": {
-        "id": "006",
-        "name": "endpoint01",
-        "ip": "172.19.0.4"
-      },
-      "manager": {
-        "name": "wazuh.manager"
-      },
-      "id": "1787319336.1629528",
-      "full_log": "Aug 21 19:05:34 endpoint01 sshd[8207]: Failed password for invalid user admin from 198.51.100.77 port 46007 ssh2",
-      "predecoder": {
-        "program_name": "sshd",
-        "timestamp": "Aug 21 19:05:34",
-        "hostname": "endpoint01"
-      },
-      "decoder": {
-        "parent": "sshd",
-        "name": "sshd"
-      },
-      "data": {
-        "srcip": "198.51.100.77",
-        "srcuser": "admin"
-      },
-      "location": "/var/log/simulated/auth.log"
-    },
-    {
-      "timestamp": "2026-08-21T13:35:36.285+0000",
-      "rule": {
-        "level": 5,
-        "description": "sshd: Attempt to login using a non-existent user",
-        "id": "5710",
-        "mitre": {
-          "id": [
-            "T1110.001",
-            "T1021.004"
-          ],
-          "tactic": [
-            "Credential Access",
-            "Lateral Movement"
-          ],
-          "technique": [
-            "Password Guessing",
-            "SSH"
-          ]
-        },
-        "firedtimes": 3,
-        "mail": false,
-        "groups": [
-          "syslog",
-          "sshd",
-          "authentication_failed",
-          "invalid_login"
-        ],
-        "gdpr": [
-          "IV_35.7.d",
-          "IV_32.2"
-        ],
-        "gpg13": [
-          "7.1"
-        ],
-        "hipaa": [
-          "164.312.b"
-        ],
-        "nist_800_53": [
-          "AU.14",
-          "AC.7",
-          "AU.6"
-        ],
-        "pci_dss": [
-          "10.2.4",
-          "10.2.5",
-          "10.6.1"
-        ],
-        "tsc": [
-          "CC6.1",
-          "CC6.8",
-          "CC7.2",
-          "CC7.3"
-        ]
-      },
-      "agent": {
-        "id": "006",
-        "name": "endpoint01",
-        "ip": "172.19.0.4"
-      },
-      "manager": {
-        "name": "wazuh.manager"
-      },
-      "id": "1787319336.1630077",
-      "full_log": "Aug 21 19:05:35 endpoint01 sshd[8208]: Failed password for invalid user admin from 198.51.100.77 port 46008 ssh2",
-      "predecoder": {
-        "program_name": "sshd",
-        "timestamp": "Aug 21 19:05:35",
-        "hostname": "endpoint01"
-      },
-      "decoder": {
-        "parent": "sshd",
-        "name": "sshd"
-      },
-      "data": {
-        "srcip": "198.51.100.77",
-        "srcuser": "admin"
-      },
-      "location": "/var/log/simulated/auth.log"
-    },
-    {
-      "timestamp": "2026-08-21T13:35:36.287+0000",
-      "rule": {
-        "level": 5,
-        "description": "sshd: Attempt to login using a non-existent user",
-        "id": "5710",
-        "mitre": {
-          "id": [
-            "T1110.001",
-            "T1021.004"
-          ],
-          "tactic": [
-            "Credential Access",
-            "Lateral Movement"
-          ],
-          "technique": [
-            "Password Guessing",
-            "SSH"
-          ]
-        },
-        "firedtimes": 26,
-        "mail": false,
-        "groups": [
-          "syslog",
-          "sshd",
-          "authentication_failed",
-          "invalid_login"
-        ],
-        "gdpr": [
-          "IV_35.7.d",
-          "IV_32.2"
-        ],
-        "gpg13": [
-          "7.1"
-        ],
-        "hipaa": [
-          "164.312.b"
-        ],
-        "nist_800_53": [
-          "AU.14",
-          "AC.7",
-          "AU.6"
-        ],
-        "pci_dss": [
-          "10.2.4",
-          "10.2.5",
-          "10.6.1"
-        ],
-        "tsc": [
-          "CC6.1",
-          "CC6.8",
-          "CC7.2",
-          "CC7.3"
-        ]
-      },
-      "agent": {
-        "id": "006",
-        "name": "endpoint01",
-        "ip": "172.19.0.4"
-      },
-      "manager": {
-        "name": "wazuh.manager"
-      },
-      "id": "1787319336.1630626",
-      "full_log": "Aug 21 19:05:35 endpoint01 sshd[8209]: Failed password for invalid user admin from 198.51.100.77 port 46009 ssh2",
-      "predecoder": {
-        "program_name": "sshd",
-        "timestamp": "Aug 21 19:05:35",
+        "timestamp": "Aug 22 17:47:36",
         "hostname": "endpoint01"
       },
       "decoder": {
